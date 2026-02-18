@@ -18,12 +18,16 @@
     "pre-commit": "pnpx lint-staged"
   },
   "dependencies": {
+    "@pinia/colada": "^0.21.4",
+    "ofetch": "^1.5.1",
     "pinia": "^3.0.4",
+    "valibot": "^1.2.0",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",
     "vuetify": "^3.11.8"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "0.92.4",
     "@promise2/eslint-config": "^0.2.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.10.9",

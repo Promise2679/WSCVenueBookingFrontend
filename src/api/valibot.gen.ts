@@ -3,80 +3,44 @@
 import * as v from 'valibot';
 
 export const vPostApiLoginData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         login_name: v.string(),
         login_token: v.string()
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vPostApiLoginResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        uid: v.string(),
-        display_name: v.string(),
-        webtoken: v.string()
-    })
 });
 
 export const vPostApiUserChangePasswordData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         verify_type: v.string(),
         verify_data: v.string(),
         new_password: v.string()
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vPostApiUserChangePasswordResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.optional(v.null())
 });
 
 export const vPatchApiUserEditProfileData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         phone_number: v.optional(v.string())
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
 });
 
-export const vPatchApiUserEditProfileResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
-});
-
 export const vPostApiRegisterData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         username: v.string(),
         school_id: v.string(),
         password_hash: v.string(),
         password_salt: v.string()
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
 });
 
-export const vPostApiRegisterResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.union([
-        v.string(),
-        v.pipe(v.number(), v.integer()),
-        v.boolean(),
-        v.array(v.unknown()),
-        v.record(v.string(), v.unknown()),
-        v.number(),
-        v.null()
-    ])
-});
-
-export const vGetApiGetLoginSessionSaltData = v.object({
+export const vGetApiLoginSessionSaltData = v.object({
     body: v.optional(v.never()),
     path: v.optional(v.never()),
     query: v.optional(v.object({
@@ -84,17 +48,8 @@ export const vGetApiGetLoginSessionSaltData = v.object({
     }))
 });
 
-export const vGetApiGetLoginSessionSaltResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        user_salt: v.string(),
-        session_salt: v.string()
-    })
-});
-
 export const vGetApiVenueQueryData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.optional(v.never()),
     query: v.optional(v.object({
         type: v.optional(v.string()),
@@ -105,45 +60,16 @@ export const vGetApiVenueQueryData = v.object({
     }))
 });
 
-export const vGetApiVenueQueryResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        venue_name: v.string(),
-        venue_type: v.string(),
-        venue_tags: v.string(),
-        capacity: v.pipe(v.number(), v.integer()),
-        min_request: v.optional(v.pipe(v.number(), v.integer())),
-        timemap: v.record(v.string(), v.unknown()),
-        cover_image_url: v.string(),
-        availability: v.string()
-    }))
-});
-
 export const vGetApiVenueByVenueIdInfoData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.object({
         venue_id: v.string()
     }),
     query: v.optional(v.never())
 });
 
-export const vGetApiVenueByVenueIdInfoResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        image_url: v.array(v.string()),
-        venue_type: v.string(),
-        venue_name: v.string(),
-        capacity: v.pipe(v.number(), v.integer()),
-        timemap: v.record(v.string(), v.unknown()),
-        available_equipments: v.optional(v.array(v.string())),
-        availability: v.string()
-    })
-});
-
 export const vPostApiVenueByVenueIdReserveData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         time_request: v.record(v.string(), v.unknown()),
         estimated_participants: v.pipe(v.number(), v.integer()),
         activity_name: v.optional(v.string()),
@@ -156,33 +82,19 @@ export const vPostApiVenueByVenueIdReserveData = v.object({
         }))),
         description: v.optional(v.string()),
         attachments_url: v.optional(v.array(v.string()))
-    })),
+    }),
     path: v.object({
         venue_id: v.string()
     }),
     query: v.optional(v.never())
 });
 
-export const vPostApiVenueByVenueIdReserveResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        reservation_id: v.pipe(v.number(), v.integer())
-    })
-});
-
 export const vDeleteApiReservationByReservationIdData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.object({
         reservation_id: v.string()
     }),
     query: v.optional(v.never())
-});
-
-export const vDeleteApiReservationByReservationIdResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.optional(v.null())
 });
 
 export const vGetApiUserReservationsData = v.object({
@@ -191,32 +103,10 @@ export const vGetApiUserReservationsData = v.object({
     query: v.optional(v.never())
 });
 
-export const vGetApiUserReservationsResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        reservation_id: v.pipe(v.number(), v.integer()),
-        venue_name: v.string(),
-        reservation_time: v.record(v.string(), v.unknown()),
-        activity_name: v.optional(v.string()),
-        status: v.string()
-    }))
-});
-
 export const vGetApiUserAnnoucementsData = v.object({
     body: v.optional(v.never()),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vGetApiUserAnnoucementsResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        announcer: v.string(),
-        title: v.string(),
-        content: v.string()
-    }))
 });
 
 export const vGetApiVenueBuildingsData = v.object({
@@ -225,22 +115,11 @@ export const vGetApiVenueBuildingsData = v.object({
     query: v.optional(v.never())
 });
 
-export const vGetApiVenueBuildingsResponse = v.array(v.object({
-    name: v.string(),
-    campus_id: v.pipe(v.number(), v.integer()),
-    building_id: v.pipe(v.number(), v.integer())
-}));
-
 export const vGetApiVenueCampusesData = v.object({
     body: v.optional(v.never()),
     path: v.optional(v.never()),
     query: v.optional(v.never())
 });
-
-export const vGetApiVenueCampusesResponse = v.array(v.object({
-    name: v.string(),
-    campus_id: v.pipe(v.number(), v.integer())
-}));
 
 export const vGetApiAdminRoomData = v.object({
     body: v.optional(v.never()),
@@ -248,91 +127,42 @@ export const vGetApiAdminRoomData = v.object({
     query: v.optional(v.never())
 });
 
-export const vGetApiAdminRoomResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        reservations_sum: v.pipe(v.number(), v.integer()),
-        refusion_sum: v.pipe(v.number(), v.integer()),
-        acceptance_sum: v.pipe(v.number(), v.integer()),
-        room: v.string()
-    }))
-});
-
 export const vGetApiAdminRoomReservationsData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.optional(v.never()),
     query: v.optional(v.object({
         room: v.optional(v.string())
     }))
 });
 
-export const vGetApiAdminRoomReservationsResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        reserve_id: v.pipe(v.number(), v.integer()),
-        activity_name: v.string(),
-        time: v.string()
-    }))
-});
-
 export const vGetApiAdminReservationInfoData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.optional(v.never()),
     query: v.optional(v.object({
         reserve_id: v.optional(v.pipe(v.number(), v.integer()))
     }))
 });
 
-export const vGetApiAdminReservationInfoResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        activity_name: v.string(),
-        time: v.string(),
-        organizer: v.string(),
-        phone_number: v.string(),
-        contact_person: v.string(),
-        people_num: v.pipe(v.number(), v.integer()),
-        remarks: v.string(),
-        event_plan_file: v.string()
-    })
-});
-
 export const vPostApiAdminReservationApprovalData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         reserve_id: v.pipe(v.number(), v.integer()),
         approval: v.pipe(v.number(), v.integer())
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
 });
 
-export const vPostApiAdminReservationApprovalResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
-});
-
-export const vPutApiAdminRoomUpdateData = v.object({
+export const vPutApiVenueByVenueIdData = v.object({
     body: v.object({
         pictures: v.array(v.string()),
         capacity: v.pipe(v.number(), v.integer()),
         availability: v.boolean(),
         room: v.string()
     }),
-    path: v.optional(v.never()),
-    query: v.optional(v.never()),
-    headers: v.optional(v.object({
-        Authorization: v.optional(v.string())
-    }))
-});
-
-export const vPutApiAdminRoomUpdateResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
+    path: v.object({
+        venue_id: v.string()
+    }),
+    query: v.optional(v.never())
 });
 
 export const vGetApiAdminAccountData = v.object({
@@ -341,65 +171,33 @@ export const vGetApiAdminAccountData = v.object({
     query: v.optional(v.never())
 });
 
-export const vGetApiAdminAccountResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        name: v.string(),
-        character: v.pipe(v.number(), v.integer()),
-        stu_id: v.string()
-    }))
-});
-
 export const vGetApiAdminAccountInfoData = v.object({
-    body: v.optional(v.record(v.string(), v.unknown())),
+    body: v.record(v.string(), v.unknown()),
     path: v.optional(v.never()),
     query: v.optional(v.object({
         stu_id: v.optional(v.string())
     }))
 });
 
-export const vGetApiAdminAccountInfoResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.object({
-        reservation_sum: v.pipe(v.number(), v.integer()),
-        cancel_sum: v.pipe(v.number(), v.integer()),
-        use_sum: v.pipe(v.number(), v.integer())
-    })
-});
-
 export const vPostApiAdminAnnoucementData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         recevier: v.string(),
         title: v.string(),
         content: v.string(),
         pictures: v.array(v.string()),
         status: v.pipe(v.number(), v.integer()),
         release_time: v.string()
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vPostApiAdminAnnoucementResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
 });
 
 export const vDeleteApiAdminAnnouncementData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         announcement_id: v.pipe(v.number(), v.integer())
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vDeleteApiAdminAnnouncementResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
 });
 
 export const vGetApiAdminAnnouncementData = v.object({
@@ -408,19 +206,8 @@ export const vGetApiAdminAnnouncementData = v.object({
     query: v.optional(v.never())
 });
 
-export const vGetApiAdminAnnouncementResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.array(v.object({
-        annoucement_id: v.pipe(v.number(), v.integer()),
-        title: v.string(),
-        release_time: v.string(),
-        status: v.string()
-    }))
-});
-
 export const vPutApiAdminAnnouncementData = v.object({
-    body: v.optional(v.object({
+    body: v.object({
         announcement_id: v.pipe(v.number(), v.integer()),
         recevier: v.string(),
         title: v.string(),
@@ -428,13 +215,7 @@ export const vPutApiAdminAnnouncementData = v.object({
         pictures: v.array(v.string()),
         status: v.pipe(v.number(), v.integer()),
         release_time: v.string()
-    })),
+    }),
     path: v.optional(v.never()),
     query: v.optional(v.never())
-});
-
-export const vPutApiAdminAnnouncementResponse = v.object({
-    code: v.pipe(v.number(), v.integer()),
-    msg: v.string(),
-    data: v.null()
 });

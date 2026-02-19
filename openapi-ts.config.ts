@@ -1,7 +1,10 @@
 import { defineConfig } from '@hey-api/openapi-ts'
 
 export default defineConfig({
-  input: 'http://127.0.0.1:4523/export/openapi/5?version=3.1',
+  input: 'openapi.yaml',
   output: 'src/api',
-  plugins: ['@hey-api/client-ofetch', 'valibot', '@pinia/colada']
+  plugins: [
+    { name: '@hey-api/sdk', validator: { request: 'valibot' } },
+    { name: 'valibot', responses: false }
+  ]
 })

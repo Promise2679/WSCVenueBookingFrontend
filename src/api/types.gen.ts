@@ -5,7 +5,7 @@ export type ClientOptions = {
 };
 
 export type PostApiLoginData = {
-    body?: {
+    body: {
         /**
          * 登录名
          *
@@ -46,7 +46,7 @@ export type PostApiLoginResponses = {
 export type PostApiLoginResponse = PostApiLoginResponses[keyof PostApiLoginResponses];
 
 export type PostApiUserChangePasswordData = {
-    body?: {
+    body: {
         /**
          * 认证方式
          *
@@ -80,7 +80,7 @@ export type PostApiUserChangePasswordResponses = {
 export type PostApiUserChangePasswordResponse = PostApiUserChangePasswordResponses[keyof PostApiUserChangePasswordResponses];
 
 export type PatchApiUserEditProfileData = {
-    body?: {
+    body: {
         phone_number?: string;
     };
     path?: never;
@@ -99,7 +99,7 @@ export type PatchApiUserEditProfileResponses = {
 export type PatchApiUserEditProfileResponse = PatchApiUserEditProfileResponses[keyof PatchApiUserEditProfileResponses];
 
 export type PostApiRegisterData = {
-    body?: {
+    body: {
         username: string;
         school_id: string;
         /**
@@ -125,16 +125,16 @@ export type PostApiRegisterResponses = {
 
 export type PostApiRegisterResponse = PostApiRegisterResponses[keyof PostApiRegisterResponses];
 
-export type GetApiGetLoginSessionSaltData = {
+export type GetApiLoginSessionSaltData = {
     body?: never;
     path?: never;
     query?: {
         login_name?: string;
     };
-    url: '/api/get-login-session-salt';
+    url: '/api/login-session-salt';
 };
 
-export type GetApiGetLoginSessionSaltResponses = {
+export type GetApiLoginSessionSaltResponses = {
     200: {
         code: number;
         msg: string;
@@ -145,10 +145,10 @@ export type GetApiGetLoginSessionSaltResponses = {
     };
 };
 
-export type GetApiGetLoginSessionSaltResponse = GetApiGetLoginSessionSaltResponses[keyof GetApiGetLoginSessionSaltResponses];
+export type GetApiLoginSessionSaltResponse = GetApiLoginSessionSaltResponses[keyof GetApiLoginSessionSaltResponses];
 
 export type GetApiVenueQueryData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path?: never;
@@ -190,7 +190,7 @@ export type GetApiVenueQueryResponses = {
 export type GetApiVenueQueryResponse = GetApiVenueQueryResponses[keyof GetApiVenueQueryResponses];
 
 export type GetApiVenueByVenueIdInfoData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path: {
@@ -221,7 +221,7 @@ export type GetApiVenueByVenueIdInfoResponses = {
 export type GetApiVenueByVenueIdInfoResponse = GetApiVenueByVenueIdInfoResponses[keyof GetApiVenueByVenueIdInfoResponses];
 
 export type PostApiVenueByVenueIdReserveData = {
-    body?: {
+    body: {
         time_request: {
             [key: string]: unknown;
         };
@@ -272,7 +272,7 @@ export type PostApiVenueByVenueIdReserveResponses = {
 export type PostApiVenueByVenueIdReserveResponse = PostApiVenueByVenueIdReserveResponses[keyof PostApiVenueByVenueIdReserveResponses];
 
 export type DeleteApiReservationByReservationIdData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path: {
@@ -394,7 +394,7 @@ export type GetApiAdminRoomResponses = {
 export type GetApiAdminRoomResponse = GetApiAdminRoomResponses[keyof GetApiAdminRoomResponses];
 
 export type GetApiAdminRoomReservationsData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path?: never;
@@ -419,7 +419,7 @@ export type GetApiAdminRoomReservationsResponses = {
 export type GetApiAdminRoomReservationsResponse = GetApiAdminRoomReservationsResponses[keyof GetApiAdminRoomReservationsResponses];
 
 export type GetApiAdminReservationInfoData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path?: never;
@@ -449,7 +449,7 @@ export type GetApiAdminReservationInfoResponses = {
 export type GetApiAdminReservationInfoResponse = GetApiAdminReservationInfoResponses[keyof GetApiAdminReservationInfoResponses];
 
 export type PostApiAdminReservationApprovalData = {
-    body?: {
+    body: {
         reserve_id: number;
         /**
          * 1同意2驳回
@@ -471,22 +471,21 @@ export type PostApiAdminReservationApprovalResponses = {
 
 export type PostApiAdminReservationApprovalResponse = PostApiAdminReservationApprovalResponses[keyof PostApiAdminReservationApprovalResponses];
 
-export type PutApiAdminRoomUpdateData = {
+export type PutApiVenueByVenueIdData = {
     body: {
         pictures: Array<string>;
         capacity: number;
         availability: boolean;
         room: string;
     };
-    headers?: {
-        Authorization?: string;
+    path: {
+        venue_id: string;
     };
-    path?: never;
     query?: never;
-    url: '/api/admin/room/update';
+    url: '/api/venue/{venue_id}';
 };
 
-export type PutApiAdminRoomUpdateResponses = {
+export type PutApiVenueByVenueIdResponses = {
     200: {
         code: number;
         msg: string;
@@ -494,7 +493,7 @@ export type PutApiAdminRoomUpdateResponses = {
     };
 };
 
-export type PutApiAdminRoomUpdateResponse = PutApiAdminRoomUpdateResponses[keyof PutApiAdminRoomUpdateResponses];
+export type PutApiVenueByVenueIdResponse = PutApiVenueByVenueIdResponses[keyof PutApiVenueByVenueIdResponses];
 
 export type GetApiAdminAccountData = {
     body?: never;
@@ -518,7 +517,7 @@ export type GetApiAdminAccountResponses = {
 export type GetApiAdminAccountResponse = GetApiAdminAccountResponses[keyof GetApiAdminAccountResponses];
 
 export type GetApiAdminAccountInfoData = {
-    body?: {
+    body: {
         [key: string]: unknown;
     };
     path?: never;
@@ -543,7 +542,7 @@ export type GetApiAdminAccountInfoResponses = {
 export type GetApiAdminAccountInfoResponse = GetApiAdminAccountInfoResponses[keyof GetApiAdminAccountInfoResponses];
 
 export type PostApiAdminAnnoucementData = {
-    body?: {
+    body: {
         /**
          * 全站公告默认为null
          */
@@ -573,7 +572,7 @@ export type PostApiAdminAnnoucementResponses = {
 export type PostApiAdminAnnoucementResponse = PostApiAdminAnnoucementResponses[keyof PostApiAdminAnnoucementResponses];
 
 export type DeleteApiAdminAnnouncementData = {
-    body?: {
+    body: {
         announcement_id: number;
     };
     path?: never;
@@ -614,7 +613,7 @@ export type GetApiAdminAnnouncementResponses = {
 export type GetApiAdminAnnouncementResponse = GetApiAdminAnnouncementResponses[keyof GetApiAdminAnnouncementResponses];
 
 export type PutApiAdminAnnouncementData = {
-    body?: {
+    body: {
         announcement_id: number;
         recevier: string;
         title: string;

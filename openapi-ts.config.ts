@@ -5,6 +5,8 @@ export default defineConfig({
   output: 'src/api',
   plugins: [
     { name: '@hey-api/sdk', validator: { request: 'valibot' } },
-    { name: 'valibot', responses: false }
+    { name: 'valibot', responses: false },
+    { baseUrl: 'https://127.0.0.1', name: '@hey-api/client-fetch' },
+    '@pinia/colada'
   ]
 })

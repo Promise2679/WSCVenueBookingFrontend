@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@pinia/colada": "catalog:",
-    "ofetch": "catalog:",
     "pinia": "catalog:",
     "valibot": "catalog:",
     "vue": "catalog:",

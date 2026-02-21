@@ -12,8 +12,7 @@
           :type="showPassword ? 'text' : 'password'"
           label="密码"
         ></v-text-field>
-        <v-btn @click="handleLogin" :loading="isLoading" class="mt-2" text="登录" type="submit"></v-btn>
-        <div>忘记密码</div>
+        <v-btn @click="handleLogin" :loading="isLoading" class="mt-2" text="登录" type="submit" block></v-btn>
       </v-form>
     </v-sheet>
   </v-app>
@@ -23,6 +22,7 @@
 import { ref } from 'vue'
 
 import { getApiLoginSessionSalt, postApiLogin } from '@/api'
+import router from '@/router'
 import { useUserStore } from '@/stores/user'
 
 const username = ref('')
@@ -51,6 +51,7 @@ async function handleLogin() {
   const { display_name: name, uid, webtoken: token } = data.data
   useUserStore().$patch({ name, token, uid })
 
+  await router.push('/')
   isLoading.value = false
 }
 </script>

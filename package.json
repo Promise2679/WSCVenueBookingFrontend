@@ -18,10 +18,11 @@
     "pre-commit": "pnpx lint-staged"
   },
   "dependencies": {
-    "@pinia/colada": "catalog:",
-    "pinia": "catalog:",
+    "@pinia/colada": "catalog:store",
+    "pinia": "catalog:store",
+    "pinia-plugin-persistedstate": "catalog:store",
     "valibot": "catalog:",
-    "vue": "catalog:",
+    "vue": "catalog:vue",
     "vue-router": "catalog:",
     "vuetify": "catalog:style"
   },

@@ -23,10 +23,11 @@
     "valibot": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
-    "vuetify": "catalog:"
+    "vuetify": "catalog:style"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "catalog:infra",
+    "@mdi/font": "catalog:style",
     "@promise2/eslint-config": "catalog:lint",
     "@tsconfig/node24": "catalog:vue",
     "@types/node": "catalog:type",

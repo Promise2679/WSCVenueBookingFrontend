@@ -11,11 +11,11 @@
     "lint": "eslint . --fix --cache",
     "postinstall": "npx simple-git-hooks"
   },
-  "lint-staged": {
+  "nano-staged": {
     "*.{ts,vue}": "eslint"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpx lint-staged"
+    "pre-commit": "pnpx nano-staged"
   },
   "dependencies": {
     "@pinia/colada": "catalog:store",

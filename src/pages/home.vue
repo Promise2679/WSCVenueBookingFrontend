@@ -11,7 +11,7 @@
           <v-icon icon="mdi-cog" size="large" />
           <v-menu activator="parent">
             <v-list>
-              <v-list-item v-for="(item, index) in settings" :key="item.label" :value="index">
+              <v-list-item v-for="(item, index) in settings" :key="item.label" :value="index" :to="item.path">
                 <v-list-item-title>{{ item.label }}</v-list-item-title>
               </v-list-item>
             </v-list>

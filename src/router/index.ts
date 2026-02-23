@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeComponent from '@/components/home.vue'
 import Notice from '@/components/notice.vue'
-import Setting from '@/components/setting.vue'
 import Home from '@/pages/home.vue'
 import Login from '@/pages/login.vue'
 import { useUserStore } from '@/stores/user'
@@ -15,8 +14,7 @@ const router = createRouter({
     {
       children: [
         { component: HomeComponent, path: '' },
-        { component: Notice, path: 'notice' },
-        { component: Setting, path: 'setting' }
+        { component: Notice, path: 'notice' }
       ],
       component: Home,
       path: '/'

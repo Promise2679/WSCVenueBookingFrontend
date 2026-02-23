@@ -42,23 +42,32 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-dialog width="600">
+            <v-dialog width="700">
               <template v-slot:activator="{ props: activatorProps }">
-                <v-btn v-bind="activatorProps" variant="text" color="primary" @click="selectedVenue = venue">
+                <v-btn v-bind="activatorProps" variant="text" color="primary" @click="openVenueDetail(venue)">
                   查看详情
                 </v-btn>
               </template>
               <template v-slot:default="{ isActive }">
                 <v-card>
                   <v-card-title class="d-flex align-center pa-4">
-                    <span class="text-h6">场地详情</span>
+                    <v-btn
+                      v-if="bookingMode"
+                      icon="mdi-arrow-left"
+                      variant="text"
+                      size="small"
+                      class="mr-2"
+                      @click="bookingMode = false"
+                    />
+                    <span class="text-h6">{{ bookingMode ? '预约场地' : '场地详情' }}</span>
                     <v-spacer />
-                    <v-btn icon="mdi-close" variant="text" size="small" @click="isActive.value = false" />
+                    <v-btn icon="mdi-close" variant="text" size="small" @click="closeDialog(isActive)" />
                   </v-card-title>
 
                   <v-divider />
 
-                  <v-card-text class="pa-4">
+                  <!-- 场地详情页 -->
+                  <v-card-text v-if="!bookingMode" class="pa-4">
                     <v-img
                       :src="selectedVenue?.image_url || 'https://placehold.co/600x200?text=场地图片'"
                       height="200"
@@ -69,7 +78,7 @@
                     <div class="d-flex align-center mb-2">
                       <div class="text-h5">{{ selectedVenue?.name }}</div>
                       <v-spacer />
-                      <v-btn color="primary" variant="flat">
+                      <v-btn color="primary" variant="flat" @click="bookingMode = true">
                         <v-icon start icon="mdi-calendar-plus" />
                         立即预约
                       </v-btn>
@@ -123,6 +132,140 @@
                       </tbody>
                     </v-table>
                   </v-card-text>
+
+                  <!-- 预约表单页 -->
+                  <v-card-text v-else class="pa-4">
+                    <v-form ref="bookingForm" v-model="formValid">
+                      <v-row dense>
+                        <v-col cols="12">
+                          <v-text-field
+                            v-model="bookingFormData.activity_name"
+                            label="活动名称"
+                            variant="outlined"
+                            density="comfortable"
+                            :rules="[Boolean]"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            v-model="bookingFormData.organizer"
+                            label="主办单位"
+                            variant="outlined"
+                            density="comfortable"
+                            :rules="[Boolean]"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            v-model="bookingFormData.contacts.name"
+                            label="负责人姓名"
+                            variant="outlined"
+                            density="comfortable"
+                            :rules="[Boolean]"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            v-model="bookingFormData.contacts.phone_number"
+                            label="联系电话"
+                            variant="outlined"
+                            density="comfortable"
+                            :rules="[Boolean]"
+                          />
+                        </v-col>
+
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            v-model.number="bookingFormData.estimated_participants"
+                            label="预估人数"
+                            type="number"
+                            variant="outlined"
+                            density="comfortable"
+                            :rules="[v => v > 0]"
+                          />
+                        </v-col>
+
+                        <v-col cols="12">
+                          <v-textarea
+                            v-model="bookingFormData.description"
+                            label="简要说明"
+                            variant="outlined"
+                            density="comfortable"
+                            rows="3"
+                            auto-grow
+                          />
+                        </v-col>
+
+                        <v-col cols="12">
+                          <v-file-input
+                            v-model="bookingFormData.activityPlan"
+                            label="活动策划书（Word文件）"
+                            variant="outlined"
+                            density="comfortable"
+                            accept=".doc,.docx"
+                            prepend-icon="mdi-file-document"
+                            show-size
+                          />
+                        </v-col>
+
+                        <v-col cols="12">
+                          <v-card variant="outlined" class="pa-2">
+                            <div class="text-subtitle-2 mb-2">使用时间</div>
+                            <v-row dense>
+                              <v-col cols="12" sm="6">
+                                <v-text-field
+                                  v-model="bookingFormData.time_request.date"
+                                  label="使用日期"
+                                  type="date"
+                                  variant="outlined"
+                                  density="comfortable"
+                                  :rules="[Boolean]"
+                                />
+                              </v-col>
+                              <v-col cols="6" sm="3">
+                                <v-select
+                                  v-model="bookingFormData.time_request.startTime"
+                                  label="开始时间"
+                                  :items="timeOptions"
+                                  variant="outlined"
+                                  density="comfortable"
+                                  :rules="[Boolean]"
+                                />
+                              </v-col>
+                              <v-col cols="6" sm="3">
+                                <v-select
+                                  v-model="bookingFormData.time_request.endTime"
+                                  label="结束时间"
+                                  :items="timeOptions"
+                                  variant="outlined"
+                                  density="comfortable"
+                                  :rules="[Boolean]"
+                                />
+                              </v-col>
+                            </v-row>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-form>
+                  </v-card-text>
+
+                  <v-divider />
+
+                  <v-card-actions class="pa-4">
+                    <v-spacer />
+                    <v-btn
+                      v-if="bookingMode"
+                      color="primary"
+                      variant="flat"
+                      :disabled="!formValid"
+                      @click="submitBooking"
+                    >
+                      提交预约
+                    </v-btn>
+                  </v-card-actions>
                 </v-card>
               </template>
             </v-dialog>
@@ -134,13 +277,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 import { venueDetails } from '@/constants/venueDetails'
 
 const search = ref('')
+const bookingMode = ref(false)
+const formValid = ref(false)
 
 // 感觉接口文档信息不完整所以暂时使用自定义接口
+interface BookingFormData {
+  activity_name: string
+  activityPlan: File | null
+  contacts: { name: string; phone_number: string; user_id: string }
+  description: string
+  estimated_participants: null | number
+  organizer: string
+  time_request: { date: string; endTime: string; startTime: string }
+}
+
 interface Venue {
   availability: string
   available_equipments: string[]
@@ -156,6 +311,14 @@ interface Venue {
 
 const selectedVenue = ref<Venue>()
 const colors = { 可预约: 'success', 维护中: 'warning' } as Record<string, string>
+
+const bookingFormData = reactive<BookingFormData>(getInitialFormData())
+
+const timeOptions = Array.from({ length: 20 }, (_, i) => {
+  const hour = Math.floor(i / 2) + 8
+  const minute = (i % 2) * 30
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+})
 
 const venues = ref<Venue[]>([
   {
@@ -195,4 +358,32 @@ const venues = ref<Venue[]>([
     type: '运动场地'
   }
 ])
+
+function closeDialog(isActive: { value: boolean }) {
+  isActive.value = false
+  bookingMode.value = false
+  Object.assign(bookingFormData, getInitialFormData())
+}
+
+function getInitialFormData(): BookingFormData {
+  return {
+    activity_name: '',
+    activityPlan: null,
+    contacts: { name: '', phone_number: '', user_id: '' },
+    description: '',
+    estimated_participants: null,
+    organizer: '',
+    time_request: { date: '', endTime: '', startTime: '' }
+  }
+}
+
+function openVenueDetail(venue: Venue) {
+  selectedVenue.value = venue
+  bookingMode.value = false
+  Object.assign(bookingFormData, getInitialFormData())
+}
+
+function submitBooking() {
+  console.log('提交预约:', { venue: selectedVenue.value?.name, ...bookingFormData })
+}
 </script>

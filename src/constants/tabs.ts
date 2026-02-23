@@ -1,12 +1,12 @@
 interface HomeTab {
-  color: string | undefined
+  color?: string
   icon: string
   name: string
-  path: string | undefined
+  path?: string
 }
 
 export const homeTabs: HomeTab[] = [
-  { color: undefined, icon: 'mdi-email', name: 'notice', path: '/notice' },
-  { color: undefined, icon: 'mdi-cog', name: 'setting', path: '/setting' },
-  { color: 'red', icon: 'mdi-exit-to-app', name: 'exit', path: undefined }
+  { icon: 'mdi-email', name: 'notice', path: '/notice' },
+  { icon: 'mdi-cog', name: 'setting' },
+  { color: 'red', icon: 'mdi-exit-to-app', name: 'exit' }
 ]

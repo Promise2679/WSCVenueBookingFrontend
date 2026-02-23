@@ -1,4 +1,4 @@
-interface VenueDetail {
+export interface VenueDetail {
   icon: string
   label: string
   value: string

@@ -2,7 +2,7 @@
   <v-container class="pa-4">
     <div class="d-flex justify-end mb-4 ga-2">
       <v-btn prepend-icon="mdi-calendar-plus">预约场地</v-btn>
-      <v-btn prepend-icon="mdi-cog">管理场地</v-btn>
+      <v-btn prepend-icon="mdi-cog" to="/admin">管理场地</v-btn>
     </div>
 
     <v-row class="mb-4">

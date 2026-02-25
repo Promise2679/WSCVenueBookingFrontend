@@ -2,6 +2,7 @@ import { storeToRefs } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import About from '@/components/about.vue'
+import Admin from '@/components/admin.vue'
 import Edit from '@/components/edit.vue'
 import HomeComponent from '@/components/home.vue'
 import Notice from '@/components/notice.vue'
@@ -20,7 +21,8 @@ const router = createRouter({
         { component: Notice, path: 'notice' },
         { component: Reservation, path: 'reservation' },
         { component: About, path: 'about' },
-        { component: Edit, path: 'edit' }
+        { component: Edit, path: 'edit' },
+        { component: Admin, path: 'admin' }
       ],
       component: Home,
       path: '/'

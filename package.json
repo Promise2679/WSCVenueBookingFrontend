@@ -15,7 +15,7 @@
     "*.{ts,vue}": "eslint"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpx nano-staged"
+    "pre-commit": "nano-staged"
   },
   "dependencies": {
     "@pinia/colada": "catalog:store",
@@ -42,6 +42,7 @@
     "eslint-plugin-prettier": "catalog:lint",
     "eslint-plugin-vue": "catalog:lint",
     "jiti": "catalog:infra",
+    "nano-staged": "catalog:infra",
     "npm-run-all2": "catalog:vue",
     "prettier": "catalog:lint",
     "simple-git-hooks": "catalog:infra",

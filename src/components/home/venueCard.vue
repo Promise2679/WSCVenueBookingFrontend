@@ -260,7 +260,7 @@
                         </v-col>
                         <v-col cols="6" sm="3">
                           <v-select
-                            v-model="bookingFormData.time_request.startTime"
+                            v-model="bookingFormData.time_request.begin"
                             label="开始时间"
                             :items="timeOptions"
                             variant="outlined"
@@ -270,7 +270,7 @@
                         </v-col>
                         <v-col cols="6" sm="3">
                           <v-select
-                            v-model="bookingFormData.time_request.endTime"
+                            v-model="bookingFormData.time_request.end"
                             label="结束时间"
                             :items="timeOptions"
                             variant="outlined"
@@ -303,15 +303,15 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
-import { type GetApiVenueResponse, putApiVenueByVenueId } from '@/api'
+import { type GetApiVenueResponse, postApiFile, postApiVenueByVenueIdApplication, putApiVenueByVenueId } from '@/api'
 
 interface BookingFormData {
   activity_name: string
   activity_organizer: string
   activityPlan: File | null
   description: string
-  estimated_participants: null | number
-  time_request: { date: string; endTime: string; startTime: string }
+  estimated_participants: number
+  time_request: { begin: string; date: string; end: string }
 }
 
 const props = defineProps<{ venue: GetApiVenueResponse['data'][number] }>()
@@ -342,8 +342,8 @@ function getInitialFormData(): BookingFormData {
     activity_organizer: '',
     activityPlan: null,
     description: '',
-    estimated_participants: null,
-    time_request: { date: '', endTime: '', startTime: '' }
+    estimated_participants: 0,
+    time_request: { begin: '', date: '', end: '' }
   }
 }
 
@@ -361,19 +361,59 @@ function openVenueDetail() {
 }
 
 async function saveVenueEdit() {
-  await putApiVenueByVenueId({
+  const { error } = await putApiVenueByVenueId({
     body: {
-      ...editFormData,
       building_id: props.venue.building_id,
-      images_token: [props.venue.cover_image_token],
-      type_id: props.venue.type_id
+      capacity: editFormData.capacity,
+      cover_image_token: editFormData.cover_image_token,
+      description: editFormData.description,
+      images_token: [editFormData.cover_image_token],
+      name: editFormData.name,
+      type_id: Number(editFormData.type)
     },
     path: { venue_id: props.venue.venue_id.toString() }
   })
+  if (error) {
+    console.error('更新场地失败:', error)
+    return
+  }
   emit('refresh')
 }
 
-function submitBooking() {
-  console.log('11')
+async function submitBooking() {
+  const beginTime = `${bookingFormData.time_request.date}T${bookingFormData.time_request.begin}:00+08:00`
+  const endTime = `${bookingFormData.time_request.date}T${bookingFormData.time_request.end}:00+08:00`
+
+  const attachments = []
+  if (bookingFormData.activityPlan) {
+    const { data } = await postApiFile({ body: { file: bookingFormData.activityPlan } })
+    if (data)
+      attachments.push({
+        file_name: bookingFormData.activityPlan.name,
+        file_token: data.data as string,
+        file_type: bookingFormData.activityPlan.name.split('.').pop() ?? 'file',
+        index: 0
+      })
+  }
+
+  const { error } = await postApiVenueByVenueIdApplication({
+    body: {
+      activity_name: bookingFormData.activity_name,
+      activity_organizer: bookingFormData.activity_organizer,
+      application_type: 'normal',
+      attachments,
+      description: bookingFormData.description,
+      estimated_participants: bookingFormData.estimated_participants,
+      time_request: [{ begin: beginTime, end: endTime }]
+    },
+    path: { venue_id: props.venue.venue_id.toString() }
+  })
+
+  if (error) {
+    console.error('预约失败:', error)
+    return
+  }
+  emit('refresh')
+  closeDialog({ value: false } as { value: boolean })
 }
 </script>

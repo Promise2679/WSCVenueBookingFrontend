@@ -4,8 +4,8 @@ import { type _JSONValue, defineQueryOptions, type UseMutationOptions } from '@p
 
 import { serializeQueryKeyValue } from '../client';
 import { client } from '../client.gen';
-import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiUserApplication, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
-import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiUserApplicationData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
+import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiUserApplication, getApiUserNotification, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
 
 /**
  * 登录
@@ -381,3 +381,20 @@ export const putApiNotificationByNotificationIdMutation = (options?: Partial<Opt
         return data;
     }
 });
+
+export const getApiUserNotificationQueryKey = (options?: Options<GetApiUserNotificationData>) => createQueryKey('getApiUserNotification', options);
+
+/**
+ * 获取个人发布的公告
+ */
+export const getApiUserNotificationQuery = defineQueryOptions((options?: Options<GetApiUserNotificationData>) => ({
+    key: getApiUserNotificationQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiUserNotification({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));

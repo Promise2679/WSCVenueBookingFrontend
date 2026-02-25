@@ -399,9 +399,15 @@ export type PostApiVenueByVenueIdApplicationData = {
             file_name: string;
             file_type: string;
         }>;
-        activity_coordinator: Array<string | number | boolean | Array<unknown> | {
+        /**
+         * 空置
+         */
+        activity_coordinator?: Array<string | number | boolean | Array<unknown> | {
             [key: string]: unknown;
         } | number | null>;
+        /**
+         * 固定值
+         */
         application_type: string;
     };
     path: {
@@ -446,9 +452,11 @@ export type DeleteApiApplicationByApplicationIdResponse = DeleteApiApplicationBy
 
 export type PutApiApplicationByApplicationIdData = {
     body: {
+        /**
+         * apv=同意 rej=拒绝
+         */
         decision: string;
         comment: {
-            id: number;
             text: string;
             attachments: Array<{
                 index: number;
@@ -615,10 +623,7 @@ export type GetApiAccountResponse = GetApiAccountResponses[keyof GetApiAccountRe
 export type GetApiNotificationData = {
     body?: never;
     path?: never;
-    query?: {
-        offset?: string;
-        limit?: string;
-    };
+    query?: never;
     url: '/api/notification';
 };
 
@@ -633,6 +638,8 @@ export type GetApiNotificationResponses = {
             status: number;
             content: string;
             images_token: Array<string>;
+            video_token: string;
+            sender_uid: string;
         }>;
     };
 };
@@ -718,3 +725,28 @@ export type PutApiNotificationByNotificationIdResponses = {
 };
 
 export type PutApiNotificationByNotificationIdResponse = PutApiNotificationByNotificationIdResponses[keyof PutApiNotificationByNotificationIdResponses];
+
+export type GetApiUserNotificationData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/user/notification';
+};
+
+export type GetApiUserNotificationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: Array<{
+            notification_id: number;
+            title: string;
+            content: string;
+            images_token: Array<string>;
+            video_token: string;
+            status: number;
+            release_time: string;
+        }>;
+    };
+};
+
+export type GetApiUserNotificationResponse = GetApiUserNotificationResponses[keyof GetApiUserNotificationResponses];

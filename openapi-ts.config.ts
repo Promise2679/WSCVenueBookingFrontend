@@ -4,9 +4,8 @@ export default defineConfig({
   input: 'openapi.yaml',
   output: 'src/api',
   plugins: [
-    { name: '@hey-api/sdk', validator: { request: 'valibot' } },
-    { name: 'valibot', responses: false },
-    { baseUrl: 'https://127.0.0.1', name: '@hey-api/client-fetch' },
+    '@hey-api/sdk',
+    { baseUrl: 'http://127.0.0.1:4523/m1/7792878-7539603-default', name: '@hey-api/client-fetch' },
     '@pinia/colada'
   ]
 })

@@ -51,8 +51,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-const rawPhone = '123123123'
-const phoneDisplay = computed(() => `${rawPhone.slice(0, 4)}****${rawPhone.slice(-4)}`)
+import { patchApiUserEditProfile } from '@/api'
+
+const rawPhone = ref('')
+const phoneDisplay = computed(() => `${rawPhone.value.slice(0, 3)}****${rawPhone.value.slice(-4)}`)
 
 const isEditingPhone = ref(false)
 const editingPhone = ref(phoneDisplay.value)
@@ -60,12 +62,18 @@ const originalPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
 
-const togglePhoneEdit = () => {
+async function togglePhoneEdit() {
   if (isEditingPhone.value) {
     isEditingPhone.value = false
+    const { error } = await patchApiUserEditProfile({ body: { phone_number: editingPhone.value } })
+    if (error)
+      // TODO: 报错
+      return
+    rawPhone.value = editingPhone.value
     editingPhone.value = phoneDisplay.value
   } else {
-    editingPhone.value = rawPhone
+    // TODO: 电话号码长度判断
+    editingPhone.value = rawPhone.value
     isEditingPhone.value = true
   }
 }

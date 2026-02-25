@@ -2,10 +2,10 @@
 
 import * as v from 'valibot';
 
-import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
+import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { DeleteApiAdminAnnouncementData, DeleteApiAdminAnnouncementResponses, DeleteApiReservationByReservationIdData, DeleteApiReservationByReservationIdResponses, GetApiAdminAccountData, GetApiAdminAccountInfoData, GetApiAdminAccountInfoResponses, GetApiAdminAccountResponses, GetApiAdminAnnouncementData, GetApiAdminAnnouncementResponses, GetApiAdminReservationInfoData, GetApiAdminReservationInfoResponses, GetApiAdminRoomData, GetApiAdminRoomReservationsData, GetApiAdminRoomReservationsResponses, GetApiAdminRoomResponses, GetApiLoginSessionSaltData, GetApiLoginSessionSaltResponses, GetApiUserAnnoucementsData, GetApiUserAnnoucementsResponses, GetApiUserReservationsData, GetApiUserReservationsResponses, GetApiVenueBuildingsData, GetApiVenueBuildingsResponses, GetApiVenueByVenueIdInfoData, GetApiVenueByVenueIdInfoResponses, GetApiVenueCampusesData, GetApiVenueCampusesResponses, GetApiVenueQueryData, GetApiVenueQueryResponses, PatchApiUserEditProfileData, PatchApiUserEditProfileResponses, PostApiAdminAnnoucementData, PostApiAdminAnnoucementResponses, PostApiAdminReservationApprovalData, PostApiAdminReservationApprovalResponses, PostApiLoginData, PostApiLoginResponses, PostApiRegisterData, PostApiRegisterResponses, PostApiUserChangePasswordData, PostApiUserChangePasswordResponses, PostApiVenueByVenueIdReserveData, PostApiVenueByVenueIdReserveResponses, PutApiAdminAnnouncementData, PutApiAdminAnnouncementResponses, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponses } from './types.gen';
-import { vDeleteApiAdminAnnouncementData, vDeleteApiReservationByReservationIdData, vGetApiAdminAccountData, vGetApiAdminAccountInfoData, vGetApiAdminAnnouncementData, vGetApiAdminReservationInfoData, vGetApiAdminRoomData, vGetApiAdminRoomReservationsData, vGetApiLoginSessionSaltData, vGetApiUserAnnoucementsData, vGetApiUserReservationsData, vGetApiVenueBuildingsData, vGetApiVenueByVenueIdInfoData, vGetApiVenueCampusesData, vGetApiVenueQueryData, vPatchApiUserEditProfileData, vPostApiAdminAnnoucementData, vPostApiAdminReservationApprovalData, vPostApiLoginData, vPostApiRegisterData, vPostApiUserChangePasswordData, vPostApiVenueByVenueIdReserveData, vPutApiAdminAnnouncementData, vPutApiVenueByVenueIdData } from './valibot.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponses, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponses, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponses, GetApiAccountData, GetApiAccountResponses, GetApiFileByFiletokenData, GetApiFileByFiletokenResponses, GetApiLoginSessionSaltData, GetApiLoginSessionSaltResponses, GetApiNotificationData, GetApiNotificationResponses, GetApiUserApplicationData, GetApiUserApplicationResponses, GetApiVenueByVenueIdApplicationData, GetApiVenueByVenueIdApplicationResponses, GetApiVenueData, GetApiVenueLocationsData, GetApiVenueLocationsResponses, GetApiVenueResponses, PostApiFileData, PostApiFileResponses, PostApiLoginData, PostApiLoginResponses, PostApiNotificationData, PostApiNotificationResponses, PostApiRegisterData, PostApiRegisterResponses, PostApiUserChangePasswordData, PostApiUserChangePasswordResponses, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponses, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponses, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponses, PutApiUserProfileData, PutApiUserProfileResponses, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponses, PutApiVenueData, PutApiVenueResponses } from './types.gen';
+import { vDeleteApiApplicationByApplicationIdData, vDeleteApiNotificationByNotificationIdData, vDeleteApiVenueByVenueIdData, vGetApiAccountData, vGetApiFileByFiletokenData, vGetApiLoginSessionSaltData, vGetApiNotificationData, vGetApiUserApplicationData, vGetApiVenueByVenueIdApplicationData, vGetApiVenueData, vGetApiVenueLocationsData, vPostApiFileData, vPostApiLoginData, vPostApiNotificationData, vPostApiRegisterData, vPostApiUserChangePasswordData, vPostApiVenueByVenueIdApplicationData, vPutApiApplicationByApplicationIdData, vPutApiNotificationByNotificationIdData, vPutApiUserProfileData, vPutApiVenueByVenueIdData, vPutApiVenueData } from './valibot.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -53,10 +53,10 @@ export const postApiUserChangePassword = <ThrowOnError extends boolean = false>(
 /**
  * 完善信息
  */
-export const patchApiUserEditProfile = <ThrowOnError extends boolean = false>(options: Options<PatchApiUserEditProfileData, ThrowOnError>) => (options.client ?? client).patch<PatchApiUserEditProfileResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vPatchApiUserEditProfileData, data),
+export const putApiUserProfile = <ThrowOnError extends boolean = false>(options: Options<PutApiUserProfileData, ThrowOnError>) => (options.client ?? client).put<PutApiUserProfileResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPutApiUserProfileData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/user/edit-profile',
+    url: '/api/user/profile',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -96,11 +96,11 @@ export const getApiLoginSessionSalt = <ThrowOnError extends boolean = false>(opt
  * 场地标签每个场地可以具有多个，可拓展；
  * timemap 待讨论；
  */
-export const getApiVenueQuery = <ThrowOnError extends boolean = false>(options: Options<GetApiVenueQueryData, ThrowOnError>) => (options.client ?? client).get<GetApiVenueQueryResponses, unknown, ThrowOnError>({
+export const getApiVenue = <ThrowOnError extends boolean = false>(options: Options<GetApiVenueData, ThrowOnError>) => (options.client ?? client).get<GetApiVenueResponses, unknown, ThrowOnError>({
     ...urlSearchParamsBodySerializer,
-    requestValidator: async (data) => await v.parseAsync(vGetApiVenueQueryData, data),
+    requestValidator: async (data) => await v.parseAsync(vGetApiVenueData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/venue/query',
+    url: '/api/venue',
     ...options,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -109,31 +109,12 @@ export const getApiVenueQuery = <ThrowOnError extends boolean = false>(options: 
 });
 
 /**
- * 场地详情
+ * 创建场地
  */
-export const getApiVenueByVenueIdInfo = <ThrowOnError extends boolean = false>(options: Options<GetApiVenueByVenueIdInfoData, ThrowOnError>) => (options.client ?? client).get<GetApiVenueByVenueIdInfoResponses, unknown, ThrowOnError>({
-    ...urlSearchParamsBodySerializer,
-    requestValidator: async (data) => await v.parseAsync(vGetApiVenueByVenueIdInfoData, data),
+export const putApiVenue = <ThrowOnError extends boolean = false>(options: Options<PutApiVenueData, ThrowOnError>) => (options.client ?? client).put<PutApiVenueResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPutApiVenueData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/venue/{venue_id}/info',
-    ...options,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...options.headers
-    }
-});
-
-/**
- * 预约场地
- *
- * 预约表单需要根据场地详情中的“booking_availability”决定
- * - 如果为“open”，则大部分审批字段可选，下述为此情况下的表单
- * - 如果为“approval”，则大部分审批字段必选
- */
-export const postApiVenueByVenueIdReserve = <ThrowOnError extends boolean = false>(options: Options<PostApiVenueByVenueIdReserveData, ThrowOnError>) => (options.client ?? client).post<PostApiVenueByVenueIdReserveResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vPostApiVenueByVenueIdReserveData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/venue/{venue_id}/reserve',
+    url: '/api/venue',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -142,115 +123,13 @@ export const postApiVenueByVenueIdReserve = <ThrowOnError extends boolean = fals
 });
 
 /**
- * 取消预约
+ * 删除场地
  */
-export const deleteApiReservationByReservationId = <ThrowOnError extends boolean = false>(options: Options<DeleteApiReservationByReservationIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiReservationByReservationIdResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vDeleteApiReservationByReservationIdData, data),
+export const deleteApiVenueByVenueId = <ThrowOnError extends boolean = false>(options: Options<DeleteApiVenueByVenueIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiVenueByVenueIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vDeleteApiVenueByVenueIdData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/reservation/{reservation_id}',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * 查询个人预约
- */
-export const getApiUserReservations = <ThrowOnError extends boolean = false>(options?: Options<GetApiUserReservationsData, ThrowOnError>) => (options?.client ?? client).get<GetApiUserReservationsResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiUserReservationsData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/user/reservations',
+    url: '/api/venue/{venue_id}',
     ...options
-});
-
-/**
- * 查询公告/消息
- */
-export const getApiUserAnnoucements = <ThrowOnError extends boolean = false>(options?: Options<GetApiUserAnnoucementsData, ThrowOnError>) => (options?.client ?? client).get<GetApiUserAnnoucementsResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiUserAnnoucementsData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/user/annoucements',
-    ...options
-});
-
-/**
- * 楼列表
- *
- * 获取用户有权读取的楼列表
- */
-export const getApiVenueBuildings = <ThrowOnError extends boolean = false>(options?: Options<GetApiVenueBuildingsData, ThrowOnError>) => (options?.client ?? client).get<GetApiVenueBuildingsResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiVenueBuildingsData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/venue/buildings',
-    ...options
-});
-
-/**
- * 校区列表
- *
- * 获取用户有权读取的校区列表
- */
-export const getApiVenueCampuses = <ThrowOnError extends boolean = false>(options?: Options<GetApiVenueCampusesData, ThrowOnError>) => (options?.client ?? client).get<GetApiVenueCampusesResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiVenueCampusesData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/venue/campuses',
-    ...options
-});
-
-/**
- * 总览所管场地
- */
-export const getApiAdminRoom = <ThrowOnError extends boolean = false>(options?: Options<GetApiAdminRoomData, ThrowOnError>) => (options?.client ?? client).get<GetApiAdminRoomResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminRoomData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/room',
-    ...options
-});
-
-/**
- * 总览单个场地所有预约
- */
-export const getApiAdminRoomReservations = <ThrowOnError extends boolean = false>(options: Options<GetApiAdminRoomReservationsData, ThrowOnError>) => (options.client ?? client).get<GetApiAdminRoomReservationsResponses, unknown, ThrowOnError>({
-    ...urlSearchParamsBodySerializer,
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminRoomReservationsData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/room/reservations',
-    ...options,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...options.headers
-    }
-});
-
-/**
- * 查看预约详情
- */
-export const getApiAdminReservationInfo = <ThrowOnError extends boolean = false>(options: Options<GetApiAdminReservationInfoData, ThrowOnError>) => (options.client ?? client).get<GetApiAdminReservationInfoResponses, unknown, ThrowOnError>({
-    ...urlSearchParamsBodySerializer,
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminReservationInfoData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/reservation/info',
-    ...options,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        ...options.headers
-    }
-});
-
-/**
- * 审批预约
- */
-export const postApiAdminReservationApproval = <ThrowOnError extends boolean = false>(options: Options<PostApiAdminReservationApprovalData, ThrowOnError>) => (options.client ?? client).post<PostApiAdminReservationApprovalResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vPostApiAdminReservationApprovalData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/reservation/approval',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -268,23 +147,23 @@ export const putApiVenueByVenueId = <ThrowOnError extends boolean = false>(optio
 });
 
 /**
- * 总览所有被管理的账户
+ * 获取楼校区表
  */
-export const getApiAdminAccount = <ThrowOnError extends boolean = false>(options?: Options<GetApiAdminAccountData, ThrowOnError>) => (options?.client ?? client).get<GetApiAdminAccountResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminAccountData, data),
+export const getApiVenueLocations = <ThrowOnError extends boolean = false>(options?: Options<GetApiVenueLocationsData, ThrowOnError>) => (options?.client ?? client).get<GetApiVenueLocationsResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vGetApiVenueLocationsData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/account',
+    url: '/api/venue/locations',
     ...options
 });
 
 /**
- * 查看用户信息
+ * 总览单个场地所有预约
  */
-export const getApiAdminAccountInfo = <ThrowOnError extends boolean = false>(options: Options<GetApiAdminAccountInfoData, ThrowOnError>) => (options.client ?? client).get<GetApiAdminAccountInfoResponses, unknown, ThrowOnError>({
+export const getApiVenueByVenueIdApplication = <ThrowOnError extends boolean = false>(options: Options<GetApiVenueByVenueIdApplicationData, ThrowOnError>) => (options.client ?? client).get<GetApiVenueByVenueIdApplicationResponses, unknown, ThrowOnError>({
     ...urlSearchParamsBodySerializer,
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminAccountInfoData, data),
+    requestValidator: async (data) => await v.parseAsync(vGetApiVenueByVenueIdApplicationData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/account/info',
+    url: '/api/venue/{venue_id}/application',
     ...options,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -293,12 +172,118 @@ export const getApiAdminAccountInfo = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
+ * 预约场地
+ */
+export const postApiVenueByVenueIdApplication = <ThrowOnError extends boolean = false>(options: Options<PostApiVenueByVenueIdApplicationData, ThrowOnError>) => (options.client ?? client).post<PostApiVenueByVenueIdApplicationResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPostApiVenueByVenueIdApplicationData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/venue/{venue_id}/application',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 取消预约
+ */
+export const deleteApiApplicationByApplicationId = <ThrowOnError extends boolean = false>(options: Options<DeleteApiApplicationByApplicationIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiApplicationByApplicationIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vDeleteApiApplicationByApplicationIdData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/application/{application_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 审批预约
+ */
+export const putApiApplicationByApplicationId = <ThrowOnError extends boolean = false>(options: Options<PutApiApplicationByApplicationIdData, ThrowOnError>) => (options.client ?? client).put<PutApiApplicationByApplicationIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPutApiApplicationByApplicationIdData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/application/{application_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 查询个人预约
+ */
+export const getApiUserApplication = <ThrowOnError extends boolean = false>(options: Options<GetApiUserApplicationData, ThrowOnError>) => (options.client ?? client).get<GetApiUserApplicationResponses, unknown, ThrowOnError>({
+    ...urlSearchParamsBodySerializer,
+    requestValidator: async (data) => await v.parseAsync(vGetApiUserApplicationData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/user/application',
+    ...options,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...options.headers
+    }
+});
+
+/**
+ * 上传文件
+ */
+export const postApiFile = <ThrowOnError extends boolean = false>(options: Options<PostApiFileData, ThrowOnError>) => (options.client ?? client).post<PostApiFileResponses, unknown, ThrowOnError>({
+    ...formDataBodySerializer,
+    requestValidator: async (data) => await v.parseAsync(vPostApiFileData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/file',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
+
+/**
+ * 下载文件
+ */
+export const getApiFileByFiletoken = <ThrowOnError extends boolean = false>(options: Options<GetApiFileByFiletokenData, ThrowOnError>) => (options.client ?? client).get<GetApiFileByFiletokenResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vGetApiFileByFiletokenData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/file/{filetoken}',
+    ...options
+});
+
+/**
+ * 总览所有被管理的账户
+ */
+export const getApiAccount = <ThrowOnError extends boolean = false>(options: Options<GetApiAccountData, ThrowOnError>) => (options.client ?? client).get<GetApiAccountResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vGetApiAccountData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/account',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 查看公告
+ */
+export const getApiNotification = <ThrowOnError extends boolean = false>(options?: Options<GetApiNotificationData, ThrowOnError>) => (options?.client ?? client).get<GetApiNotificationResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vGetApiNotificationData, data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/notification',
+    ...options
+});
+
+/**
  * 发布公告
  */
-export const postApiAdminAnnoucement = <ThrowOnError extends boolean = false>(options: Options<PostApiAdminAnnoucementData, ThrowOnError>) => (options.client ?? client).post<PostApiAdminAnnoucementResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vPostApiAdminAnnoucementData, data),
+export const postApiNotification = <ThrowOnError extends boolean = false>(options: Options<PostApiNotificationData, ThrowOnError>) => (options.client ?? client).post<PostApiNotificationResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPostApiNotificationData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/annoucement',
+    url: '/api/notification',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -309,10 +294,10 @@ export const postApiAdminAnnoucement = <ThrowOnError extends boolean = false>(op
 /**
  * 删除公告
  */
-export const deleteApiAdminAnnouncement = <ThrowOnError extends boolean = false>(options: Options<DeleteApiAdminAnnouncementData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiAdminAnnouncementResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vDeleteApiAdminAnnouncementData, data),
+export const deleteApiNotificationByNotificationId = <ThrowOnError extends boolean = false>(options: Options<DeleteApiNotificationByNotificationIdData, ThrowOnError>) => (options.client ?? client).delete<DeleteApiNotificationByNotificationIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vDeleteApiNotificationByNotificationIdData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/announcement',
+    url: '/api/notification/{notification_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -321,22 +306,12 @@ export const deleteApiAdminAnnouncement = <ThrowOnError extends boolean = false>
 });
 
 /**
- * 查看发布的公告
- */
-export const getApiAdminAnnouncement = <ThrowOnError extends boolean = false>(options?: Options<GetApiAdminAnnouncementData, ThrowOnError>) => (options?.client ?? client).get<GetApiAdminAnnouncementResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vGetApiAdminAnnouncementData, data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/announcement',
-    ...options
-});
-
-/**
  * 更新公告
  */
-export const putApiAdminAnnouncement = <ThrowOnError extends boolean = false>(options: Options<PutApiAdminAnnouncementData, ThrowOnError>) => (options.client ?? client).put<PutApiAdminAnnouncementResponses, unknown, ThrowOnError>({
-    requestValidator: async (data) => await v.parseAsync(vPutApiAdminAnnouncementData, data),
+export const putApiNotificationByNotificationId = <ThrowOnError extends boolean = false>(options: Options<PutApiNotificationByNotificationIdData, ThrowOnError>) => (options.client ?? client).put<PutApiNotificationByNotificationIdResponses, unknown, ThrowOnError>({
+    requestValidator: async (data) => await v.parseAsync(vPutApiNotificationByNotificationIdData, data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/admin/announcement',
+    url: '/api/notification/{notification_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',

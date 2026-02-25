@@ -4,8 +4,8 @@ import { type _JSONValue, defineQueryOptions, type UseMutationOptions } from '@p
 
 import { serializeQueryKeyValue } from '../client';
 import { client } from '../client.gen';
-import { deleteApiAdminAnnouncement, deleteApiReservationByReservationId, getApiAdminAccount, getApiAdminAccountInfo, getApiAdminAnnouncement, getApiAdminReservationInfo, getApiAdminRoom, getApiAdminRoomReservations, getApiLoginSessionSalt, getApiUserAnnoucements, getApiUserReservations, getApiVenueBuildings, getApiVenueByVenueIdInfo, getApiVenueCampuses, getApiVenueQuery, type Options, patchApiUserEditProfile, postApiAdminAnnoucement, postApiAdminReservationApproval, postApiLogin, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdReserve, putApiAdminAnnouncement, putApiVenueByVenueId } from '../sdk.gen';
-import type { DeleteApiAdminAnnouncementData, DeleteApiAdminAnnouncementResponse, DeleteApiReservationByReservationIdData, DeleteApiReservationByReservationIdResponse, GetApiAdminAccountData, GetApiAdminAccountInfoData, GetApiAdminAnnouncementData, GetApiAdminReservationInfoData, GetApiAdminRoomData, GetApiAdminRoomReservationsData, GetApiLoginSessionSaltData, GetApiUserAnnoucementsData, GetApiUserReservationsData, GetApiVenueBuildingsData, GetApiVenueByVenueIdInfoData, GetApiVenueCampusesData, GetApiVenueQueryData, PatchApiUserEditProfileData, PatchApiUserEditProfileResponse, PostApiAdminAnnoucementData, PostApiAdminAnnoucementResponse, PostApiAdminReservationApprovalData, PostApiAdminReservationApprovalResponse, PostApiLoginData, PostApiLoginResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdReserveData, PostApiVenueByVenueIdReserveResponse, PutApiAdminAnnouncementData, PutApiAdminAnnouncementResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse } from '../types.gen';
+import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiUserApplication, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiUserApplicationData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
 
 /**
  * 登录
@@ -40,9 +40,9 @@ export const postApiUserChangePasswordMutation = (options?: Partial<Options<Post
 /**
  * 完善信息
  */
-export const patchApiUserEditProfileMutation = (options?: Partial<Options<PatchApiUserEditProfileData>>): UseMutationOptions<PatchApiUserEditProfileResponse, Options<PatchApiUserEditProfileData>, Error> => ({
+export const putApiUserProfileMutation = (options?: Partial<Options<PutApiUserProfileData>>): UseMutationOptions<PutApiUserProfileResponse, Options<PutApiUserProfileData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await patchApiUserEditProfile({
+        const { data } = await putApiUserProfile({
             ...options,
             ...vars,
             throwOnError: true
@@ -117,7 +117,7 @@ export const getApiLoginSessionSaltQuery = defineQueryOptions((options?: Options
     }
 }));
 
-export const getApiVenueQueryQueryKey = (options: Options<GetApiVenueQueryData>) => createQueryKey('getApiVenueQuery', options);
+export const getApiVenueQueryKey = (options: Options<GetApiVenueData>) => createQueryKey('getApiVenue', options);
 
 /**
  * 筛选场地
@@ -128,27 +128,10 @@ export const getApiVenueQueryQueryKey = (options: Options<GetApiVenueQueryData>)
  * 场地标签每个场地可以具有多个，可拓展；
  * timemap 待讨论；
  */
-export const getApiVenueQueryQuery = defineQueryOptions((options: Options<GetApiVenueQueryData>) => ({
-    key: getApiVenueQueryQueryKey(options),
+export const getApiVenueQuery = defineQueryOptions((options: Options<GetApiVenueData>) => ({
+    key: getApiVenueQueryKey(options),
     query: async (context) => {
-        const { data } = await getApiVenueQuery({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiVenueByVenueIdInfoQueryKey = (options: Options<GetApiVenueByVenueIdInfoData>) => createQueryKey('getApiVenueByVenueIdInfo', options);
-
-/**
- * 场地详情
- */
-export const getApiVenueByVenueIdInfoQuery = defineQueryOptions((options: Options<GetApiVenueByVenueIdInfoData>) => ({
-    key: getApiVenueByVenueIdInfoQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiVenueByVenueIdInfo({
+        const { data } = await getApiVenue({
             ...options,
             ...context,
             throwOnError: true
@@ -158,15 +141,11 @@ export const getApiVenueByVenueIdInfoQuery = defineQueryOptions((options: Option
 }));
 
 /**
- * 预约场地
- *
- * 预约表单需要根据场地详情中的“booking_availability”决定
- * - 如果为“open”，则大部分审批字段可选，下述为此情况下的表单
- * - 如果为“approval”，则大部分审批字段必选
+ * 创建场地
  */
-export const postApiVenueByVenueIdReserveMutation = (options?: Partial<Options<PostApiVenueByVenueIdReserveData>>): UseMutationOptions<PostApiVenueByVenueIdReserveResponse, Options<PostApiVenueByVenueIdReserveData>, Error> => ({
+export const putApiVenueMutation = (options?: Partial<Options<PutApiVenueData>>): UseMutationOptions<PutApiVenueResponse, Options<PutApiVenueData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await postApiVenueByVenueIdReserve({
+        const { data } = await putApiVenue({
             ...options,
             ...vars,
             throwOnError: true
@@ -176,148 +155,11 @@ export const postApiVenueByVenueIdReserveMutation = (options?: Partial<Options<P
 });
 
 /**
- * 取消预约
+ * 删除场地
  */
-export const deleteApiReservationByReservationIdMutation = (options?: Partial<Options<DeleteApiReservationByReservationIdData>>): UseMutationOptions<DeleteApiReservationByReservationIdResponse, Options<DeleteApiReservationByReservationIdData>, Error> => ({
+export const deleteApiVenueByVenueIdMutation = (options?: Partial<Options<DeleteApiVenueByVenueIdData>>): UseMutationOptions<DeleteApiVenueByVenueIdResponse, Options<DeleteApiVenueByVenueIdData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await deleteApiReservationByReservationId({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
-
-export const getApiUserReservationsQueryKey = (options?: Options<GetApiUserReservationsData>) => createQueryKey('getApiUserReservations', options);
-
-/**
- * 查询个人预约
- */
-export const getApiUserReservationsQuery = defineQueryOptions((options?: Options<GetApiUserReservationsData>) => ({
-    key: getApiUserReservationsQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiUserReservations({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiUserAnnoucementsQueryKey = (options?: Options<GetApiUserAnnoucementsData>) => createQueryKey('getApiUserAnnoucements', options);
-
-/**
- * 查询公告/消息
- */
-export const getApiUserAnnoucementsQuery = defineQueryOptions((options?: Options<GetApiUserAnnoucementsData>) => ({
-    key: getApiUserAnnoucementsQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiUserAnnoucements({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiVenueBuildingsQueryKey = (options?: Options<GetApiVenueBuildingsData>) => createQueryKey('getApiVenueBuildings', options);
-
-/**
- * 楼列表
- *
- * 获取用户有权读取的楼列表
- */
-export const getApiVenueBuildingsQuery = defineQueryOptions((options?: Options<GetApiVenueBuildingsData>) => ({
-    key: getApiVenueBuildingsQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiVenueBuildings({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiVenueCampusesQueryKey = (options?: Options<GetApiVenueCampusesData>) => createQueryKey('getApiVenueCampuses', options);
-
-/**
- * 校区列表
- *
- * 获取用户有权读取的校区列表
- */
-export const getApiVenueCampusesQuery = defineQueryOptions((options?: Options<GetApiVenueCampusesData>) => ({
-    key: getApiVenueCampusesQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiVenueCampuses({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiAdminRoomQueryKey = (options?: Options<GetApiAdminRoomData>) => createQueryKey('getApiAdminRoom', options);
-
-/**
- * 总览所管场地
- */
-export const getApiAdminRoomQuery = defineQueryOptions((options?: Options<GetApiAdminRoomData>) => ({
-    key: getApiAdminRoomQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiAdminRoom({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiAdminRoomReservationsQueryKey = (options: Options<GetApiAdminRoomReservationsData>) => createQueryKey('getApiAdminRoomReservations', options);
-
-/**
- * 总览单个场地所有预约
- */
-export const getApiAdminRoomReservationsQuery = defineQueryOptions((options: Options<GetApiAdminRoomReservationsData>) => ({
-    key: getApiAdminRoomReservationsQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiAdminRoomReservations({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiAdminReservationInfoQueryKey = (options: Options<GetApiAdminReservationInfoData>) => createQueryKey('getApiAdminReservationInfo', options);
-
-/**
- * 查看预约详情
- */
-export const getApiAdminReservationInfoQuery = defineQueryOptions((options: Options<GetApiAdminReservationInfoData>) => ({
-    key: getApiAdminReservationInfoQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiAdminReservationInfo({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-/**
- * 审批预约
- */
-export const postApiAdminReservationApprovalMutation = (options?: Partial<Options<PostApiAdminReservationApprovalData>>): UseMutationOptions<PostApiAdminReservationApprovalResponse, Options<PostApiAdminReservationApprovalData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await postApiAdminReservationApproval({
+        const { data } = await deleteApiVenueByVenueId({
             ...options,
             ...vars,
             throwOnError: true
@@ -340,15 +182,15 @@ export const putApiVenueByVenueIdMutation = (options?: Partial<Options<PutApiVen
     }
 });
 
-export const getApiAdminAccountQueryKey = (options?: Options<GetApiAdminAccountData>) => createQueryKey('getApiAdminAccount', options);
+export const getApiVenueLocationsQueryKey = (options?: Options<GetApiVenueLocationsData>) => createQueryKey('getApiVenueLocations', options);
 
 /**
- * 总览所有被管理的账户
+ * 获取楼校区表
  */
-export const getApiAdminAccountQuery = defineQueryOptions((options?: Options<GetApiAdminAccountData>) => ({
-    key: getApiAdminAccountQueryKey(options),
+export const getApiVenueLocationsQuery = defineQueryOptions((options?: Options<GetApiVenueLocationsData>) => ({
+    key: getApiVenueLocationsQueryKey(options),
     query: async (context) => {
-        const { data } = await getApiAdminAccount({
+        const { data } = await getApiVenueLocations({
             ...options,
             ...context,
             throwOnError: true
@@ -357,15 +199,139 @@ export const getApiAdminAccountQuery = defineQueryOptions((options?: Options<Get
     }
 }));
 
-export const getApiAdminAccountInfoQueryKey = (options: Options<GetApiAdminAccountInfoData>) => createQueryKey('getApiAdminAccountInfo', options);
+export const getApiVenueByVenueIdApplicationQueryKey = (options: Options<GetApiVenueByVenueIdApplicationData>) => createQueryKey('getApiVenueByVenueIdApplication', options);
 
 /**
- * 查看用户信息
+ * 总览单个场地所有预约
  */
-export const getApiAdminAccountInfoQuery = defineQueryOptions((options: Options<GetApiAdminAccountInfoData>) => ({
-    key: getApiAdminAccountInfoQueryKey(options),
+export const getApiVenueByVenueIdApplicationQuery = defineQueryOptions((options: Options<GetApiVenueByVenueIdApplicationData>) => ({
+    key: getApiVenueByVenueIdApplicationQueryKey(options),
     query: async (context) => {
-        const { data } = await getApiAdminAccountInfo({
+        const { data } = await getApiVenueByVenueIdApplication({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 预约场地
+ */
+export const postApiVenueByVenueIdApplicationMutation = (options?: Partial<Options<PostApiVenueByVenueIdApplicationData>>): UseMutationOptions<PostApiVenueByVenueIdApplicationResponse, Options<PostApiVenueByVenueIdApplicationData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiVenueByVenueIdApplication({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 取消预约
+ */
+export const deleteApiApplicationByApplicationIdMutation = (options?: Partial<Options<DeleteApiApplicationByApplicationIdData>>): UseMutationOptions<DeleteApiApplicationByApplicationIdResponse, Options<DeleteApiApplicationByApplicationIdData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await deleteApiApplicationByApplicationId({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 审批预约
+ */
+export const putApiApplicationByApplicationIdMutation = (options?: Partial<Options<PutApiApplicationByApplicationIdData>>): UseMutationOptions<PutApiApplicationByApplicationIdResponse, Options<PutApiApplicationByApplicationIdData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiApplicationByApplicationId({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+export const getApiUserApplicationQueryKey = (options: Options<GetApiUserApplicationData>) => createQueryKey('getApiUserApplication', options);
+
+/**
+ * 查询个人预约
+ */
+export const getApiUserApplicationQuery = defineQueryOptions((options: Options<GetApiUserApplicationData>) => ({
+    key: getApiUserApplicationQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiUserApplication({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 上传文件
+ */
+export const postApiFileMutation = (options?: Partial<Options<PostApiFileData>>): UseMutationOptions<PostApiFileResponse, Options<PostApiFileData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiFile({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+export const getApiFileByFiletokenQueryKey = (options: Options<GetApiFileByFiletokenData>) => createQueryKey('getApiFileByFiletoken', options);
+
+/**
+ * 下载文件
+ */
+export const getApiFileByFiletokenQuery = defineQueryOptions((options: Options<GetApiFileByFiletokenData>) => ({
+    key: getApiFileByFiletokenQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiFileByFiletoken({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+export const getApiAccountQueryKey = (options: Options<GetApiAccountData>) => createQueryKey('getApiAccount', options);
+
+/**
+ * 总览所有被管理的账户
+ */
+export const getApiAccountQuery = defineQueryOptions((options: Options<GetApiAccountData>) => ({
+    key: getApiAccountQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiAccount({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+export const getApiNotificationQueryKey = (options?: Options<GetApiNotificationData>) => createQueryKey('getApiNotification', options);
+
+/**
+ * 查看公告
+ */
+export const getApiNotificationQuery = defineQueryOptions((options?: Options<GetApiNotificationData>) => ({
+    key: getApiNotificationQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiNotification({
             ...options,
             ...context,
             throwOnError: true
@@ -377,9 +343,9 @@ export const getApiAdminAccountInfoQuery = defineQueryOptions((options: Options<
 /**
  * 发布公告
  */
-export const postApiAdminAnnoucementMutation = (options?: Partial<Options<PostApiAdminAnnoucementData>>): UseMutationOptions<PostApiAdminAnnoucementResponse, Options<PostApiAdminAnnoucementData>, Error> => ({
+export const postApiNotificationMutation = (options?: Partial<Options<PostApiNotificationData>>): UseMutationOptions<PostApiNotificationResponse, Options<PostApiNotificationData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await postApiAdminAnnoucement({
+        const { data } = await postApiNotification({
             ...options,
             ...vars,
             throwOnError: true
@@ -391,9 +357,9 @@ export const postApiAdminAnnoucementMutation = (options?: Partial<Options<PostAp
 /**
  * 删除公告
  */
-export const deleteApiAdminAnnouncementMutation = (options?: Partial<Options<DeleteApiAdminAnnouncementData>>): UseMutationOptions<DeleteApiAdminAnnouncementResponse, Options<DeleteApiAdminAnnouncementData>, Error> => ({
+export const deleteApiNotificationByNotificationIdMutation = (options?: Partial<Options<DeleteApiNotificationByNotificationIdData>>): UseMutationOptions<DeleteApiNotificationByNotificationIdResponse, Options<DeleteApiNotificationByNotificationIdData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await deleteApiAdminAnnouncement({
+        const { data } = await deleteApiNotificationByNotificationId({
             ...options,
             ...vars,
             throwOnError: true
@@ -402,29 +368,12 @@ export const deleteApiAdminAnnouncementMutation = (options?: Partial<Options<Del
     }
 });
 
-export const getApiAdminAnnouncementQueryKey = (options?: Options<GetApiAdminAnnouncementData>) => createQueryKey('getApiAdminAnnouncement', options);
-
-/**
- * 查看发布的公告
- */
-export const getApiAdminAnnouncementQuery = defineQueryOptions((options?: Options<GetApiAdminAnnouncementData>) => ({
-    key: getApiAdminAnnouncementQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiAdminAnnouncement({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
 /**
  * 更新公告
  */
-export const putApiAdminAnnouncementMutation = (options?: Partial<Options<PutApiAdminAnnouncementData>>): UseMutationOptions<PutApiAdminAnnouncementResponse, Options<PutApiAdminAnnouncementData>, Error> => ({
+export const putApiNotificationByNotificationIdMutation = (options?: Partial<Options<PutApiNotificationByNotificationIdData>>): UseMutationOptions<PutApiNotificationByNotificationIdResponse, Options<PutApiNotificationByNotificationIdData>, Error> => ({
     mutation: async (vars) => {
-        const { data } = await putApiAdminAnnouncement({
+        const { data } = await putApiNotificationByNotificationId({
             ...options,
             ...vars,
             throwOnError: true

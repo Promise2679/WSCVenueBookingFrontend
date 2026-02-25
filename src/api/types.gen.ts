@@ -28,13 +28,13 @@ export type PostApiLoginResponses = {
         msg: string;
         data: {
             /**
-             * 用户唯一编号
-             */
-            uid: string;
-            /**
              * 用户名
              */
             display_name: string;
+            /**
+             * 用户唯一编号
+             */
+            uid: string;
             /**
              * 登录令牌
              */
@@ -63,6 +63,7 @@ export type PostApiUserChangePasswordData = {
          * 新密码
          */
         new_password: string;
+        new_salt: string;
     };
     path?: never;
     query?: never;
@@ -79,16 +80,17 @@ export type PostApiUserChangePasswordResponses = {
 
 export type PostApiUserChangePasswordResponse = PostApiUserChangePasswordResponses[keyof PostApiUserChangePasswordResponses];
 
-export type PatchApiUserEditProfileData = {
+export type PutApiUserProfileData = {
     body: {
         phone_number?: string;
+        username: string;
     };
     path?: never;
     query?: never;
-    url: '/api/user/edit-profile';
+    url: '/api/user/profile';
 };
 
-export type PatchApiUserEditProfileResponses = {
+export type PutApiUserProfileResponses = {
     200: {
         code: number;
         msg: string;
@@ -96,7 +98,7 @@ export type PatchApiUserEditProfileResponses = {
     };
 };
 
-export type PatchApiUserEditProfileResponse = PatchApiUserEditProfileResponses[keyof PatchApiUserEditProfileResponses];
+export type PutApiUserProfileResponse = PutApiUserProfileResponses[keyof PutApiUserProfileResponses];
 
 export type PostApiRegisterData = {
     body: {
@@ -147,336 +149,129 @@ export type GetApiLoginSessionSaltResponses = {
 
 export type GetApiLoginSessionSaltResponse = GetApiLoginSessionSaltResponses[keyof GetApiLoginSessionSaltResponses];
 
-export type GetApiVenueQueryData = {
+export type GetApiVenueData = {
     body: {
         [key: string]: unknown;
     };
     path?: never;
     query?: {
         /**
-         * 场地类别
+         * 筛选位于特定楼区（building_id）的场地
          */
-        type?: string;
+        b?: Array<string>;
         /**
-         * 场地标签
+         * 筛选具有特定标签（type_id）的场地
          */
-        tags?: Array<string>;
-        capacity?: Array<string>;
-        campus?: string;
-        building?: string;
+        t?: Array<string>;
+        /**
+         * 筛选用户具有特定权限的场地，值可以为R/A/M/E的任意组合，对应四种场地权限
+         */
+        p?: string;
+        /**
+         * 搜索关键词
+         */
+        s?: string;
+        /**
+         * 分页偏移（offset）
+         */
+        o?: string;
+        /**
+         * 单页最大（pagesize），无此项默认 12
+         */
+        n?: string;
     };
-    url: '/api/venue/query';
+    url: '/api/venue';
 };
 
-export type GetApiVenueQueryResponses = {
+export type GetApiVenueResponses = {
     200: {
         code: number;
         msg: string;
         data: Array<{
-            venue_name: string;
-            venue_type: string;
-            venue_tags: string;
-            capacity: number;
-            min_request?: number;
-            timemap: {
-                [key: string]: unknown;
-            };
-            cover_image_url: string;
-            availability: string;
-        }>;
-    };
-};
-
-export type GetApiVenueQueryResponse = GetApiVenueQueryResponses[keyof GetApiVenueQueryResponses];
-
-export type GetApiVenueByVenueIdInfoData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path: {
-        venue_id: string;
-    };
-    query?: never;
-    url: '/api/venue/{venue_id}/info';
-};
-
-export type GetApiVenueByVenueIdInfoResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: {
-            image_url: Array<string>;
-            venue_type: string;
-            venue_name: string;
-            capacity: number;
-            timemap: {
-                [key: string]: unknown;
-            };
-            available_equipments?: Array<string>;
-            availability: string;
-        };
-    };
-};
-
-export type GetApiVenueByVenueIdInfoResponse = GetApiVenueByVenueIdInfoResponses[keyof GetApiVenueByVenueIdInfoResponses];
-
-export type PostApiVenueByVenueIdReserveData = {
-    body: {
-        time_request: {
-            [key: string]: unknown;
-        };
-        /**
-         * 预估人数
-         */
-        estimated_participants: number;
-        activity_name?: string;
-        /**
-         * 举办方，组织或个人名称
-         */
-        organizer?: string;
-        contacts?: Array<{
+            venue_id: number;
             name: string;
-            phone_number: string;
-            /**
-             * 若该用户未注册，此项可空
-             */
-            user_id?: string;
-            email?: string;
+            building_id: number;
+            type_id: number;
+            capacity?: number;
+            description_text: string;
+            cover_image_token: string;
+            permissions: Array<string>;
+            attachments: Array<{
+                type: string;
+                index: number;
+                file_token: string;
+            }>;
+            timetable: Array<{
+                start: string;
+                end: string;
+            }>;
         }>;
-        /**
-         * 活动简要说明
-         */
-        description?: string;
-        /**
-         * 附件
-         */
-        attachments_url?: Array<string>;
     };
+};
+
+export type GetApiVenueResponse = GetApiVenueResponses[keyof GetApiVenueResponses];
+
+export type PutApiVenueData = {
+    body: {
+        name: string;
+        building_id: number;
+        type_id: number;
+        description: string;
+        cover_image_token: string;
+        images_token: Array<string>;
+        capacity: number;
+        /**
+         * 预留字段
+         */
+        equipment?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/venue';
+};
+
+export type PutApiVenueResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            venue_id: number;
+        };
+    };
+};
+
+export type PutApiVenueResponse = PutApiVenueResponses[keyof PutApiVenueResponses];
+
+export type DeleteApiVenueByVenueIdData = {
+    body?: never;
     path: {
         venue_id: string;
     };
     query?: never;
-    url: '/api/venue/{venue_id}/reserve';
+    url: '/api/venue/{venue_id}';
 };
 
-export type PostApiVenueByVenueIdReserveResponses = {
+export type DeleteApiVenueByVenueIdResponses = {
     200: {
         code: number;
         msg: string;
-        data: {
-            reservation_id: number;
-        };
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
     };
 };
 
-export type PostApiVenueByVenueIdReserveResponse = PostApiVenueByVenueIdReserveResponses[keyof PostApiVenueByVenueIdReserveResponses];
-
-export type DeleteApiReservationByReservationIdData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path: {
-        reservation_id: string;
-    };
-    query?: never;
-    url: '/api/reservation/{reservation_id}';
-};
-
-export type DeleteApiReservationByReservationIdResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data?: null;
-    };
-};
-
-export type DeleteApiReservationByReservationIdResponse = DeleteApiReservationByReservationIdResponses[keyof DeleteApiReservationByReservationIdResponses];
-
-export type GetApiUserReservationsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/user/reservations';
-};
-
-export type GetApiUserReservationsResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            reservation_id: number;
-            venue_name: string;
-            reservation_time: {
-                [key: string]: unknown;
-            };
-            activity_name?: string;
-            status: string;
-        }>;
-    };
-};
-
-export type GetApiUserReservationsResponse = GetApiUserReservationsResponses[keyof GetApiUserReservationsResponses];
-
-export type GetApiUserAnnoucementsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/user/annoucements';
-};
-
-export type GetApiUserAnnoucementsResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            announcer: string;
-            title: string;
-            content: string;
-        }>;
-    };
-};
-
-export type GetApiUserAnnoucementsResponse = GetApiUserAnnoucementsResponses[keyof GetApiUserAnnoucementsResponses];
-
-export type GetApiVenueBuildingsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/venue/buildings';
-};
-
-export type GetApiVenueBuildingsResponses = {
-    200: Array<{
-        name: string;
-        campus_id: number;
-        building_id: number;
-    }>;
-};
-
-export type GetApiVenueBuildingsResponse = GetApiVenueBuildingsResponses[keyof GetApiVenueBuildingsResponses];
-
-export type GetApiVenueCampusesData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/venue/campuses';
-};
-
-export type GetApiVenueCampusesResponses = {
-    200: Array<{
-        name: string;
-        campus_id: number;
-    }>;
-};
-
-export type GetApiVenueCampusesResponse = GetApiVenueCampusesResponses[keyof GetApiVenueCampusesResponses];
-
-export type GetApiAdminRoomData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/room';
-};
-
-export type GetApiAdminRoomResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            reservations_sum: number;
-            refusion_sum: number;
-            acceptance_sum: number;
-            room: string;
-        }>;
-    };
-};
-
-export type GetApiAdminRoomResponse = GetApiAdminRoomResponses[keyof GetApiAdminRoomResponses];
-
-export type GetApiAdminRoomReservationsData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path?: never;
-    query?: {
-        room?: string;
-    };
-    url: '/api/admin/room/reservations';
-};
-
-export type GetApiAdminRoomReservationsResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            reserve_id: number;
-            activity_name: string;
-            time: string;
-        }>;
-    };
-};
-
-export type GetApiAdminRoomReservationsResponse = GetApiAdminRoomReservationsResponses[keyof GetApiAdminRoomReservationsResponses];
-
-export type GetApiAdminReservationInfoData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path?: never;
-    query?: {
-        reserve_id?: number;
-    };
-    url: '/api/admin/reservation/info';
-};
-
-export type GetApiAdminReservationInfoResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: {
-            activity_name: string;
-            time: string;
-            organizer: string;
-            phone_number: string;
-            contact_person: string;
-            people_num: number;
-            remarks: string;
-            event_plan_file: string;
-        };
-    };
-};
-
-export type GetApiAdminReservationInfoResponse = GetApiAdminReservationInfoResponses[keyof GetApiAdminReservationInfoResponses];
-
-export type PostApiAdminReservationApprovalData = {
-    body: {
-        reserve_id: number;
-        /**
-         * 1同意2驳回
-         */
-        approval: number;
-    };
-    path?: never;
-    query?: never;
-    url: '/api/admin/reservation/approval';
-};
-
-export type PostApiAdminReservationApprovalResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: null;
-    };
-};
-
-export type PostApiAdminReservationApprovalResponse = PostApiAdminReservationApprovalResponses[keyof PostApiAdminReservationApprovalResponses];
+export type DeleteApiVenueByVenueIdResponse = DeleteApiVenueByVenueIdResponses[keyof DeleteApiVenueByVenueIdResponses];
 
 export type PutApiVenueByVenueIdData = {
     body: {
-        pictures: Array<string>;
+        name: string;
         capacity: number;
-        availability: boolean;
-        room: string;
+        building_id: number;
+        type_id: number;
+        description: string;
+        cover_image_token: string;
+        images_token: Array<string>;
     };
     path: {
         venue_id: string;
@@ -489,67 +284,371 @@ export type PutApiVenueByVenueIdResponses = {
     200: {
         code: number;
         msg: string;
-        data: null;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
     };
 };
 
 export type PutApiVenueByVenueIdResponse = PutApiVenueByVenueIdResponses[keyof PutApiVenueByVenueIdResponses];
 
-export type GetApiAdminAccountData = {
+export type GetApiVenueLocationsData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/admin/account';
+    url: '/api/venue/locations';
 };
 
-export type GetApiAdminAccountResponses = {
+export type GetApiVenueLocationsResponses = {
     200: {
         code: number;
         msg: string;
-        data: Array<{
-            name: string;
-            character: number;
-            stu_id: string;
-        }>;
+        data: {
+            buildings: Array<{
+                building_id: number;
+                building_name: string;
+                location_campus_id: number;
+            }>;
+            campuses: Array<{
+                campus_id: number;
+                campus_name: string;
+            }>;
+        };
     };
 };
 
-export type GetApiAdminAccountResponse = GetApiAdminAccountResponses[keyof GetApiAdminAccountResponses];
+export type GetApiVenueLocationsResponse = GetApiVenueLocationsResponses[keyof GetApiVenueLocationsResponses];
 
-export type GetApiAdminAccountInfoData = {
+export type GetApiVenueByVenueIdApplicationData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        venue_id: string;
+    };
+    query?: never;
+    url: '/api/venue/{venue_id}/application';
+};
+
+export type GetApiVenueByVenueIdApplicationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: Array<Array<{
+            id: number;
+            application_type: string;
+            application_status: string;
+            time_request: Array<{
+                begin: string;
+                end: string;
+            }>;
+            estimated_participants: number;
+            description: string;
+            attachments: Array<{
+                index: number;
+                file_token: string;
+                file_type: string;
+                file_name: string;
+            }>;
+            activity_name: string;
+            activity_organizer: string;
+            activity_coordinator: string | number | boolean | Array<unknown> | {
+                [key: string]: unknown;
+            } | number | null;
+            comments: Array<{
+                id: number;
+                text: string;
+                attachments: Array<{
+                    index: number;
+                    file_token: string;
+                    file_type: string;
+                    file_name: string;
+                }>;
+            }>;
+        }>>;
+    };
+};
+
+export type GetApiVenueByVenueIdApplicationResponse = GetApiVenueByVenueIdApplicationResponses[keyof GetApiVenueByVenueIdApplicationResponses];
+
+export type PostApiVenueByVenueIdApplicationData = {
+    body: {
+        time_request: Array<{
+            begin: string;
+            end: string;
+        }>;
+        /**
+         * 预估人数
+         */
+        estimated_participants: number;
+        activity_name: string;
+        /**
+         * 举办方，组织或个人名称
+         */
+        activity_organizer: string;
+        /**
+         * 活动简要说明
+         */
+        description: string;
+        /**
+         * 附件
+         */
+        attachments: Array<{
+            index: number;
+            file_token: string;
+            file_name: string;
+            file_type: string;
+        }>;
+        activity_coordinator: Array<string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null>;
+        application_type: string;
+    };
+    path: {
+        venue_id: string;
+    };
+    query?: never;
+    url: '/api/venue/{venue_id}/application';
+};
+
+export type PostApiVenueByVenueIdApplicationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data?: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PostApiVenueByVenueIdApplicationResponse = PostApiVenueByVenueIdApplicationResponses[keyof PostApiVenueByVenueIdApplicationResponses];
+
+export type DeleteApiApplicationByApplicationIdData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        application_id: string;
+    };
+    query?: never;
+    url: '/api/application/{application_id}';
+};
+
+export type DeleteApiApplicationByApplicationIdResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data?: null;
+    };
+};
+
+export type DeleteApiApplicationByApplicationIdResponse = DeleteApiApplicationByApplicationIdResponses[keyof DeleteApiApplicationByApplicationIdResponses];
+
+export type PutApiApplicationByApplicationIdData = {
+    body: {
+        decision: string;
+        comment: {
+            id: number;
+            text: string;
+            attachments: Array<{
+                index: number;
+                file_token: string;
+                file_type: string;
+                file_name: string;
+            }>;
+        };
+        known_conflicts: Array<number>;
+    };
+    path: {
+        application_id: string;
+    };
+    query?: never;
+    url: '/api/application/{application_id}';
+};
+
+export type PutApiApplicationByApplicationIdResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PutApiApplicationByApplicationIdResponse = PutApiApplicationByApplicationIdResponses[keyof PutApiApplicationByApplicationIdResponses];
+
+export type GetApiUserApplicationData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/user/application';
+};
+
+export type GetApiUserApplicationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: Array<Array<{
+            id: number;
+            application_type: string;
+            application_status: string;
+            time_request: Array<{
+                begin: string;
+                end: string;
+            }>;
+            estimated_participants: number;
+            description: string;
+            attachments: Array<{
+                index: number;
+                file_token: string;
+                file_type: string;
+                file_name: string;
+            }>;
+            activity_name: string;
+            activity_organizer: string;
+            activity_coordinator: string | number | boolean | Array<unknown> | {
+                [key: string]: unknown;
+            } | number | null;
+            comments: Array<{
+                id: number;
+                text: string;
+                attachments: Array<{
+                    index: number;
+                    file_token: string;
+                    file_type: string;
+                    file_name: string;
+                }>;
+            }>;
+        }>>;
+    };
+};
+
+export type GetApiUserApplicationResponse = GetApiUserApplicationResponses[keyof GetApiUserApplicationResponses];
+
+export type PostApiFileData = {
+    body: {
+        size?: number;
+        hash?: string;
+        file?: Blob | File;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/file';
+};
+
+export type PostApiFileResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PostApiFileResponse = PostApiFileResponses[keyof PostApiFileResponses];
+
+export type GetApiFileByFiletokenData = {
+    body?: never;
+    path: {
+        filetoken: string;
+    };
+    query?: never;
+    url: '/api/file/{filetoken}';
+};
+
+export type GetApiFileByFiletokenResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type GetApiFileByFiletokenResponse = GetApiFileByFiletokenResponses[keyof GetApiFileByFiletokenResponses];
+
+export type GetApiAccountData = {
     body: {
         [key: string]: unknown;
     };
     path?: never;
     query?: {
-        stu_id?: string;
+        /**
+         * 默认0，学生1，教师2
+         */
+        identity?: number;
+        avg_id?: number;
+        offset?: string;
+        limit?: string;
     };
-    url: '/api/admin/account/info';
+    url: '/api/account';
 };
 
-export type GetApiAdminAccountInfoResponses = {
+export type GetApiAccountResponses = {
     200: {
         code: number;
         msg: string;
-        data: {
-            reservation_sum: number;
-            cancel_sum: number;
-            use_sum: number;
-        };
+        data: Array<{
+            name: string;
+            identity: number;
+            avg_id: number;
+            applications_num: {
+                total_applications: number;
+                cancel: number;
+                use: number;
+                /**
+                 * 如果没有审核权限，则这个字段为-1
+                 */
+                review: number;
+            };
+        }>;
     };
 };
 
-export type GetApiAdminAccountInfoResponse = GetApiAdminAccountInfoResponses[keyof GetApiAdminAccountInfoResponses];
+export type GetApiAccountResponse = GetApiAccountResponses[keyof GetApiAccountResponses];
 
-export type PostApiAdminAnnoucementData = {
+export type GetApiNotificationData = {
+    body?: never;
+    path?: never;
+    query?: {
+        offset?: string;
+        limit?: string;
+    };
+    url: '/api/notification';
+};
+
+export type GetApiNotificationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: Array<{
+            notification_id: number;
+            title: string;
+            release_time: string;
+            status: number;
+            content: string;
+            images_token: Array<string>;
+        }>;
+    };
+};
+
+export type GetApiNotificationResponse = GetApiNotificationResponses[keyof GetApiNotificationResponses];
+
+export type PostApiNotificationData = {
     body: {
         /**
          * 全站公告默认为null
          */
-        recevier: string;
+        recevier_uid: string;
         title: string;
         content: string;
-        pictures: Array<string>;
+        images_token: Array<string>;
+        video_token: string;
         /**
          * 1发布2定时发布3草稿
          */
@@ -558,10 +657,33 @@ export type PostApiAdminAnnoucementData = {
     };
     path?: never;
     query?: never;
-    url: '/api/admin/annoucement';
+    url: '/api/notification';
 };
 
-export type PostApiAdminAnnoucementResponses = {
+export type PostApiNotificationResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            notification_id: number;
+        };
+    };
+};
+
+export type PostApiNotificationResponse = PostApiNotificationResponses[keyof PostApiNotificationResponses];
+
+export type DeleteApiNotificationByNotificationIdData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        notification_id: string;
+    };
+    query?: never;
+    url: '/api/notification/{notification_id}';
+};
+
+export type DeleteApiNotificationByNotificationIdResponses = {
     200: {
         code: number;
         msg: string;
@@ -569,65 +691,25 @@ export type PostApiAdminAnnoucementResponses = {
     };
 };
 
-export type PostApiAdminAnnoucementResponse = PostApiAdminAnnoucementResponses[keyof PostApiAdminAnnoucementResponses];
+export type DeleteApiNotificationByNotificationIdResponse = DeleteApiNotificationByNotificationIdResponses[keyof DeleteApiNotificationByNotificationIdResponses];
 
-export type DeleteApiAdminAnnouncementData = {
+export type PutApiNotificationByNotificationIdData = {
     body: {
-        announcement_id: number;
-    };
-    path?: never;
-    query?: never;
-    url: '/api/admin/announcement';
-};
-
-export type DeleteApiAdminAnnouncementResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: null;
-    };
-};
-
-export type DeleteApiAdminAnnouncementResponse = DeleteApiAdminAnnouncementResponses[keyof DeleteApiAdminAnnouncementResponses];
-
-export type GetApiAdminAnnouncementData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/announcement';
-};
-
-export type GetApiAdminAnnouncementResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            annoucement_id: number;
-            title: string;
-            release_time: string;
-            status: string;
-        }>;
-    };
-};
-
-export type GetApiAdminAnnouncementResponse = GetApiAdminAnnouncementResponses[keyof GetApiAdminAnnouncementResponses];
-
-export type PutApiAdminAnnouncementData = {
-    body: {
-        announcement_id: number;
         recevier: string;
         title: string;
         content: string;
-        pictures: Array<string>;
+        images_token: Array<string>;
         status: number;
         release_time: string;
     };
-    path?: never;
+    path: {
+        notification_id: string;
+    };
     query?: never;
-    url: '/api/admin/announcement';
+    url: '/api/notification/{notification_id}';
 };
 
-export type PutApiAdminAnnouncementResponses = {
+export type PutApiNotificationByNotificationIdResponses = {
     200: {
         code: number;
         msg: string;
@@ -635,4 +717,4 @@ export type PutApiAdminAnnouncementResponses = {
     };
 };
 
-export type PutApiAdminAnnouncementResponse = PutApiAdminAnnouncementResponses[keyof PutApiAdminAnnouncementResponses];
+export type PutApiNotificationByNotificationIdResponse = PutApiNotificationByNotificationIdResponses[keyof PutApiNotificationByNotificationIdResponses];

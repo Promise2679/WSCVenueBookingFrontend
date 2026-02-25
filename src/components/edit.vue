@@ -51,8 +51,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import { patchApiUserEditProfile } from '@/api'
-
 const rawPhone = ref('')
 const phoneDisplay = computed(() => `${rawPhone.value.slice(0, 3)}****${rawPhone.value.slice(-4)}`)
 

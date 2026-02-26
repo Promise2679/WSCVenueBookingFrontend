@@ -69,7 +69,11 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@pinia/colada'
 import { computed, ref } from 'vue'
+
+import { deleteApiApplicationByApplicationId } from '@/api'
+import { getApiUserApplicationQuery } from '@/api/@pinia/colada.gen'
 
 interface Reservation {
   activityName: string
@@ -84,14 +88,30 @@ const cancelDialog = ref(false)
 const showSuccess = ref(false)
 const selectedReservation = ref<null | Reservation>(null)
 
-// 模拟预约数据
-const reservations = ref<Reservation[]>([
-  { activityName: '技术分享会', classroom: '301 教室', description: '111', id: 1, status: 'pending' },
-  { activityName: '会议', classroom: '205', description: '123', id: 2, status: 'approved' },
-  { activityName: '新人培训', classroom: '报告厅', description: '123123', id: 3, status: 'rejected' },
-  { activityName: '分享会', classroom: 'A302', description: '114514', id: 4, status: 'used' },
-  { activityName: '故事会', classroom: '研讨室', description: '111', id: 5, status: 'cancelled' }
-])
+const { data: queryData, refetch } = useQuery(getApiUserApplicationQuery({ body: {} }))
+
+const reservations = computed<Reservation[]>(() => {
+  if (!queryData.value?.data) return []
+  const list = queryData.value.data[0] ?? []
+  return list.map(item => ({
+    activityName: item.activity_name,
+    classroom: item.comments[0]?.text.split('\n')[0] ?? '',
+    description: item.description,
+    id: item.id,
+    status: mapStatus(item.application_status)
+  }))
+})
+
+function mapStatus(status: string): Reservation['status'] {
+  const statusMap: Record<string, Reservation['status']> = {
+    approved: 'approved',
+    cancelled: 'cancelled',
+    pending: 'pending',
+    rejected: 'rejected',
+    used: 'used'
+  }
+  return statusMap[status] ?? 'pending'
+}
 
 const filteredReservations = computed(() => {
   if (filterTab.value === 'all') return reservations.value
@@ -110,11 +130,17 @@ function canCancel(reservation: Reservation): boolean {
   return ['approved', 'pending'].includes(reservation.status)
 }
 
-function confirmCancel() {
-  if (selectedReservation.value) {
-    const index = reservations.value.findIndex(r => r.id === selectedReservation.value!.id)
-    if (index !== -1) reservations.value[index].status = 'cancelled'
-  }
+async function confirmCancel() {
+  if (!selectedReservation.value) return
+
+  const { error } = await deleteApiApplicationByApplicationId({
+    body: {},
+    path: { application_id: selectedReservation.value.id.toString() }
+  })
+
+  if (error) return
+
+  await refetch()
   cancelDialog.value = false
   showSuccess.value = true
   selectedReservation.value = null

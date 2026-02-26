@@ -17,9 +17,31 @@
           clearable
         >
           <template v-slot:prepend>
-            <v-btn icon="mdi-filter" variant="text" size="small" />
+            <v-btn icon="mdi-filter" variant="text" size="small" @click="showFilter = !showFilter" />
           </template>
         </v-text-field>
+
+        <v-expand-transition>
+          <v-card v-if="showFilter" variant="outlined" class="mt-2 pa-3">
+            <v-row dense>
+              <v-col cols="12" sm="6">
+                <v-select
+                  v-model="selectedBuildings"
+                  :items="buildings"
+                  item-title="building_name"
+                  item-value="building_id"
+                  label="选择楼区"
+                  multiple
+                  chips
+                  closable-chips
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                />
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-expand-transition>
       </v-col>
     </v-row>
 
@@ -33,16 +55,29 @@
 
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
-import { getApiVenueQuery } from '@/api/@pinia/colada.gen'
+import { getApiVenueLocationsQuery, getApiVenueQuery } from '@/api/@pinia/colada.gen'
 
 import VenueCard from './venueCard.vue'
 
 const search = ref('')
+const showFilter = ref(false)
+const selectedBuildings = ref<number[]>([])
 
-const { data, refetch } = useQuery(getApiVenueQuery({ body: {} }))
+const { data: locationsData } = useQuery(getApiVenueLocationsQuery({}))
+const buildings = computed(() => locationsData.value?.data.buildings ?? [])
+
+const venueQuery = computed(() => ({ query: { b: selectedBuildings.value.map(String), s: search.value || undefined } }))
+
+const { data, refetch } = useQuery(getApiVenueQuery({ ...venueQuery.value, body: {} }))
 const venues = computed(() => data.value?.data ?? [])
+
+let debounceTimer: null | ReturnType<typeof setTimeout> = null
+watch([selectedBuildings, search], () => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => void refetch(), 300)
+})
 
 async function refreshVenues() {
   await refetch()

@@ -635,11 +635,14 @@ export type GetApiNotificationResponses = {
             notification_id: number;
             title: string;
             release_time: string;
-            status: number;
             content: string;
-            images_token: Array<string>;
-            video_token: string;
             sender_uid: string;
+            attachments: Array<{
+                index: number;
+                file_token: string;
+                file_name: string;
+                file_type: string;
+            }>;
         }>;
     };
 };
@@ -654,13 +657,17 @@ export type PostApiNotificationData = {
         recevier_uid: string;
         title: string;
         content: string;
-        images_token: Array<string>;
-        video_token: string;
         /**
          * 1发布2定时发布3草稿
          */
         status: number;
         release_time: string;
+        attachments: Array<{
+            index: number;
+            file_token: string;
+            file_name: string;
+            file_type: string;
+        }>;
     };
     path?: never;
     query?: never;
@@ -705,9 +712,14 @@ export type PutApiNotificationByNotificationIdData = {
         recevier: string;
         title: string;
         content: string;
-        images_token: Array<string>;
         status: number;
         release_time: string;
+        attachments: Array<{
+            index: number;
+            file_token: string;
+            file_name: string;
+            file_type: string;
+        }>;
     };
     path: {
         notification_id: string;
@@ -741,10 +753,14 @@ export type GetApiUserNotificationResponses = {
             notification_id: number;
             title: string;
             content: string;
-            images_token: Array<string>;
-            video_token: string;
             status: number;
             release_time: string;
+            attachments: Array<{
+                index: number;
+                file_token: string;
+                file_name: string;
+                file_type: string;
+            }>;
         }>;
     };
 };

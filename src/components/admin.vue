@@ -319,11 +319,163 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- 审批预约弹窗 -->
+    <v-dialog v-model="showApprovalDialog" max-width="900" scrollable>
+      <v-card v-if="selectedVenue">
+        <v-card-title class="d-flex align-center">
+          <v-icon start icon="mdi-clipboard-check" />
+          {{ selectedVenue.name }} - 预约审批
+        </v-card-title>
+        <v-card-text class="pa-0">
+          <!-- 翻页控制 -->
+          <div v-if="venueApplications.length > 0" class="d-flex align-center justify-center pa-3 bg-grey-lighten-4">
+            <v-btn icon variant="text" :disabled="currentPage === 0" @click="currentPage--">
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
+            <span class="mx-4"> {{ currentPage + 1 }} / {{ venueApplications.length }} </span>
+            <v-btn icon variant="text" :disabled="currentPage === venueApplications.length - 1" @click="currentPage++">
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+          </div>
+
+          <!-- 预���详情 -->
+          <v-container v-if="currentApplication" fluid class="pa-4">
+            <v-row>
+              <!-- 左侧：基本信息 -->
+              <v-col cols="12" md="6">
+                <div class="text-subtitle-2 mb-2">基本信息</div>
+                <v-table density="compact">
+                  <tbody>
+                    <tr>
+                      <td class="font-weight-medium text-grey" width="100">活动名称</td>
+                      <td>{{ currentApplication.activity_name }}</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-medium text-grey">举办方</td>
+                      <td>{{ currentApplication.activity_organizer }}</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-medium text-grey">预估人数</td>
+                      <td>{{ currentApplication.estimated_participants }}人</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-medium text-grey">申请类型</td>
+                      <td>
+                        <v-chip size="x-small" color="primary" variant="outlined">
+                          {{ currentApplication.application_type }}
+                        </v-chip>
+                      </td>
+                    </tr>
+                  </tbody>
+                </v-table>
+
+                <div class="text-subtitle-2 mb-2 mt-4">使用时间</div>
+                <v-chip
+                  v-for="(time, idx) in currentApplication.time_request"
+                  :key="idx"
+                  class="ma-1"
+                  color="info"
+                  variant="tonal"
+                  size="small"
+                >
+                  {{ formatTimeRange(time.begin, time.end) }}
+                </v-chip>
+
+                <div class="text-subtitle-2 mb-2 mt-4">活动说明</div>
+                <v-card variant="outlined" class="pa-2">
+                  <div class="text-body-2">{{ currentApplication.description || '无' }}</div>
+                </v-card>
+              </v-col>
+
+              <!-- 右侧：附件和评论 -->
+              <v-col cols="12" md="6">
+                <!-- 附件 -->
+                <div v-if="currentApplication.attachments?.length" class="mb-4">
+                  <div class="text-subtitle-2 mb-2">附件</div>
+                  <v-list density="compact" class="pa-0">
+                    <v-list-item
+                      v-for="(file, idx) in currentApplication.attachments"
+                      :key="idx"
+                      :href="getFileUrl(file.file_token)"
+                      target="_blank"
+                      class="px-0 min-h-0"
+                    >
+                      <template v-slot:prepend>
+                        <v-icon :icon="getFileIcon(file.file_type)" size="small" />
+                      </template>
+                      <v-list-item-title class="text-caption">{{ file.file_name }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </div>
+
+                <!-- 评论/备注 -->
+                <div v-if="currentApplication.comments?.length">
+                  <div class="text-subtitle-2 mb-2">备注信息</div>
+                  <v-card
+                    v-for="(comment, idx) in currentApplication.comments"
+                    :key="idx"
+                    variant="outlined"
+                    class="mb-2 pa-2"
+                  >
+                    <div class="text-body-2">{{ comment.text }}</div>
+                    <div v-if="comment.attachments?.length" class="mt-2">
+                      <v-chip
+                        v-for="(file, fIdx) in comment.attachments"
+                        :key="fIdx"
+                        size="x-small"
+                        class="mr-1"
+                        @click="openFile(file.file_token)"
+                      >
+                        <v-icon start size="x-small">mdi-paperclip</v-icon>
+                        {{ file.file_name }}
+                      </v-chip>
+                    </div>
+                  </v-card>
+                </div>
+                <v-text-field
+                  v-model="approvalComment"
+                  label="审批意见（可选）"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="mr-4"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <!-- 无数据提示 -->
+          <div v-else class="text-center py-8">
+            <v-icon size="64" color="grey-lighten-1">mdi-calendar-blank</v-icon>
+            <div class="text-h6 text-grey mt-2">暂无预约记录</div>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="error" variant="outlined" :loading="approving" @click="handleReject">
+            <v-icon start>mdi-close</v-icon>
+            拒绝
+          </v-btn>
+          <v-btn color="success" variant="flat" :loading="approving" @click="handleApproveApplication">
+            <v-icon start>mdi-check</v-icon>
+            同意
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- 审批结果提示 -->
+    <v-snackbar v-model="showSnackbar" :color="snackbarColor" timeout="3000">
+      {{ snackbarText }}
+    </v-snackbar>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+
+import { getApiVenueByVenueIdApplication, putApiApplicationByApplicationId } from '@/api'
 
 interface Room {
   approvedCount: number
@@ -332,6 +484,24 @@ interface Room {
   name: string
   pendingCount: number
   weekStats: WeekStat[]
+}
+
+interface VenueApplication {
+  activity_coordinator: boolean | null | number | Record<string, unknown> | string | unknown[]
+  activity_name: string
+  activity_organizer: string
+  application_status: string
+  application_type: string
+  attachments: Array<{ file_name: string; file_token: string; file_type: string; index: number }>
+  comments: Array<{
+    attachments: Array<{ file_name: string; file_token: string; file_type: string; index: number }>
+    id: number
+    text: string
+  }>
+  description: string
+  estimated_participants: number
+  id: number
+  time_request: Array<{ begin: string; end: string }>
 }
 
 interface WeekStat {
@@ -346,7 +516,16 @@ const showDatePicker = ref(false)
 const customStartDate = ref('2026-02-25')
 const customEndDate = ref('2026-03-04')
 const showStatsDialog = ref(false)
+const showApprovalDialog = ref(false)
 const selectedRoom = ref<Room>()
+const selectedVenue = ref<null | Room>(null)
+const venueApplications = ref<VenueApplication[]>([])
+const currentPage = ref(0)
+const approvalComment = ref('')
+const approving = ref(false)
+const showSnackbar = ref(false)
+const snackbarText = ref('')
+const snackbarColor = ref('success')
 
 const timeRangeLabel = computed(() => {
   switch (timeRange.value) {
@@ -458,6 +637,11 @@ const filteredRooms = computed(() => {
   return rooms.value.filter(room => room.name.toLowerCase().includes(search.value.toLowerCase()))
 })
 
+const currentApplication = computed<null | VenueApplication>(() => {
+  if (venueApplications.value.length === 0) return null
+  return venueApplications.value[currentPage.value] ?? null
+})
+
 function formatDate(date: string): string {
   if (!date) return ''
   const d = new Date(date)
@@ -470,18 +654,113 @@ function formatDayLabel(index: number): string {
   return `${date.getMonth() + 1}/${date.getDate()}`
 }
 
+function formatTimeRange(begin: string, end: string): string {
+  const start = new Date(begin)
+  const finish = new Date(end)
+  const startStr = `${start.getMonth() + 1}/${start.getDate()} ${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')}`
+  const endStr = `${finish.getHours().toString().padStart(2, '0')}:${finish.getMinutes().toString().padStart(2, '0')}`
+  return `${startStr}-${endStr}`
+}
+
+function getFileIcon(fileType: string): string {
+  if (fileType.startsWith('image/')) return 'mdi-image'
+  if (fileType.startsWith('video/')) return 'mdi-video'
+  if (fileType === 'application/pdf') return 'mdi-file-pdf-box'
+  return 'mdi-file-document'
+}
+
+function getFileUrl(fileToken: string): string {
+  return `/api/file/${fileToken}`
+}
+
 function getOccupancyColor(value: number): string {
   if (value >= 70) return '#ef4444'
   if (value >= 40) return '#eab308'
   return '#22c55e'
 }
 
-function handleApprove(room: Room) {
-  console.info('审批预约:', room.name)
+async function handleApprove(room: Room) {
+  selectedVenue.value = room
+  selectedRoom.value = room
+  venueApplications.value = []
+  currentPage.value = 0
+  approvalComment.value = ''
+  showApprovalDialog.value = true
+
+  // 获取该场地的所有预约
+  const { data, error } = await getApiVenueByVenueIdApplication({ body: {}, path: { venue_id: room.id.toString() } })
+
+  if (error || !data?.data) {
+    venueApplications.value = []
+    return
+  }
+
+  // API 返回的是嵌套数组结构
+  const apps = data.data[0] ?? []
+  venueApplications.value = apps as VenueApplication[]
+}
+
+async function handleApproveApplication() {
+  if (!currentApplication.value) return
+
+  approving.value = true
+  const { error } = await putApiApplicationByApplicationId({
+    body: { comment: { attachments: [], text: approvalComment.value }, decision: 'apv', known_conflicts: [] },
+    path: { application_id: currentApplication.value.id.toString() }
+  })
+
+  if (error) {
+    snackbarText.value = '审批失败，请重试'
+    snackbarColor.value = 'error'
+    showSnackbar.value = true
+    approving.value = false
+    return
+  }
+
+  // 更新本地状态
+  currentApplication.value.application_status = 'approved'
+  snackbarText.value = '已同意该预约'
+  snackbarColor.value = 'success'
+  showSnackbar.value = true
+  approving.value = false
+}
+
+async function handleReject() {
+  if (!currentApplication.value) return
+
+  approving.value = true
+  const { error } = await putApiApplicationByApplicationId({
+    body: { comment: { attachments: [], text: approvalComment.value }, decision: 'rej', known_conflicts: [] },
+    path: { application_id: currentApplication.value.id.toString() }
+  })
+
+  if (error) {
+    snackbarText.value = '审批失败，请重试'
+    snackbarColor.value = 'error'
+    showSnackbar.value = true
+    approving.value = false
+    return
+  }
+
+  // 更新本地状态
+  currentApplication.value.application_status = 'rejected'
+  snackbarText.value = '已拒绝该预约'
+  snackbarColor.value = 'error'
+  showSnackbar.value = true
+  approving.value = false
 }
 
 function handleViewStats(room: Room) {
   selectedRoom.value = room
   showStatsDialog.value = true
 }
+
+function openFile(fileToken: string): void {
+  window.open(getFileUrl(fileToken), '_blank')
+}
+
+// 重置翻页当预约列表变化时
+watch(venueApplications, () => {
+  currentPage.value = 0
+})
 </script>

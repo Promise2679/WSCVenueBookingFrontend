@@ -4,6 +4,115 @@ export type ClientOptions = {
     baseUrl: string;
 };
 
+export type GetApiSystemPermissionData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/system-permission';
+};
+
+export type GetApiSystemPermissionResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type GetApiSystemPermissionResponse = GetApiSystemPermissionResponses[keyof GetApiSystemPermissionResponses];
+
+export type PutApiUserSystemPermissionData = {
+    body: {
+        uids: Array<string>;
+        system_permission: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/user/system-permission';
+};
+
+export type PutApiUserSystemPermissionResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PutApiUserSystemPermissionResponse = PutApiUserSystemPermissionResponses[keyof PutApiUserSystemPermissionResponses];
+
+export type GetApiUserProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/user/profile';
+};
+
+export type GetApiUserProfileResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            uid: string;
+            username: string;
+            school_id: string;
+            real_name: string;
+            phone_number: string;
+        };
+    };
+};
+
+export type GetApiUserProfileResponse = GetApiUserProfileResponses[keyof GetApiUserProfileResponses];
+
+export type PutApiUserProfileData = {
+    body: {
+        phone_number?: string;
+        username: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/user/profile';
+};
+
+export type PutApiUserProfileResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: null;
+    };
+};
+
+export type PutApiUserProfileResponse = PutApiUserProfileResponses[keyof PutApiUserProfileResponses];
+
+export type GetApiUserProfileByUidData = {
+    body?: never;
+    path: {
+        uid: string;
+    };
+    query?: never;
+    url: '/api/user/profile/{uid}';
+};
+
+export type GetApiUserProfileByUidResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            uid: string;
+            username: string;
+            school_id: string;
+            real_name: string;
+            phone_number: string;
+        };
+    };
+};
+
+export type GetApiUserProfileByUidResponse = GetApiUserProfileByUidResponses[keyof GetApiUserProfileByUidResponses];
+
 export type PostApiLoginData = {
     body: {
         /**
@@ -79,26 +188,6 @@ export type PostApiUserChangePasswordResponses = {
 };
 
 export type PostApiUserChangePasswordResponse = PostApiUserChangePasswordResponses[keyof PostApiUserChangePasswordResponses];
-
-export type PutApiUserProfileData = {
-    body: {
-        phone_number?: string;
-        username: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/api/user/profile';
-};
-
-export type PutApiUserProfileResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: null;
-    };
-};
-
-export type PutApiUserProfileResponse = PutApiUserProfileResponses[keyof PutApiUserProfileResponses];
 
 export type PostApiRegisterData = {
     body: {
@@ -766,3 +855,22 @@ export type GetApiUserNotificationResponses = {
 };
 
 export type GetApiUserNotificationResponse = GetApiUserNotificationResponses[keyof GetApiUserNotificationResponses];
+
+export type GetApiNotificationReadData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/notification/read';
+};
+
+export type GetApiNotificationReadResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            has_unread: boolean;
+        };
+    };
+};
+
+export type GetApiNotificationReadResponse = GetApiNotificationReadResponses[keyof GetApiNotificationReadResponses];

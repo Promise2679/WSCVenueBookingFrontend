@@ -4,66 +4,8 @@ import { type _JSONValue, defineQueryOptions, type UseMutationOptions } from '@p
 
 import { serializeQueryKeyValue } from '../client';
 import { client } from '../client.gen';
-import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiUserApplication, getApiUserNotification, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
-import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
-
-/**
- * 登录
- */
-export const postApiLoginMutation = (options?: Partial<Options<PostApiLoginData>>): UseMutationOptions<PostApiLoginResponse, Options<PostApiLoginData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await postApiLogin({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
-
-/**
- * 修改密码
- *
- * 修改密码可选验证方式，要求登录验证与表单验证双通过。
- */
-export const postApiUserChangePasswordMutation = (options?: Partial<Options<PostApiUserChangePasswordData>>): UseMutationOptions<PostApiUserChangePasswordResponse, Options<PostApiUserChangePasswordData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await postApiUserChangePassword({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
-
-/**
- * 完善信息
- */
-export const putApiUserProfileMutation = (options?: Partial<Options<PutApiUserProfileData>>): UseMutationOptions<PutApiUserProfileResponse, Options<PutApiUserProfileData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await putApiUserProfile({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
-
-/**
- * 用户注册
- */
-export const postApiRegisterMutation = (options?: Partial<Options<PostApiRegisterData>>): UseMutationOptions<PostApiRegisterResponse, Options<PostApiRegisterData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await postApiRegister({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
+import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiNotificationRead, getApiSystemPermission, getApiUserApplication, getApiUserNotification, getApiUserProfile, getApiUserProfileByUid, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiUserSystemPermission, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiNotificationReadData, GetApiSystemPermissionData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiUserProfileByUidData, GetApiUserProfileData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'path'> & {
@@ -99,6 +41,131 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     }
     return [params];
 };
+
+export const getApiSystemPermissionQueryKey = (options?: Options<GetApiSystemPermissionData>) => createQueryKey('getApiSystemPermission', options);
+
+/**
+ * 获取系统权限列表
+ */
+export const getApiSystemPermissionQuery = defineQueryOptions((options?: Options<GetApiSystemPermissionData>) => ({
+    key: getApiSystemPermissionQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiSystemPermission({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 修改用户权限
+ */
+export const putApiUserSystemPermissionMutation = (options?: Partial<Options<PutApiUserSystemPermissionData>>): UseMutationOptions<PutApiUserSystemPermissionResponse, Options<PutApiUserSystemPermissionData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiUserSystemPermission({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+export const getApiUserProfileQueryKey = (options?: Options<GetApiUserProfileData>) => createQueryKey('getApiUserProfile', options);
+
+/**
+ * 获取自身信息
+ */
+export const getApiUserProfileQuery = defineQueryOptions((options?: Options<GetApiUserProfileData>) => ({
+    key: getApiUserProfileQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiUserProfile({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 完善信息
+ */
+export const putApiUserProfileMutation = (options?: Partial<Options<PutApiUserProfileData>>): UseMutationOptions<PutApiUserProfileResponse, Options<PutApiUserProfileData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiUserProfile({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+export const getApiUserProfileByUidQueryKey = (options: Options<GetApiUserProfileByUidData>) => createQueryKey('getApiUserProfileByUid', options);
+
+/**
+ * 获取任意用户信息
+ *
+ * 该接口需要 UserManagement 系统权限
+ */
+export const getApiUserProfileByUidQuery = defineQueryOptions((options: Options<GetApiUserProfileByUidData>) => ({
+    key: getApiUserProfileByUidQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiUserProfileByUid({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 登录
+ */
+export const postApiLoginMutation = (options?: Partial<Options<PostApiLoginData>>): UseMutationOptions<PostApiLoginResponse, Options<PostApiLoginData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiLogin({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 修改密码
+ *
+ * 修改密码可选验证方式，要求登录验证与表单验证双通过。
+ */
+export const postApiUserChangePasswordMutation = (options?: Partial<Options<PostApiUserChangePasswordData>>): UseMutationOptions<PostApiUserChangePasswordResponse, Options<PostApiUserChangePasswordData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiUserChangePassword({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 用户注册
+ */
+export const postApiRegisterMutation = (options?: Partial<Options<PostApiRegisterData>>): UseMutationOptions<PostApiRegisterResponse, Options<PostApiRegisterData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiRegister({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
 
 export const getApiLoginSessionSaltQueryKey = (options?: Options<GetApiLoginSessionSaltData>) => createQueryKey('getApiLoginSessionSalt', options);
 
@@ -391,6 +458,23 @@ export const getApiUserNotificationQuery = defineQueryOptions((options?: Options
     key: getApiUserNotificationQueryKey(options),
     query: async (context) => {
         const { data } = await getApiUserNotification({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+export const getApiNotificationReadQueryKey = (options?: Options<GetApiNotificationReadData>) => createQueryKey('getApiNotificationRead', options);
+
+/**
+ * 获取用户是否有未读通告
+ */
+export const getApiNotificationReadQuery = defineQueryOptions((options?: Options<GetApiNotificationReadData>) => ({
+    key: getApiNotificationReadQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiNotificationRead({
             ...options,
             ...context,
             throwOnError: true

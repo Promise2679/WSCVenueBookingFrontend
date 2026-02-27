@@ -373,12 +373,12 @@ export const getApiFileByFiletokenQuery = defineQueryOptions((options: Options<G
     }
 }));
 
-export const getApiAccountQueryKey = (options: Options<GetApiAccountData>) => createQueryKey('getApiAccount', options);
+export const getApiAccountQueryKey = (options?: Options<GetApiAccountData>) => createQueryKey('getApiAccount', options);
 
 /**
  * 总览所有被管理的账户
  */
-export const getApiAccountQuery = defineQueryOptions((options: Options<GetApiAccountData>) => ({
+export const getApiAccountQuery = defineQueryOptions((options?: Options<GetApiAccountData>) => ({
     key: getApiAccountQueryKey(options),
     query: async (context) => {
         const { data } = await getApiAccount({
@@ -452,7 +452,7 @@ export const putApiNotificationByNotificationIdMutation = (options?: Partial<Opt
 export const getApiUserNotificationQueryKey = (options?: Options<GetApiUserNotificationData>) => createQueryKey('getApiUserNotification', options);
 
 /**
- * 获取个人发布的公告
+ * 获取管理员发布的系统公告
  */
 export const getApiUserNotificationQuery = defineQueryOptions((options?: Options<GetApiUserNotificationData>) => ({
     key: getApiUserNotificationQueryKey(options),
@@ -470,6 +470,8 @@ export const getApiNotificationReadQueryKey = (options?: Options<GetApiNotificat
 
 /**
  * 获取用户是否有未读通告
+ *
+ * 返回用户是否有未读通告，true就是有
  */
 export const getApiNotificationReadQuery = defineQueryOptions((options?: Options<GetApiNotificationReadData>) => ({
     key: getApiNotificationReadQueryKey(options),

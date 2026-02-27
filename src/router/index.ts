@@ -7,6 +7,7 @@ import Edit from '@/components/edit.vue'
 import HomeComponent from '@/components/home/index.vue'
 import Notice from '@/components/notice/index.vue'
 import Reservation from '@/components/reservation.vue'
+import UserManage from '@/components/userManage.vue'
 import Home from '@/pages/home.vue'
 import Login from '@/pages/login.vue'
 import { useUserStore } from '@/stores/user'
@@ -22,7 +23,8 @@ const router = createRouter({
         { component: Reservation, path: 'reservation' },
         { component: About, path: 'about' },
         { component: Edit, path: 'edit' },
-        { component: Admin, path: 'admin' }
+        { component: Admin, path: 'admin' },
+        { component: UserManage, path: 'user-manage' }
       ],
       component: Home,
       path: '/'

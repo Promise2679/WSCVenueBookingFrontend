@@ -278,14 +278,10 @@ export const getApiFileByFiletoken = <ThrowOnError extends boolean = false>(opti
 /**
  * 总览所有被管理的账户
  */
-export const getApiAccount = <ThrowOnError extends boolean = false>(options: Options<GetApiAccountData, ThrowOnError>) => (options.client ?? client).get<GetApiAccountResponses, unknown, ThrowOnError>({
+export const getApiAccount = <ThrowOnError extends boolean = false>(options?: Options<GetApiAccountData, ThrowOnError>) => (options?.client ?? client).get<GetApiAccountResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/account',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
+    ...options
 });
 
 /**
@@ -337,7 +333,7 @@ export const putApiNotificationByNotificationId = <ThrowOnError extends boolean 
 });
 
 /**
- * 获取个人发布的公告
+ * 获取管理员发布的系统公告
  */
 export const getApiUserNotification = <ThrowOnError extends boolean = false>(options?: Options<GetApiUserNotificationData, ThrowOnError>) => (options?.client ?? client).get<GetApiUserNotificationResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
@@ -347,6 +343,8 @@ export const getApiUserNotification = <ThrowOnError extends boolean = false>(opt
 
 /**
  * 获取用户是否有未读通告
+ *
+ * 返回用户是否有未读通告，true就是有
  */
 export const getApiNotificationRead = <ThrowOnError extends boolean = false>(options?: Options<GetApiNotificationReadData, ThrowOnError>) => (options?.client ?? client).get<GetApiNotificationReadResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],

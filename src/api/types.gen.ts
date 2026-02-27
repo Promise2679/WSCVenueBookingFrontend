@@ -670,9 +670,7 @@ export type GetApiFileByFiletokenResponses = {
 export type GetApiFileByFiletokenResponse = GetApiFileByFiletokenResponses[keyof GetApiFileByFiletokenResponses];
 
 export type GetApiAccountData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body?: never;
     path?: never;
     query?: {
         /**

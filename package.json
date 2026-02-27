@@ -15,7 +15,7 @@
     "*.{ts,vue}": "eslint"
   },
   "simple-git-hooks": {
-    "pre-commit": "nano-staged"
+    "pre-commit": "pnpm nano-staged"
   },
   "dependencies": {
     "@pinia/colada": "catalog:store",

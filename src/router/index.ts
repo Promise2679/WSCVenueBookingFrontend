@@ -6,6 +6,7 @@ import Admin from '@/components/admin/index.vue'
 import Edit from '@/components/edit.vue'
 import HomeComponent from '@/components/home/index.vue'
 import Notice from '@/components/notice/index.vue'
+import NoticeManage from '@/components/noticeManage.vue'
 import Reservation from '@/components/reservation.vue'
 import UserManage from '@/components/userManage.vue'
 import Home from '@/pages/home.vue'
@@ -24,7 +25,8 @@ const router = createRouter({
         { component: About, path: 'about' },
         { component: Edit, path: 'edit' },
         { component: Admin, path: 'admin' },
-        { component: UserManage, path: 'user-manage' }
+        { component: UserManage, path: 'user-manage' },
+        { component: NoticeManage, path: 'notice-manage' }
       ],
       component: Home,
       path: '/'

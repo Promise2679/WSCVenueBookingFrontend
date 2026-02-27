@@ -15,6 +15,8 @@
       <v-col cols="12" md="6" class="d-flex align-center ga-2">
         <v-btn prepend-icon="mdi-calendar-plus" to="/">预约场地</v-btn>
         <v-btn prepend-icon="mdi-home-plus" @click="openCreateDialog">创建场地</v-btn>
+        <v-btn prepend-icon="mdi-account-group" to="/user-manage">用户管理</v-btn>
+        <v-btn prepend-icon="mdi-bulletin-board" to="/notice-manage">公告管理</v-btn>
       </v-col>
       <v-col cols="12" md="6" class="d-flex align-center ga-2">
         <v-btn-toggle v-model="timeRange" mandatory variant="outlined" divided density="comfortable">

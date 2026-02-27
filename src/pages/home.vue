@@ -4,6 +4,9 @@
       <v-icon icon="access-point" size="large" />
       <v-spacer />
       <v-tabs align-tabs="center" color="grey-darken-2">
+        <v-tab to="/" hide-slider>
+          <v-icon icon="mdi-home" size="large" />
+        </v-tab>
         <v-tab to="/notice" hide-slider>
           <v-icon icon="mdi-email" size="large" />
         </v-tab>

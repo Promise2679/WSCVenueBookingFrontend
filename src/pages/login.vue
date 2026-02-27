@@ -3,7 +3,7 @@
     <v-sheet class="ma-auto text-center" width="300">
       <div class="text-h5 mb-5">场地预约系统</div>
       <v-form @submit.prevent="handleLogin">
-        <v-text-field v-model="username" :rules="[Boolean]" label="用户名"></v-text-field>
+        <v-text-field v-model="username" :rules="[Boolean]" label="用户名" />
         <v-text-field
           v-model="password"
           :rules="[Boolean]"
@@ -11,8 +11,8 @@
           @click:append="showPassword = !showPassword"
           :type="showPassword ? 'text' : 'password'"
           label="密码"
-        ></v-text-field>
-        <v-btn :loading="isLoading" class="mt-2" text="登录" type="submit" block></v-btn>
+        />
+        <v-btn :loading="isLoading" class="mt-2" text="登录" type="submit" block />
       </v-form>
     </v-sheet>
   </v-app>

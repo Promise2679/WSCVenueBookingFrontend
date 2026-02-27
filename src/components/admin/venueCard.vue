@@ -411,11 +411,13 @@ async function openApprovalDialog() {
 
   if (error || !data?.data) {
     venueApplications.value = []
+    currentApplication.value = null
     return
   }
 
   const apps = data.data[0] ?? []
   venueApplications.value = apps as VenueApplication[]
+  currentApplication.value = venueApplications.value[0] ?? null
 }
 
 function openFile(fileToken: string): void {

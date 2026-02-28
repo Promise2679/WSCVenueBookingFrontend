@@ -57,22 +57,22 @@ Package Manager: pnpm
 
 2. 快速开始 / Quick Start
 
-## 安装依赖 / Install dependencies
+安装依赖
 pnpm install
 
-## 启动开发服务器 / Start development server
+启动开发服务器
 pnpm dev
 
-## 构建生产版本 / Build for production
+构建生产版本
 pnpm build
 
 
 3. 接口同步 / API Synchronization
 
-## 本项目采用契约驱动开发（Contract-First），通过后端提供的 openapi.yaml 自动生成前端 SDK。
+### 本项目采用契约驱动开发（Contract-First），通过后端提供的 openapi.yaml 自动生成前端 SDK。
 The project uses Contract-First development, generating the frontend SDK from openapi.yaml.
 
-## 协作规范 / Collaboration
+### 协作规范 / Collaboration
 提交代码前请确保 lint 检查通过。
 
 

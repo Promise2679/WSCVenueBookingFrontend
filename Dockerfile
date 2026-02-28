@@ -17,8 +17,11 @@ RUN pnpm run build
 # 运行
 FROM nginx:stable-alpine
 
-# 新增Nginx反向代理配置
-COPY default.conf /etc/nginx/conf.d/default.conf
+# 后端地址默认值（可在容器运行时覆盖）
+ENV BACKEND_ORIGIN=http://backendsrv:8800
+
+# 使用 Nginx 模板，在容器启动时根据环境变量渲染配置
+COPY default.conf /etc/nginx/templates/default.conf.template
 
 COPY --from=build /app/dist /usr/share/nginx/html
 

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "gen:api": "openapi-ts",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",

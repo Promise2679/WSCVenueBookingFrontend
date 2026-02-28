@@ -51,25 +51,23 @@ WSC 场馆预约系统前端项目 / WSC Venue Booking System Frontend Project.
 
 1. 环境准备 / Prerequisites
 
-Node.js: ^20.19.0 || >=22.12.0
+- Node.js: ^20.19.0 || >=22.12.0
 
-Package Manager: pnpm
+- Package Manager: pnpm
 
 2. 快速开始 / Quick Start
 
-安装依赖
-pnpm install
-
-启动开发服务器
-pnpm dev
-
-构建生产版本
-pnpm build
+- 安装依赖
+- - pnpm install
+- 启动开发服务器
+- - pnpm dev
+- 构建生产版本
+- - pnpm build
 
 
 3. 接口同步 / API Synchronization
 
-### 本项目采用契约驱动开发（Contract-First），通过后端提供的 openapi.yaml 自动生成前端 SDK。
+本项目采用契约驱动开发（Contract-First），通过后端提供的 openapi.yaml 自动生成前端 SDK。
 The project uses Contract-First development, generating the frontend SDK from openapi.yaml.
 
 ### 协作规范 / Collaboration

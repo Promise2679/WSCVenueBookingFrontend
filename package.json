@@ -8,7 +8,7 @@
     "gen:api": "openapi-ts",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
-    "typecheck": "vue-tsc --build",
+    "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "postinstall": "npx simple-git-hooks"
   },

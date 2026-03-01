@@ -4,8 +4,8 @@ import { type _JSONValue, defineQueryOptions, type UseMutationOptions } from '@p
 
 import { serializeQueryKeyValue } from '../client';
 import { client } from '../client.gen';
-import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiNotificationRead, getApiSystemPermission, getApiUserApplication, getApiUserNotification, getApiUserProfile, getApiUserProfileByUid, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiUserProfile, putApiUserSystemPermission, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
-import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiNotificationReadData, GetApiSystemPermissionData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiUserProfileByUidData, GetApiUserProfileData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
+import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiNotificationUnread, getApiRoleByVagidVenue, getApiSystemPermission, getApiUserApplication, getApiUserNotification, getApiUserProfile, getApiUserProfileByUid, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiRole, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiRoleByVagid, putApiUserProfile, putApiUserSystemPermission, putApiUserVag, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiNotificationUnreadData, GetApiRoleByVagidVenueData, GetApiSystemPermissionData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiUserProfileByUidData, GetApiUserProfileData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiRoleData, PostApiRoleResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiRoleByVagidData, PutApiRoleByVagidResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponse, PutApiUserVagData, PutApiUserVagResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'path'> & {
@@ -41,37 +41,6 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     }
     return [params];
 };
-
-export const getApiSystemPermissionQueryKey = (options?: Options<GetApiSystemPermissionData>) => createQueryKey('getApiSystemPermission', options);
-
-/**
- * 获取系统权限列表
- */
-export const getApiSystemPermissionQuery = defineQueryOptions((options?: Options<GetApiSystemPermissionData>) => ({
-    key: getApiSystemPermissionQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiSystemPermission({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-/**
- * 修改用户权限
- */
-export const putApiUserSystemPermissionMutation = (options?: Partial<Options<PutApiUserSystemPermissionData>>): UseMutationOptions<PutApiUserSystemPermissionResponse, Options<PutApiUserSystemPermissionData>, Error> => ({
-    mutation: async (vars) => {
-        const { data } = await putApiUserSystemPermission({
-            ...options,
-            ...vars,
-            throwOnError: true
-        });
-        return data;
-    }
-});
 
 export const getApiUserProfileQueryKey = (options?: Options<GetApiUserProfileData>) => createQueryKey('getApiUserProfile', options);
 
@@ -466,17 +435,17 @@ export const getApiUserNotificationQuery = defineQueryOptions((options?: Options
     }
 }));
 
-export const getApiNotificationReadQueryKey = (options?: Options<GetApiNotificationReadData>) => createQueryKey('getApiNotificationRead', options);
+export const getApiNotificationUnreadQueryKey = (options?: Options<GetApiNotificationUnreadData>) => createQueryKey('getApiNotificationUnread', options);
 
 /**
- * 获取用户是否有未读通告
+ * 获取用户未读通告数量
  *
  * 返回用户是否有未读通告，true就是有
  */
-export const getApiNotificationReadQuery = defineQueryOptions((options?: Options<GetApiNotificationReadData>) => ({
-    key: getApiNotificationReadQueryKey(options),
+export const getApiNotificationUnreadQuery = defineQueryOptions((options?: Options<GetApiNotificationUnreadData>) => ({
+    key: getApiNotificationUnreadQueryKey(options),
     query: async (context) => {
-        const { data } = await getApiNotificationRead({
+        const { data } = await getApiNotificationUnread({
             ...options,
             ...context,
             throwOnError: true
@@ -484,3 +453,97 @@ export const getApiNotificationReadQuery = defineQueryOptions((options?: Options
         return data;
     }
 }));
+
+export const getApiSystemPermissionQueryKey = (options?: Options<GetApiSystemPermissionData>) => createQueryKey('getApiSystemPermission', options);
+
+/**
+ * 获取系统权限列表
+ */
+export const getApiSystemPermissionQuery = defineQueryOptions((options?: Options<GetApiSystemPermissionData>) => ({
+    key: getApiSystemPermissionQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiSystemPermission({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 修改用户权限
+ */
+export const putApiUserSystemPermissionMutation = (options?: Partial<Options<PutApiUserSystemPermissionData>>): UseMutationOptions<PutApiUserSystemPermissionResponse, Options<PutApiUserSystemPermissionData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiUserSystemPermission({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 创建场地权限组
+ */
+export const postApiRoleMutation = (options?: Partial<Options<PostApiRoleData>>): UseMutationOptions<PostApiRoleResponse, Options<PostApiRoleData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await postApiRole({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+/**
+ * 更新场地权限组
+ *
+ * 注意：如果不修改 Access ，则字段应该空缺，否则应该列出所有 Access 而不是修改的部分。
+ */
+export const putApiRoleByVagidMutation = (options?: Partial<Options<PutApiRoleByVagidData>>): UseMutationOptions<PutApiRoleByVagidResponse, Options<PutApiRoleByVagidData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiRoleByVagid({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});
+
+export const getApiRoleByVagidVenueQueryKey = (options: Options<GetApiRoleByVagidVenueData>) => createQueryKey('getApiRoleByVagidVenue', options);
+
+/**
+ * 列出可修改权限的场地
+ *
+ * 列出可修改权限的场地（轻量数据）
+ */
+export const getApiRoleByVagidVenueQuery = defineQueryOptions((options: Options<GetApiRoleByVagidVenueData>) => ({
+    key: getApiRoleByVagidVenueQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiRoleByVagidVenue({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+/**
+ * 修改用户场地权限组
+ */
+export const putApiUserVagMutation = (options?: Partial<Options<PutApiUserVagData>>): UseMutationOptions<PutApiUserVagResponse, Options<PutApiUserVagData>, Error> => ({
+    mutation: async (vars) => {
+        const { data } = await putApiUserVag({
+            ...options,
+            ...vars,
+            throwOnError: true
+        });
+        return data;
+    }
+});

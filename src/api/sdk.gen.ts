@@ -2,7 +2,7 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponses, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponses, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponses, GetApiAccountData, GetApiAccountResponses, GetApiFileByFiletokenData, GetApiFileByFiletokenResponses, GetApiLoginSessionSaltData, GetApiLoginSessionSaltResponses, GetApiNotificationData, GetApiNotificationReadData, GetApiNotificationReadResponses, GetApiNotificationResponses, GetApiSystemPermissionData, GetApiSystemPermissionResponses, GetApiUserApplicationData, GetApiUserApplicationResponses, GetApiUserNotificationData, GetApiUserNotificationResponses, GetApiUserProfileByUidData, GetApiUserProfileByUidResponses, GetApiUserProfileData, GetApiUserProfileResponses, GetApiVenueByVenueIdApplicationData, GetApiVenueByVenueIdApplicationResponses, GetApiVenueData, GetApiVenueLocationsData, GetApiVenueLocationsResponses, GetApiVenueResponses, PostApiFileData, PostApiFileResponses, PostApiLoginData, PostApiLoginResponses, PostApiNotificationData, PostApiNotificationResponses, PostApiRegisterData, PostApiRegisterResponses, PostApiUserChangePasswordData, PostApiUserChangePasswordResponses, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponses, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponses, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponses, PutApiUserProfileData, PutApiUserProfileResponses, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponses, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponses, PutApiVenueData, PutApiVenueResponses } from './types.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponses, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponses, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponses, GetApiAccountData, GetApiAccountResponses, GetApiFileByFiletokenData, GetApiFileByFiletokenResponses, GetApiLoginSessionSaltData, GetApiLoginSessionSaltResponses, GetApiNotificationData, GetApiNotificationResponses, GetApiNotificationUnreadData, GetApiNotificationUnreadResponses, GetApiRoleByVagidVenueData, GetApiRoleByVagidVenueResponses, GetApiSystemPermissionData, GetApiSystemPermissionResponses, GetApiUserApplicationData, GetApiUserApplicationResponses, GetApiUserNotificationData, GetApiUserNotificationResponses, GetApiUserProfileByUidData, GetApiUserProfileByUidResponses, GetApiUserProfileData, GetApiUserProfileResponses, GetApiVenueByVenueIdApplicationData, GetApiVenueByVenueIdApplicationResponses, GetApiVenueData, GetApiVenueLocationsData, GetApiVenueLocationsResponses, GetApiVenueResponses, PostApiFileData, PostApiFileResponses, PostApiLoginData, PostApiLoginResponses, PostApiNotificationData, PostApiNotificationResponses, PostApiRegisterData, PostApiRegisterResponses, PostApiRoleData, PostApiRoleResponses, PostApiUserChangePasswordData, PostApiUserChangePasswordResponses, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponses, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponses, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponses, PutApiRoleByVagidData, PutApiRoleByVagidResponses, PutApiUserProfileData, PutApiUserProfileResponses, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponses, PutApiUserVagData, PutApiUserVagResponses, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponses, PutApiVenueData, PutApiVenueResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -17,28 +17,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>;
 };
-
-/**
- * 获取系统权限列表
- */
-export const getApiSystemPermission = <ThrowOnError extends boolean = false>(options?: Options<GetApiSystemPermissionData, ThrowOnError>) => (options?.client ?? client).get<GetApiSystemPermissionResponses, unknown, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/system-permission',
-    ...options
-});
-
-/**
- * 修改用户权限
- */
-export const putApiUserSystemPermission = <ThrowOnError extends boolean = false>(options: Options<PutApiUserSystemPermissionData, ThrowOnError>) => (options.client ?? client).put<PutApiUserSystemPermissionResponses, unknown, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/user/system-permission',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
 
 /**
  * 获取自身信息
@@ -342,12 +320,86 @@ export const getApiUserNotification = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
- * 获取用户是否有未读通告
+ * 获取用户未读通告数量
  *
  * 返回用户是否有未读通告，true就是有
  */
-export const getApiNotificationRead = <ThrowOnError extends boolean = false>(options?: Options<GetApiNotificationReadData, ThrowOnError>) => (options?.client ?? client).get<GetApiNotificationReadResponses, unknown, ThrowOnError>({
+export const getApiNotificationUnread = <ThrowOnError extends boolean = false>(options?: Options<GetApiNotificationUnreadData, ThrowOnError>) => (options?.client ?? client).get<GetApiNotificationUnreadResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/notification/read',
+    url: '/api/notification/unread',
     ...options
+});
+
+/**
+ * 获取系统权限列表
+ */
+export const getApiSystemPermission = <ThrowOnError extends boolean = false>(options?: Options<GetApiSystemPermissionData, ThrowOnError>) => (options?.client ?? client).get<GetApiSystemPermissionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/system-permission',
+    ...options
+});
+
+/**
+ * 修改用户权限
+ */
+export const putApiUserSystemPermission = <ThrowOnError extends boolean = false>(options: Options<PutApiUserSystemPermissionData, ThrowOnError>) => (options.client ?? client).put<PutApiUserSystemPermissionResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/user/system-permission',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 创建场地权限组
+ */
+export const postApiRole = <ThrowOnError extends boolean = false>(options: Options<PostApiRoleData, ThrowOnError>) => (options.client ?? client).post<PostApiRoleResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 更新场地权限组
+ *
+ * 注意：如果不修改 Access ，则字段应该空缺，否则应该列出所有 Access 而不是修改的部分。
+ */
+export const putApiRoleByVagid = <ThrowOnError extends boolean = false>(options: Options<PutApiRoleByVagidData, ThrowOnError>) => (options.client ?? client).put<PutApiRoleByVagidResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/role/{vagid}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * 列出可修改权限的场地
+ *
+ * 列出可修改权限的场地（轻量数据）
+ */
+export const getApiRoleByVagidVenue = <ThrowOnError extends boolean = false>(options: Options<GetApiRoleByVagidVenueData, ThrowOnError>) => (options.client ?? client).get<GetApiRoleByVagidVenueResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/role/{vagid}/venue',
+    ...options
+});
+
+/**
+ * 修改用户场地权限组
+ */
+export const putApiUserVag = <ThrowOnError extends boolean = false>(options: Options<PutApiUserVagData, ThrowOnError>) => (options.client ?? client).put<PutApiUserVagResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/user/vag',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });

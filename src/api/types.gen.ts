@@ -4,47 +4,6 @@ export type ClientOptions = {
     baseUrl: string;
 };
 
-export type GetApiSystemPermissionData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/system-permission';
-};
-
-export type GetApiSystemPermissionResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: string | number | boolean | Array<unknown> | {
-            [key: string]: unknown;
-        } | number | null;
-    };
-};
-
-export type GetApiSystemPermissionResponse = GetApiSystemPermissionResponses[keyof GetApiSystemPermissionResponses];
-
-export type PutApiUserSystemPermissionData = {
-    body: {
-        uids: Array<string>;
-        system_permission: number;
-    };
-    path?: never;
-    query?: never;
-    url: '/api/user/system-permission';
-};
-
-export type PutApiUserSystemPermissionResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: string | number | boolean | Array<unknown> | {
-            [key: string]: unknown;
-        } | number | null;
-    };
-};
-
-export type PutApiUserSystemPermissionResponse = PutApiUserSystemPermissionResponses[keyof PutApiUserSystemPermissionResponses];
-
 export type GetApiUserProfileData = {
     body?: never;
     path?: never;
@@ -741,7 +700,7 @@ export type PostApiNotificationData = {
         /**
          * 全站公告默认为null
          */
-        recevier_uid: string;
+        receiver_uid: string;
         title: string;
         content: string;
         /**
@@ -854,21 +813,168 @@ export type GetApiUserNotificationResponses = {
 
 export type GetApiUserNotificationResponse = GetApiUserNotificationResponses[keyof GetApiUserNotificationResponses];
 
-export type GetApiNotificationReadData = {
+export type GetApiNotificationUnreadData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/notification/read';
+    url: '/api/notification/unread';
 };
 
-export type GetApiNotificationReadResponses = {
+export type GetApiNotificationUnreadResponses = {
     200: {
         code: number;
         msg: string;
         data: {
-            has_unread: boolean;
+            unread_num: number;
         };
     };
 };
 
-export type GetApiNotificationReadResponse = GetApiNotificationReadResponses[keyof GetApiNotificationReadResponses];
+export type GetApiNotificationUnreadResponse = GetApiNotificationUnreadResponses[keyof GetApiNotificationUnreadResponses];
+
+export type GetApiSystemPermissionData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/system-permission';
+};
+
+export type GetApiSystemPermissionResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type GetApiSystemPermissionResponse = GetApiSystemPermissionResponses[keyof GetApiSystemPermissionResponses];
+
+export type PutApiUserSystemPermissionData = {
+    body: {
+        uids: Array<string>;
+        system_permission: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/user/system-permission';
+};
+
+export type PutApiUserSystemPermissionResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PutApiUserSystemPermissionResponse = PutApiUserSystemPermissionResponses[keyof PutApiUserSystemPermissionResponses];
+
+export type PostApiRoleData = {
+    body: {
+        name: string;
+        description?: string;
+        accesses: Array<{
+            venue_id: number;
+            allow_reserve?: boolean;
+            allow_approval?: boolean;
+            allow_edit?: boolean;
+            allow_manage?: boolean;
+        }>;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/role';
+};
+
+export type PostApiRoleResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type PostApiRoleResponse = PostApiRoleResponses[keyof PostApiRoleResponses];
+
+export type PutApiRoleByVagidData = {
+    body: {
+        name: string;
+        description: string;
+        /**
+         * 字段空缺即不更改权限仅更改元信息
+         */
+        accesses?: Array<{
+            venue_id: number;
+            allow_reserve?: boolean;
+            allow_approval?: boolean;
+            allow_edit?: boolean;
+            allow_manage?: boolean;
+        }>;
+    };
+    path: {
+        vagid: string;
+    };
+    query?: never;
+    url: '/api/role/{vagid}';
+};
+
+export type PutApiRoleByVagidResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PutApiRoleByVagidResponse = PutApiRoleByVagidResponses[keyof PutApiRoleByVagidResponses];
+
+export type GetApiRoleByVagidVenueData = {
+    body?: never;
+    path: {
+        vagid: string;
+    };
+    query?: never;
+    url: '/api/role/{vagid}/venue';
+};
+
+export type GetApiRoleByVagidVenueResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type GetApiRoleByVagidVenueResponse = GetApiRoleByVagidVenueResponses[keyof GetApiRoleByVagidVenueResponses];
+
+export type PutApiUserVagData = {
+    body: {
+        uids: Array<string>;
+        system_permission: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/user/vag';
+};
+
+export type PutApiUserVagResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: string | number | boolean | Array<unknown> | {
+            [key: string]: unknown;
+        } | number | null;
+    };
+};
+
+export type PutApiUserVagResponse = PutApiUserVagResponses[keyof PutApiUserVagResponses];

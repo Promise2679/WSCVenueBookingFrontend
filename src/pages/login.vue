@@ -48,7 +48,7 @@ import { ref } from 'vue'
 import { getApiLoginSessionSalt, postApiLogin, postApiRegister } from '@/api'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import { sha256 } from '@/utils/sha256'
+import { secureHash, sha256 } from '@/utils/sha256'
 
 const username = ref('')
 const password = ref('')
@@ -84,7 +84,7 @@ async function handleLogin() {
   }
 
   const { session_salt, user_salt } = saltRawData.data
-  const encryptedToken = session_salt + (await sha256(session_salt + (await sha256(password.value + user_salt))))
+  const encryptedToken = session_salt + (await secureHash(password.value, user_salt, session_salt))
 
   const { data } = await postApiLogin({ body: { login_name: username.value, login_token: encryptedToken } })
   if (!data) {

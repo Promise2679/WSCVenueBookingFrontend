@@ -36,7 +36,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn variant="text" @click="showLogoutDialog = false">取消</v-btn>
-          <v-btn variant="flat">确定</v-btn>
+          <v-btn variant="flat" @click="logout">确定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -44,9 +44,21 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 import { settings } from '@/constants/settings'
+import router from '@/router'
+import { useUserStore } from '@/stores/user'
 
 const showLogoutDialog = ref(false)
+
+async function logout() {
+  const { name, token, uid } = storeToRefs(useUserStore())
+  name.value = ''
+  token.value = ''
+  uid.value = ''
+
+  await router.push('/login')
+}
 </script>

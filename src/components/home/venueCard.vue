@@ -68,13 +68,16 @@
                     />
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field
-                      v-model="editFormData.cover_image_token"
-                      label="图片链接"
+                    <v-file-input
+                      v-model="editFormData.coverImage"
+                      label="封面图片"
                       variant="outlined"
                       density="comfortable"
-                      placeholder="https://example.com/image.jpg"
-                      prepend-inner-icon="mdi-image"
+                      accept="image/*"
+                      prepend-icon="mdi-image"
+                      show-size
+                      :hint="editFormData.cover_image_token ? '已上传新图片将覆盖原链接' : ''"
+                      persistent-hint
                     />
                   </v-col>
                 </v-row>
@@ -301,6 +304,7 @@
 </template>
 
 <script setup lang="ts">
+import CryptoJS from 'crypto-js'
 import { reactive, ref } from 'vue'
 
 import { type GetApiVenueResponse, postApiFile, postApiVenueByVenueIdApplication, putApiVenueByVenueId } from '@/api'
@@ -322,7 +326,14 @@ const formValid = ref(false)
 const editFormValid = ref(false)
 
 const bookingFormData = reactive<BookingFormData>(getInitialFormData())
-const editFormData = reactive({ capacity: 0, cover_image_token: '', description: '', name: '', type: '' })
+const editFormData = reactive({
+  capacity: 0,
+  cover_image_token: '',
+  coverImage: null,
+  description: '',
+  name: '',
+  type: ''
+})
 
 const timeOptions = Array.from({ length: 20 }, (_, i) => {
   const hour = Math.floor(i / 2) + 8
@@ -353,6 +364,7 @@ function openEditDialog() {
   editFormData.type = String(props.venue.type_id)
   editFormData.description = props.venue.description_text
   editFormData.cover_image_token = props.venue.cover_image_token
+  editFormData.coverImage = null
 }
 
 function openVenueDetail() {
@@ -361,13 +373,25 @@ function openVenueDetail() {
 }
 
 async function saveVenueEdit() {
+  let coverToken = editFormData.cover_image_token
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (editFormData.coverImage) {
+    const file = editFormData.coverImage as File
+    const arrayBuffer = await file.arrayBuffer()
+    const hash = CryptoJS.SHA256(CryptoJS.lib.WordArray.create(arrayBuffer)).toString()
+
+    const { data } = await postApiFile({ body: { file, hash, size: file.size } })
+    if (data?.data) coverToken = data.data.filetoken as string
+  }
+
   const { error } = await putApiVenueByVenueId({
     body: {
       building_id: props.venue.building_id,
       capacity: editFormData.capacity,
-      cover_image_token: editFormData.cover_image_token,
+      cover_image_token: coverToken,
       description: editFormData.description,
-      images_token: [editFormData.cover_image_token],
+      images_token: [coverToken],
       name: editFormData.name,
       type_id: Number(editFormData.type)
     },
@@ -386,14 +410,20 @@ async function submitBooking() {
 
   const attachments = []
   if (bookingFormData.activityPlan) {
-    const { data } = await postApiFile({ body: { file: bookingFormData.activityPlan } })
-    if (data)
-      attachments.push({
-        file_name: bookingFormData.activityPlan.name,
-        file_token: data.data as string,
-        file_type: bookingFormData.activityPlan.name.split('.').pop() ?? 'file',
-        index: 0
-      })
+    const file = bookingFormData.activityPlan
+    const arrayBuffer = await file.arrayBuffer()
+    const hash = CryptoJS.SHA256(CryptoJS.lib.WordArray.create(arrayBuffer)).toString()
+
+    const { data } = await postApiFile({ body: { file, hash, size: file.size } })
+
+    if (!data?.data) return
+
+    attachments.push({
+      file_name: bookingFormData.activityPlan.name,
+      file_token: data.data.filetoken as string,
+      file_type: bookingFormData.activityPlan.name.split('.').pop() ?? 'file',
+      index: 0
+    })
   }
 
   const { error } = await postApiVenueByVenueIdApplication({

@@ -84,7 +84,7 @@ async function handleLogin() {
   }
 
   const { session_salt, user_salt } = saltRawData.data
-  const encryptedToken = session_salt + (await secureHash(password.value, user_salt, session_salt))
+  const encryptedToken = session_salt + secureHash(password.value, user_salt, session_salt)
 
   const { data } = await postApiLogin({ body: { login_name: username.value, login_token: encryptedToken } })
   if (!data) {
@@ -107,7 +107,7 @@ async function handleRegister() {
   isLoading.value = true
 
   const passwordSalt = generateSalt()
-  const passwordHash = await sha256(regPassword.value + passwordSalt)
+  const passwordHash = sha256(regPassword.value + passwordSalt)
 
   const { error } = await postApiRegister({
     body: {

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@pinia/colada": "catalog:store",
+    "crypto-js": "catalog:crypto",
     "pinia": "catalog:store",
     "pinia-plugin-persistedstate": "catalog:store",
     "valibot": "catalog:",
@@ -31,6 +32,7 @@
     "@mdi/font": "catalog:style",
     "@promise2/eslint-config": "catalog:lint",
     "@tsconfig/node24": "catalog:vue",
+    "@types/crypto-js": "catalog:type",
     "@types/node": "catalog:type",
     "@typescript-eslint/eslint-plugin": "catalog:lint",
     "@typescript-eslint/parser": "catalog:lint",

@@ -4,6 +4,8 @@ catalog:
   vue-router: ^4.6.4
 
 catalogs:
+  crypto:
+    crypto-js: ^4.2.0
   infra:
     '@hey-api/openapi-ts': ^0.92.4
     jiti: ^2.6.1
@@ -28,6 +30,7 @@ catalogs:
     '@mdi/font': ^7.4.47
     vuetify: ^3.11.8
   type:
+    '@types/crypto-js': ^4.2.2
     '@types/node': ^24.10.9
   vite:
     '@vitejs/plugin-vue': ^6.0.3

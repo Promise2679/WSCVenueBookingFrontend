@@ -409,14 +409,16 @@ async function openApprovalDialog() {
     path: { venue_id: props.room.id.toString() }
   })
 
-  if (error || !data?.data) {
+  if (error || data?.data.length === 0) {
     venueApplications.value = []
     currentApplication.value = null
+    showApprovalDialog.value = false
     return
   }
 
-  const apps = data.data[0] ?? []
-  venueApplications.value = apps as VenueApplication[]
+  // 接口文档错误，暂时无视类型
+  const apps = data?.data
+  venueApplications.value = apps as unknown as VenueApplication[]
   currentApplication.value = venueApplications.value[0] ?? null
 }
 

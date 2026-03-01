@@ -296,7 +296,7 @@ import { useQuery } from '@pinia/colada'
 import { computed, ref } from 'vue'
 
 import { deleteApiVenueByVenueId, putApiVenue } from '@/api'
-import { getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
+import { getApiRoleByVagidVenueQuery, getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
 
 import VenueCard from './venueCard.vue'
 
@@ -348,6 +348,38 @@ const showDeleteDialog = ref(false)
 const deleting = ref(false)
 const venueToDelete = ref<null | Room>(null)
 
+// 获取可修改权限的场地列表
+const vagid = ref('1')
+const { data: venuesData } = useQuery(getApiRoleByVagidVenueQuery({ path: { vagid: vagid.value } }))
+
+const rooms = computed<Room[]>(() => {
+  if (!venuesData.value?.data) return []
+  return (
+    venuesData.value.data as Array<{
+      building_id: number
+      name: string
+      permission: string[]
+      type_id: number
+      venue_id: number
+    }>
+  ).map(venue => ({
+    approvedCount: Math.floor(Math.random() * 20) + 5,
+    id: venue.venue_id,
+    maintenance: false,
+    name: venue.name,
+    pendingCount: Math.floor(1),
+    weekStats: [
+      { bookings: Math.floor(Math.random() * 10) + 2, label: '周一', value: 1 },
+      { bookings: Math.floor(Math.random() * 10) + 2, label: '周二', value: 2 },
+      { bookings: Math.floor(Math.random() * 10) + 2, label: '周三', value: 3 },
+      { bookings: Math.floor(Math.random() * 10) + 2, label: '周四', value: 4 },
+      { bookings: Math.floor(Math.random() * 10) + 2, label: '周五', value: 5 },
+      { bookings: Math.floor(Math.random() * 8) + 1, label: '周六', value: 6 },
+      { bookings: Math.floor(Math.random() * 8) + 1, label: '周日', value: 0 }
+    ]
+  }))
+})
+
 const timeRangeLabel = computed(() => {
   switch (timeRange.value) {
     case '30days':
@@ -369,89 +401,6 @@ const overviewData = ref({
 })
 
 const periodStats = ref({ bookingCount: 45, occupancyRate: 67, venueCount: 8 })
-
-const rooms = ref<Room[]>([
-  {
-    approvedCount: 15,
-    id: 1,
-    maintenance: false,
-    name: '篮球场A',
-    pendingCount: 3,
-    weekStats: [
-      { bookings: 8, label: '高占用', value: 85 },
-      { bookings: 6, label: '中占用', value: 60 },
-      { bookings: 9, label: '高占用', value: 90 },
-      { bookings: 4, label: '低占用', value: 45 },
-      { bookings: 7, label: '中占用', value: 75 },
-      { bookings: 3, label: '低占用', value: 30 },
-      { bookings: 5, label: '中占用', value: 50 }
-    ]
-  },
-  {
-    approvedCount: 8,
-    id: 2,
-    maintenance: true,
-    name: '羽毛球场1号',
-    pendingCount: 0,
-    weekStats: [
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 },
-      { bookings: 0, label: '维护中', value: 0 }
-    ]
-  },
-  {
-    approvedCount: 22,
-    id: 3,
-    maintenance: false,
-    name: '乒乓球场',
-    pendingCount: 2,
-    weekStats: [
-      { bookings: 4, label: '低占用', value: 40 },
-      { bookings: 7, label: '中占用', value: 70 },
-      { bookings: 5, label: '中占用', value: 55 },
-      { bookings: 8, label: '高占用', value: 80 },
-      { bookings: 3, label: '低占用', value: 35 },
-      { bookings: 6, label: '中占用', value: 65 },
-      { bookings: 4, label: '低占用', value: 45 }
-    ]
-  },
-  {
-    approvedCount: 31,
-    id: 4,
-    maintenance: false,
-    name: '多功能厅',
-    pendingCount: 5,
-    weekStats: [
-      { bookings: 10, label: '高占用', value: 95 },
-      { bookings: 11, label: '高占用', value: 100 },
-      { bookings: 9, label: '高占用', value: 85 },
-      { bookings: 7, label: '中占用', value: 70 },
-      { bookings: 9, label: '高占用', value: 90 },
-      { bookings: 5, label: '中占用', value: 50 },
-      { bookings: 8, label: '中占用', value: 75 }
-    ]
-  },
-  {
-    approvedCount: 45,
-    id: 5,
-    maintenance: false,
-    name: '会议室201',
-    pendingCount: 1,
-    weekStats: [
-      { bookings: 6, label: '中占用', value: 60 },
-      { bookings: 4, label: '低占用', value: 45 },
-      { bookings: 8, label: '高占用', value: 80 },
-      { bookings: 5, label: '中占用', value: 55 },
-      { bookings: 7, label: '中占用', value: 70 },
-      { bookings: 2, label: '低占用', value: 25 },
-      { bookings: 4, label: '低占用', value: 40 }
-    ]
-  }
-])
 
 const filteredRooms = computed(() => {
   if (!search.value) return rooms.value
@@ -531,10 +480,6 @@ async function handleDeleteVenue() {
     showSnackbar.value = true
     return
   }
-
-  // 从列表中移除
-  const index = rooms.value.findIndex(r => r.id === venueToDelete.value?.id)
-  if (index !== -1) rooms.value.splice(index, 1)
 
   snackbarText.value = '删除成功'
   snackbarColor.value = 'success'

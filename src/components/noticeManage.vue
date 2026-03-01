@@ -304,7 +304,7 @@ const saveNotice = () => {
     formDialog.value = false
     void fetchNotices()
   } else {
-    createNotice({ body: { ...body, recevier_uid: null as unknown as string } })
+    createNotice({ body: { ...body, recevier_uid: '' } })
     showSnackbar('公告发布成功', 'success')
     formDialog.value = false
     void fetchNotices()

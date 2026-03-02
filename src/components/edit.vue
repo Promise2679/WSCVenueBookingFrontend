@@ -49,7 +49,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+
+import { getApiUserProfile, postApiUserChangePassword, putApiUserProfile } from '@/api'
+import { useUserStore } from '@/stores/user'
+import { generateSalt } from '@/utils/salt'
 
 const rawPhone = ref('')
 const phoneDisplay = computed(() => `${rawPhone.value.slice(0, 3)}****${rawPhone.value.slice(-4)}`)
@@ -59,24 +64,45 @@ const editingPhone = ref(phoneDisplay.value)
 const originalPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
+const { name } = storeToRefs(useUserStore())
 
 async function togglePhoneEdit() {
   if (isEditingPhone.value) {
     isEditingPhone.value = false
-    const { error } = await patchApiUserEditProfile({ body: { phone_number: editingPhone.value } })
-    if (error)
-      // TODO: 报错
+
+    if (editingPhone.value.length !== 11) {
+      editingPhone.value = phoneDisplay.value
       return
+    }
+
+    const { error } = await putApiUserProfile({ body: { phone_number: editingPhone.value, username: name.value } })
+    if (error) return
+
     rawPhone.value = editingPhone.value
     editingPhone.value = phoneDisplay.value
   } else {
-    // TODO: 电话号码长度判断
     editingPhone.value = rawPhone.value
     isEditingPhone.value = true
   }
 }
 
-const changePassword = () => {
+const changePassword = async () => {
   if (newPassword.value !== confirmPassword.value) return
+
+  const salt = generateSalt()
+  await postApiUserChangePassword({
+    body: {
+      new_password: newPassword.value,
+      new_salt: salt,
+      verify_data: originalPassword.value,
+      verify_type: 'old_password'
+    }
+  })
 }
+
+onMounted(async () => {
+  const { data, error } = await getApiUserProfile()
+  if (!error && data) rawPhone.value = data.data.phone_number
+  editingPhone.value = phoneDisplay.value
+})
 </script>

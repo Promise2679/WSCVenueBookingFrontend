@@ -289,14 +289,14 @@ const saveNotice = () => {
   const body = {
     attachments: [],
     content: formData.content,
-    release_time: formData.release_time || new Date().toISOString(),
+    release_time: formData.release_time ? `${formData.release_time}:00+08:00` : new Date().toISOString(),
     status: formData.status,
     title: formData.title
   }
 
   if (isEdit.value && selectedNotice.value) {
     updateNotice({
-      body: { ...body, recevier: null as unknown as string },
+      body: { ...body, receiver_uid: '' },
       path: { notification_id: selectedNotice.value.notification_id.toString() }
     })
 
@@ -304,7 +304,7 @@ const saveNotice = () => {
     formDialog.value = false
     void fetchNotices()
   } else {
-    createNotice({ body: { ...body, recevier_uid: '' } })
+    createNotice({ body: { ...body, receiver_uid: '' } })
     showSnackbar('公告发布成功', 'success')
     formDialog.value = false
     void fetchNotices()

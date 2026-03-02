@@ -6,8 +6,6 @@
       <v-tab value="pending">待审核</v-tab>
       <v-tab value="rejected">已驳回</v-tab>
       <v-tab value="approved">已通过</v-tab>
-      <v-tab value="used">已使用</v-tab>
-      <v-tab value="cancelled">已取消</v-tab>
     </v-tabs>
 
     <!-- 预约列表 -->
@@ -80,7 +78,7 @@ interface Reservation {
   classroom: string
   description: string
   id: number
-  status: 'approved' | 'cancelled' | 'pending' | 'rejected' | 'used'
+  status: 'apv' | 'rej' | 'req'
 }
 
 const filterTab = ref('all')
@@ -92,7 +90,7 @@ const { data: queryData, refetch } = useQuery(getApiUserApplicationQuery({ body:
 
 const reservations = computed<Reservation[]>(() => {
   if (!queryData.value?.data) return []
-  const list = queryData.value.data[0] ?? []
+  const list = queryData.value.data
   return list.map(item => ({
     activityName: item.activity_name,
     classroom: item.comments[0]?.text.split('\n')[0] ?? '',
@@ -103,26 +101,14 @@ const reservations = computed<Reservation[]>(() => {
 })
 
 function mapStatus(status: string): Reservation['status'] {
-  const statusMap: Record<string, Reservation['status']> = {
-    approved: 'approved',
-    cancelled: 'cancelled',
-    pending: 'pending',
-    rejected: 'rejected',
-    used: 'used'
-  }
-  return statusMap[status] ?? 'pending'
+  const statusMap: Record<string, Reservation['status']> = { apv: 'apv', rej: 'rej', req: 'req' }
+  return statusMap[status] ?? 'req'
 }
 
 const filteredReservations = computed(() => {
   if (filterTab.value === 'all') return reservations.value
 
-  const statusMap: Record<string, Reservation['status']> = {
-    approved: 'approved',
-    cancelled: 'cancelled',
-    pending: 'pending',
-    rejected: 'rejected',
-    used: 'used'
-  }
+  const statusMap: Record<string, Reservation['status']> = { approved: 'apv', pending: 'req', rejected: 'rej' }
   return reservations.value.filter(r => r.status === statusMap[filterTab.value])
 })
 
@@ -147,24 +133,12 @@ async function confirmCancel() {
 }
 
 function getStatusColor(status: Reservation['status']): string {
-  const colors: Record<Reservation['status'], string> = {
-    approved: 'success',
-    cancelled: 'grey',
-    pending: 'warning',
-    rejected: 'error',
-    used: 'info'
-  }
+  const colors: Record<Reservation['status'], string> = { apv: 'success', rej: 'error', req: 'warning' }
   return colors[status]
 }
 
 function getStatusText(status: Reservation['status']): string {
-  const texts: Record<Reservation['status'], string> = {
-    approved: '已通过',
-    cancelled: '已取消',
-    pending: '待审核',
-    rejected: '已驳回',
-    used: '已使用'
-  }
+  const texts: Record<Reservation['status'], string> = { apv: '已通过', rej: '已驳回', req: '待审核' }
   return texts[status]
 }
 

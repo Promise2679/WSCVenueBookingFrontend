@@ -48,6 +48,7 @@ import { ref } from 'vue'
 import { getApiLoginSessionSalt, postApiLogin, postApiRegister } from '@/api'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import { generateSalt } from '@/utils/salt'
 import { secureHash, sha256 } from '@/utils/sha256'
 
 const username = ref('')
@@ -65,14 +66,6 @@ const showRegPassword = ref(false)
 const showSnackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
-
-function generateSalt(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < 16; i++) result += chars.charAt(Math.floor(Math.random() * chars.length))
-
-  return result
-}
 
 async function handleLogin() {
   isLoading.value = true
@@ -101,6 +94,11 @@ async function handleLogin() {
 async function handleRegister() {
   if (regPassword.value !== regConfirmPassword.value) {
     showMessage('两次输入的密码不一致', 'error')
+    return
+  }
+
+  if (regSchoolId.value.length !== 12) {
+    showMessage('请输入 12 位学号', 'error')
     return
   }
 

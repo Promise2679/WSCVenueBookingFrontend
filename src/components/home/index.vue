@@ -56,31 +56,37 @@
 
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
-import { getApiVenueLocationsQuery, getApiVenueQuery } from '@/api/@pinia/colada.gen'
+import { getApiVenue, type GetApiVenueResponse } from '@/api'
+import { getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
 
 import VenueCard from './venueCard.vue'
 
 const search = ref('')
 const showFilter = ref(false)
 const selectedBuildings = ref<number[]>([])
+const data = ref<GetApiVenueResponse>()
 
 const { data: locationsData } = useQuery(getApiVenueLocationsQuery({}))
 const buildings = computed(() => locationsData.value?.data.buildings ?? [])
 
 const venueQuery = computed(() => ({ query: { b: selectedBuildings.value.map(String), s: search.value || undefined } }))
-
-const { data, refetch } = useQuery(getApiVenueQuery({ ...venueQuery.value, body: {} }))
 const venues = computed(() => data.value?.data ?? [])
 
 let debounceTimer: null | ReturnType<typeof setTimeout> = null
+
 watch([selectedBuildings, search], () => {
   if (debounceTimer) clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => void refetch(), 300)
+  debounceTimer = setTimeout(() => void refreshVenues(), 300)
 })
 
 async function refreshVenues() {
-  await refetch()
+  const { data: raw } = await getApiVenue({ ...venueQuery.value, body: {} })
+  data.value = raw
 }
+
+onMounted(async () => {
+  await refreshVenues()
+})
 </script>

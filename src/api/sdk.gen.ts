@@ -52,6 +52,15 @@ export const getApiUserProfileByUid = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
+ * 总览所有被管理的账户
+ */
+export const getApiAccount = <ThrowOnError extends boolean = false>(options?: Options<GetApiAccountData, ThrowOnError>) => (options?.client ?? client).get<GetApiAccountResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/account',
+    ...options
+});
+
+/**
  * 登录
  */
 export const postApiLogin = <ThrowOnError extends boolean = false>(options: Options<PostApiLoginData, ThrowOnError>) => (options.client ?? client).post<PostApiLoginResponses, unknown, ThrowOnError>({
@@ -254,15 +263,6 @@ export const getApiFileByFiletoken = <ThrowOnError extends boolean = false>(opti
 });
 
 /**
- * 总览所有被管理的账户
- */
-export const getApiAccount = <ThrowOnError extends boolean = false>(options?: Options<GetApiAccountData, ThrowOnError>) => (options?.client ?? client).get<GetApiAccountResponses, unknown, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/account',
-    ...options
-});
-
-/**
  * 查看公告
  */
 export const getApiNotification = <ThrowOnError extends boolean = false>(options?: Options<GetApiNotificationData, ThrowOnError>) => (options?.client ?? client).get<GetApiNotificationResponses, unknown, ThrowOnError>({
@@ -274,13 +274,13 @@ export const getApiNotification = <ThrowOnError extends boolean = false>(options
 /**
  * 发布公告
  */
-export const postApiNotification = <ThrowOnError extends boolean = false>(options: Options<PostApiNotificationData, ThrowOnError>) => (options.client ?? client).post<PostApiNotificationResponses, unknown, ThrowOnError>({
+export const postApiNotification = <ThrowOnError extends boolean = false>(options?: Options<PostApiNotificationData, ThrowOnError>) => (options?.client ?? client).post<PostApiNotificationResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/notification',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options.headers
+        ...options?.headers
     }
 });
 

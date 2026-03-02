@@ -32,35 +32,26 @@
         <template #item.name="{ item }">
           <div class="d-flex align-center">
             <v-avatar color="primary" size="32" class="mr-2">
-              <span class="text-body-2">{{ item.name?.charAt(0)?.toUpperCase() }}</span>
+              <span class="text-body-2">{{ item.username?.charAt(0)?.toUpperCase() }}</span>
             </v-avatar>
-            {{ item.name }}
+            {{ item.username }}
           </div>
         </template>
 
         <template #item.identity="{ item }">
-          <v-chip :color="getIdentityColor(item.identity)" size="small" variant="flat">
-            {{ getIdentityText(item.identity) }}
+          <v-chip :color="getIdentityColor(item.perm_map)" size="small" variant="flat">
+            {{ getIdentityText(item.perm_map) }}
           </v-chip>
         </template>
 
-        <template #item.applications_num="{ item }">
-          <div class="text-caption">
-            <div>总数: {{ item.applications_num?.total_applications ?? 0 }}</div>
-            <div>使用: {{ item.applications_num?.use ?? 0 }}</div>
-            <div>取消: {{ item.applications_num?.cancel ?? 0 }}</div>
-            <div v-if="item.applications_num?.review >= 0">审核: {{ item.applications_num?.review }}</div>
-          </div>
+        <template #item.avg_id="{ item }">
+          {{ item.uid }}
         </template>
 
         <template #item.actions="{ item }">
           <v-btn icon size="small" color="warning" variant="text" @click="openPermissionDialog(item)">
             <v-icon>mdi-shield-account</v-icon>
             <v-tooltip activator="parent" location="top">修改权限</v-tooltip>
-          </v-btn>
-          <v-btn icon size="small" color="error" variant="text" @click="confirmDelete(item)">
-            <v-icon>mdi-delete</v-icon>
-            <v-tooltip activator="parent" location="top">删除用户</v-tooltip>
           </v-btn>
         </template>
       </v-data-table>
@@ -71,7 +62,7 @@
         <v-card-title>修改用户权限</v-card-title>
         <v-card-text>
           <p class="mb-4">
-            用户: <strong>{{ selectedUser?.name }}</strong>
+            用户: <strong>{{ selectedUser?.username }}</strong>
           </p>
           <v-select
             v-model="selectedPermission"
@@ -95,7 +86,7 @@
       <v-card>
         <v-card-title class="text-error">确认删除</v-card-title>
         <v-card-text>
-          确定要删除用户 <strong>{{ selectedUser?.name }}</strong> 吗？此操作不可撤销。
+          确定要删除用户 <strong>{{ selectedUser?.username }}</strong> 吗？此操作不可撤销。
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -124,10 +115,15 @@ interface PermissionOption {
 }
 
 interface User {
-  applications_num: { cancel: number; review: number; total_applications: number; use: number }
-  avg_id: number
-  identity: number
-  name: string
+  perm_map: number
+  perm_vagid: number
+  phone_number: string
+  real_name: string
+  registered_at: string
+  school_id: string
+  uid: string
+  updated_at: string
+  username: string
 }
 
 const savingPermission = ref(false)
@@ -141,9 +137,9 @@ const filteredUsers = computed(() => {
   const query = search.value.toLowerCase()
   return data.filter(
     (u: User) =>
-      u.name.toLowerCase().includes(query) ||
-      u.avg_id.toString().includes(query) ||
-      getIdentityText(u.identity).toLowerCase().includes(query)
+      u.username.toLowerCase().includes(query) ||
+      u.uid.toLowerCase().includes(query) ||
+      getIdentityText(u.perm_map).toLowerCase().includes(query)
   )
 })
 const deleteDialog = ref(false)
@@ -156,7 +152,6 @@ const headers = [
   { key: 'name', sortable: true, title: '用户名' },
   { key: 'identity', sortable: true, title: '身份', width: '100' },
   { key: 'avg_id', sortable: true, title: '用户ID', width: '120' },
-  { key: 'applications_num', sortable: false, title: '申请统计', width: '150' },
   { align: 'center' as const, key: 'actions', sortable: false, title: '操作', width: '120' }
 ]
 
@@ -180,7 +175,7 @@ const { data: usersData, isLoading: loading, refetch: fetchUsers } = useQuery(ge
 
 const openPermissionDialog = (user: User) => {
   selectedUser.value = user
-  selectedPermission.value = user.identity
+  selectedPermission.value = user.perm_map
   permissionDialog.value = true
 }
 
@@ -189,7 +184,7 @@ const savePermission = async () => {
 
   savingPermission.value = true
   const res = await putApiUserSystemPermission({
-    body: { system_permission: selectedPermission.value, uids: [selectedUser.value.avg_id.toString()] }
+    body: { system_permission: selectedPermission.value, uids: [selectedUser.value.uid] }
   })
 
   if (res.error) showSnackbar('网络错误，请稍后重试', 'error')
@@ -200,11 +195,6 @@ const savePermission = async () => {
   } else showSnackbar(res.data?.msg ?? '权限修改失败', 'error')
 
   savingPermission.value = false
-}
-
-const confirmDelete = (user: User) => {
-  selectedUser.value = user
-  deleteDialog.value = true
 }
 
 const deleteUser = () => {

@@ -72,6 +72,44 @@ export type GetApiUserProfileByUidResponses = {
 
 export type GetApiUserProfileByUidResponse = GetApiUserProfileByUidResponses[keyof GetApiUserProfileByUidResponses];
 
+export type GetApiAccountData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 默认0，学生1，教师2
+         */
+        identity?: number;
+        avg_id?: number;
+        offset?: string;
+        limit?: string;
+    };
+    url: '/api/account';
+};
+
+export type GetApiAccountResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: Array<{
+            name: string;
+            identity: number;
+            avg_id: number;
+            applications_num: {
+                total_applications: number;
+                cancel: number;
+                use: number;
+                /**
+                 * 如果没有审核权限，则这个字段为-1
+                 */
+                review: number;
+            };
+        }>;
+    };
+};
+
+export type GetApiAccountResponse = GetApiAccountResponses[keyof GetApiAccountResponses];
+
 export type PostApiLoginData = {
     body: {
         /**
@@ -628,44 +666,6 @@ export type GetApiFileByFiletokenResponses = {
 
 export type GetApiFileByFiletokenResponse = GetApiFileByFiletokenResponses[keyof GetApiFileByFiletokenResponses];
 
-export type GetApiAccountData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * 默认0，学生1，教师2
-         */
-        identity?: number;
-        avg_id?: number;
-        offset?: string;
-        limit?: string;
-    };
-    url: '/api/account';
-};
-
-export type GetApiAccountResponses = {
-    200: {
-        code: number;
-        msg: string;
-        data: Array<{
-            name: string;
-            identity: number;
-            avg_id: number;
-            applications_num: {
-                total_applications: number;
-                cancel: number;
-                use: number;
-                /**
-                 * 如果没有审核权限，则这个字段为-1
-                 */
-                review: number;
-            };
-        }>;
-    };
-};
-
-export type GetApiAccountResponse = GetApiAccountResponses[keyof GetApiAccountResponses];
-
 export type GetApiNotificationData = {
     body?: never;
     path?: never;
@@ -696,7 +696,7 @@ export type GetApiNotificationResponses = {
 export type GetApiNotificationResponse = GetApiNotificationResponses[keyof GetApiNotificationResponses];
 
 export type PostApiNotificationData = {
-    body: {
+    body?: {
         /**
          * 全站公告默认为null
          */

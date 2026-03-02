@@ -92,6 +92,23 @@ export const getApiUserProfileByUidQuery = defineQueryOptions((options: Options<
     }
 }));
 
+export const getApiAccountQueryKey = (options?: Options<GetApiAccountData>) => createQueryKey('getApiAccount', options);
+
+/**
+ * 总览所有被管理的账户
+ */
+export const getApiAccountQuery = defineQueryOptions((options?: Options<GetApiAccountData>) => ({
+    key: getApiAccountQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiAccount({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
 /**
  * 登录
  */
@@ -334,23 +351,6 @@ export const getApiFileByFiletokenQuery = defineQueryOptions((options: Options<G
     key: getApiFileByFiletokenQueryKey(options),
     query: async (context) => {
         const { data } = await getApiFileByFiletoken({
-            ...options,
-            ...context,
-            throwOnError: true
-        });
-        return data;
-    }
-}));
-
-export const getApiAccountQueryKey = (options?: Options<GetApiAccountData>) => createQueryKey('getApiAccount', options);
-
-/**
- * 总览所有被管理的账户
- */
-export const getApiAccountQuery = defineQueryOptions((options?: Options<GetApiAccountData>) => ({
-    key: getApiAccountQueryKey(options),
-    query: async (context) => {
-        const { data } = await getApiAccount({
             ...options,
             ...context,
             throwOnError: true

@@ -29,7 +29,7 @@
         </v-btn>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="noticesWithStatus" :loading="loading" :items-per-page="10">
+      <v-data-table :headers="headers" :items="noticesWithStatus" :items-per-page="10">
         <template #item.title="{ item }">
           <div class="d-flex align-center">
             <v-icon color="primary" class="mr-2">mdi-bullhorn</v-icon>
@@ -48,18 +48,16 @@
         </template>
 
         <template #item.actions="{ item }">
-          <v-btn icon size="small" color="info" variant="text" @click="viewNotice(item)">
-            <v-icon>mdi-eye</v-icon>
-            <v-tooltip activator="parent" location="top">查看详情</v-tooltip>
-          </v-btn>
-          <v-btn icon size="small" color="warning" variant="text" @click="openEditDialog(item)">
-            <v-icon>mdi-pencil</v-icon>
-            <v-tooltip activator="parent" location="top">编辑</v-tooltip>
-          </v-btn>
-          <v-btn icon size="small" color="error" variant="text" @click="confirmDelete(item)">
-            <v-icon>mdi-delete</v-icon>
-            <v-tooltip activator="parent" location="top">删除</v-tooltip>
-          </v-btn>
+          <div class="d-flex">
+            <v-btn icon size="small" color="warning" variant="text" @click="openEditDialog(item)">
+              <v-icon>mdi-pencil</v-icon>
+              <v-tooltip activator="parent" location="top">编辑</v-tooltip>
+            </v-btn>
+            <v-btn icon size="small" color="error" variant="text" @click="confirmDelete(item)">
+              <v-icon>mdi-delete</v-icon>
+              <v-tooltip activator="parent" location="top">删除</v-tooltip>
+            </v-btn>
+          </div>
         </template>
       </v-data-table>
     </v-card>
@@ -167,7 +165,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import {
   deleteApiNotificationByNotificationIdMutation,
-  getApiNotificationQuery,
+  getApiUserNotificationQuery,
   postApiNotificationMutation,
   putApiNotificationByNotificationIdMutation
 } from '@/api/@pinia/colada.gen'
@@ -185,6 +183,7 @@ interface Notice {
   notification_id: number
   release_time: string
   sender_uid: string
+  status: number
   title: string
 }
 
@@ -219,16 +218,14 @@ const statusOptions: StatusOption[] = [
   { text: '草稿', value: 3 }
 ]
 
-const { data: noticesData, isLoading: loading, refetch: fetchNotices } = useQuery(getApiNotificationQuery())
+const { data: noticesData, isLoading: loading, refetch: fetchNotices } = useQuery(getApiUserNotificationQuery())
 
-const filteredNotices = computed(() => {
+const noticesWithStatus = computed(() => {
   const data = noticesData.value?.data ?? []
   if (!search.value) return data
   const query = search.value.toLowerCase()
   return data.filter((n: { title: string }) => n.title.toLowerCase().includes(query))
 })
-
-const noticesWithStatus = computed(() => filteredNotices.value.map(n => ({ ...n, status: 1 })))
 
 const getStatusColor = (status: number): string => {
   const colors: Record<number, string> = { 1: 'success', 2: 'info', 3: 'warning' }
@@ -259,14 +256,9 @@ const openEditDialog = (notice: Notice) => {
   selectedNotice.value = notice
   formData.title = notice.title
   formData.content = notice.content
-  formData.status = 1
+  formData.status = notice.status
   formData.release_time = notice.release_time ? notice.release_time.slice(0, 16) : ''
   formDialog.value = true
-}
-
-const viewNotice = (notice: Notice) => {
-  selectedNotice.value = notice
-  viewDialog.value = true
 }
 
 const confirmDelete = (notice: Notice) => {

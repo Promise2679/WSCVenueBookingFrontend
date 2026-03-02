@@ -48,7 +48,7 @@
 
     <v-row>
       <v-col v-for="venue in venues" :key="venue.venue_id" cols="12" sm="6" md="4">
-        <VenueCard :venue="venue" @refresh="refreshVenues" />
+        <VenueCard :venue="venue" :building-name="getBuildingName(venue.building_id)" @refresh="refreshVenues" />
       </v-col>
     </v-row>
   </v-container>
@@ -80,6 +80,14 @@ watch([selectedBuildings, search], () => {
   if (debounceTimer) clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => void refreshVenues(), 300)
 })
+
+function getBuildingName(id: number): string {
+  const buildings = locationsData.value?.data.buildings
+  if (!buildings) return ''
+
+  const index = buildings.findIndex(item => item.building_id === id)
+  return buildings[index]?.building_name ?? ''
+}
 
 async function refreshVenues() {
   const { data: raw } = await getApiVenue({ ...venueQuery.value, body: {} })

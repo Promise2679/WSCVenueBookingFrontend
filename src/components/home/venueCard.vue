@@ -9,7 +9,7 @@
     </v-card-item>
 
     <v-card-text>
-      <v-chip size="small" variant="tonal">类型: {{ venue.type_id }}</v-chip>
+      <v-chip size="small" variant="tonal">{{ getVenueType(venue.type_id) }}</v-chip>
     </v-card-text>
 
     <v-card-actions>
@@ -52,7 +52,9 @@
                     <v-select
                       v-model="editFormData.type"
                       label="场地类型"
-                      :items="['运动场地', '会议室', '教室', '多功能厅']"
+                      :items="venueTypes"
+                      item-title="title"
+                      item-value="value"
                       variant="outlined"
                       density="comfortable"
                     />
@@ -123,13 +125,7 @@
 
             <!-- 场地详情页 -->
             <v-card-text v-if="!bookingMode" class="pa-4">
-              <v-img
-                :src="venue.cover_image_token || 'https://placehold.co/600x200?text=场地图片'"
-                height="200"
-                cover
-                class="rounded mb-4"
-              />
-
+              <v-img :src="`/api/file/${venue.cover_image_token}`" height="200" cover class="rounded mb-4" />
               <div class="d-flex align-center mb-2">
                 <div class="text-h5">{{ venue.name }}</div>
                 <v-spacer />
@@ -144,7 +140,7 @@
                   <div class="text-caption text-medium-emphasis">场地类型</div>
                   <div class="d-flex align-center ga-1">
                     <v-icon size="small" icon="mdi-tag" />
-                    <span>{{ venue.type_id }}</span>
+                    <span>{{ getVenueType(venue.type_id) }}</span>
                   </div>
                 </v-col>
                 <v-col cols="4">
@@ -158,7 +154,7 @@
                   <div class="text-caption text-medium-emphasis">地点</div>
                   <div class="d-flex align-center ga-1">
                     <v-icon size="small" icon="mdi-map-marker" />
-                    <span>{{ venue.building_id }}</span>
+                    <span>{{ buildingName }}</span>
                   </div>
                 </v-col>
               </v-row>
@@ -308,6 +304,7 @@ import CryptoJS from 'crypto-js'
 import { reactive, ref } from 'vue'
 
 import { type GetApiVenueResponse, postApiFile, postApiVenueByVenueIdApplication, putApiVenueByVenueId } from '@/api'
+import { venueTypes } from '@/constants/venueDetails'
 
 interface BookingFormData {
   activity_name: string
@@ -318,7 +315,7 @@ interface BookingFormData {
   time_request: { begin: string; date: string; end: string }
 }
 
-const props = defineProps<{ venue: GetApiVenueResponse['data'][number] }>()
+const props = defineProps<{ buildingName: string; venue: GetApiVenueResponse['data'][number] }>()
 const emit = defineEmits<{ refresh: [] }>()
 
 const bookingMode = ref(false)
@@ -332,7 +329,7 @@ const editFormData = reactive({
   coverImage: null,
   description: '',
   name: '',
-  type: ''
+  type: 0
 })
 
 const timeOptions = Array.from({ length: 20 }, (_, i) => {
@@ -358,10 +355,15 @@ function getInitialFormData(): BookingFormData {
   }
 }
 
+function getVenueType(id: number) {
+  const idx = venueTypes.findIndex(item => item.value === id)
+  return venueTypes[idx]?.title
+}
+
 function openEditDialog() {
   editFormData.name = props.venue.name
   editFormData.capacity = props.venue.capacity ?? 0
-  editFormData.type = String(props.venue.type_id)
+  editFormData.type = props.venue.type_id
   editFormData.description = props.venue.description_text
   editFormData.cover_image_token = props.venue.cover_image_token
   editFormData.coverImage = null
@@ -393,7 +395,7 @@ async function saveVenueEdit() {
       description: editFormData.description,
       images_token: [coverToken],
       name: editFormData.name,
-      type_id: Number(editFormData.type)
+      type_id: editFormData.type
     },
     path: { venue_id: props.venue.venue_id.toString() }
   })

@@ -22,7 +22,7 @@ client.interceptors.error.use(res => {
   const message = useMessagesStore()
   message.add({ text: res.msg, color: 'error' })
 
-  if (res.code === 200402) {
+  if (res.code === 200402 || res.code === 200401) {
     useUserStore().$reset()
     router.push('/login')
   }

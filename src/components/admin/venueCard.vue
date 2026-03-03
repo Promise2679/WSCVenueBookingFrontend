@@ -406,6 +406,8 @@ async function openApprovalDialog() {
   // 接口文档错误，暂时无视类型
   const apps = data?.data
   venueApplications.value = apps as unknown as VenueApplication[]
+  venueApplications.value = venueApplications.value.filter(item => item.application_status === 'req')
+
   currentApplication.value = venueApplications.value[0] ?? null
 }
 

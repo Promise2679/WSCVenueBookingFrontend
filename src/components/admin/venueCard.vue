@@ -354,15 +354,15 @@ async function handleApproveApplication() {
     path: { application_id: currentApplication.value.id.toString() }
   })
 
-  approving.value = false
-
   if (error) {
+    approving.value = false
     message.add({ color: 'error', text: '审批失败，请重试' })
     return
   }
 
-  currentApplication.value.application_status = 'approved'
+  approving.value = false
   message.add({ color: 'success', text: '已同意该预约' })
+  await refreshApplications()
 }
 
 async function handleReject() {
@@ -374,15 +374,15 @@ async function handleReject() {
     path: { application_id: currentApplication.value.id.toString() }
   })
 
-  approving.value = false
-
   if (error) {
+    approving.value = false
     message.add({ color: 'error', text: '审批失败，请重试' })
     return
   }
 
-  currentApplication.value.application_status = 'rejected'
+  approving.value = false
   message.add({ color: 'error', text: '已拒绝该预约' })
+  await refreshApplications()
 }
 
 async function openApprovalDialog() {
@@ -390,29 +390,35 @@ async function openApprovalDialog() {
   currentPage.value = 0
   approvalComment.value = ''
   showApprovalDialog.value = true
+  await refreshApplications()
+}
 
+function openFile(fileToken: string): void {
+  window.open(getFileUrl(fileToken), '_blank')
+}
+
+async function refreshApplications() {
   const { data, error } = await getApiVenueByVenueIdApplication({
     body: {},
     path: { venue_id: props.room.id.toString() }
   })
 
-  if (error || data?.data.length === 0) {
+  if (error || !data?.data || data.data.length === 0) {
     venueApplications.value = []
     currentApplication.value = null
-    showApprovalDialog.value = false
     return
   }
 
-  // 接口文档错误，暂时无视类型
-  const apps = data?.data
-  venueApplications.value = apps as unknown as VenueApplication[]
-  venueApplications.value = venueApplications.value.filter(item => item.application_status === 'req')
+  const apps = data.data
+  venueApplications.value = (apps as unknown as VenueApplication[]).filter(item => item.application_status === 'req')
 
-  currentApplication.value = venueApplications.value[0] ?? null
-}
-
-function openFile(fileToken: string): void {
-  window.open(getFileUrl(fileToken), '_blank')
+  if (venueApplications.value.length === 0) {
+    showApprovalDialog.value = false
+    currentApplication.value = null
+  } else {
+    currentPage.value = Math.min(currentPage.value, venueApplications.value.length - 1)
+    currentApplication.value = venueApplications.value[currentPage.value] ?? null
+  }
 }
 
 // 翻页或弹窗打开时更新当前申请

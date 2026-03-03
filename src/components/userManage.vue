@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import { getApiAccountQuery } from '@/api/@pinia/colada.gen'
 import { putApiUserSystemPermission } from '@/api/sdk.gen'
@@ -170,8 +170,4 @@ const savePermission = async () => {
 
   savingPermission.value = false
 }
-
-onMounted(() => {
-  void fetchUsers()
-})
 </script>

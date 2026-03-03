@@ -4,6 +4,7 @@ import router from '@/router';
 import { type ClientOptions, type Config, createClient, createConfig } from './client';
 import type { ClientOptions as ClientOptions2 } from './types.gen';
 import { useUserStore } from '@/stores/user';
+import { useMessagesStore } from '@/stores/message';
 
 /**
  * The `createClientConfig()` function will be called on client initialization
@@ -18,6 +19,9 @@ export type CreateClientConfig<T extends ClientOptions = ClientOptions2> = (over
 export const client = createClient(createConfig<ClientOptions2>());
 
 client.interceptors.error.use(res => {
+  const message = useMessagesStore()
+  message.add({ text: res.msg, color: 'error' })
+
   if (res.code === 200402) {
     useUserStore().$reset()
     router.push('/login')

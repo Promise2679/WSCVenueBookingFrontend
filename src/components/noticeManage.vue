@@ -152,10 +152,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-      {{ snackbar.text }}
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -169,6 +165,7 @@ import {
   postApiNotificationMutation,
   putApiNotificationByNotificationIdMutation
 } from '@/api/@pinia/colada.gen'
+import { useMessagesStore } from '@/stores/message'
 
 interface Attachment {
   file_name: string
@@ -201,9 +198,9 @@ const saving = ref(false)
 const deleting = ref(false)
 const selectedNotice = ref<Notice | null>(null)
 
-const formData = reactive({ content: '', release_time: '', status: 1, title: '' })
+const message = useMessagesStore()
 
-const snackbar = reactive({ color: 'success', show: false, text: '' })
+const formData = reactive({ content: '', release_time: '', status: 1, title: '' })
 
 const headers = [
   { key: 'title', sortable: true, title: '标题' },
@@ -272,7 +269,7 @@ const { mutate: removeNotice } = useMutation(deleteApiNotificationByNotification
 
 const saveNotice = () => {
   if (!formData.title || !formData.content) {
-    showSnackbar('请填写标题和内容', 'error')
+    message.add({ color: 'error', text: '请填写标题和内容' })
     return
   }
 
@@ -292,12 +289,12 @@ const saveNotice = () => {
       path: { notification_id: selectedNotice.value.notification_id.toString() }
     })
 
-    showSnackbar('公告更新成功', 'success')
+    message.add({ color: 'success', text: '公告更新成功' })
     formDialog.value = false
     void fetchNotices()
   } else {
     createNotice({ body: { ...body, receiver_uid: '' } })
-    showSnackbar('公告发布成功', 'success')
+    message.add({ color: 'success', text: '公告发布成功' })
     formDialog.value = false
     void fetchNotices()
   }
@@ -311,17 +308,11 @@ const deleteNotice = () => {
   deleting.value = true
   removeNotice({ body: {}, path: { notification_id: selectedNotice.value.notification_id.toString() } })
 
-  showSnackbar('公告删除成功', 'success')
+  message.add({ color: 'success', text: '公告删除成功' })
   deleteDialog.value = false
   void fetchNotices()
 
   deleting.value = false
-}
-
-const showSnackbar = (text: string, color: string) => {
-  snackbar.text = text
-  snackbar.color = color
-  snackbar.show = true
 }
 
 onMounted(() => {

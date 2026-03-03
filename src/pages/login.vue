@@ -36,9 +36,6 @@
         <v-btn variant="text" class="mt-2" block @click="isRegisterMode = false">返回登录</v-btn>
       </v-form>
     </v-sheet>
-    <v-snackbar v-model="showSnackbar" :color="snackbarColor">
-      {{ snackbarText }}
-    </v-snackbar>
   </v-app>
 </template>
 
@@ -47,6 +44,7 @@ import { ref } from 'vue'
 
 import { getApiLoginSessionSalt, postApiLogin, postApiRegister } from '@/api'
 import router from '@/router'
+import { useMessagesStore } from '@/stores/message'
 import { useUserStore } from '@/stores/user'
 import { generateSalt } from '@/utils/salt'
 import { secureHash, sha256 } from '@/utils/sha256'
@@ -63,9 +61,7 @@ const regPassword = ref('')
 const regConfirmPassword = ref('')
 const showRegPassword = ref(false)
 
-const showSnackbar = ref(false)
-const snackbarText = ref('')
-const snackbarColor = ref('success')
+const message = useMessagesStore()
 
 async function handleLogin() {
   isLoading.value = true
@@ -94,12 +90,12 @@ async function handleLogin() {
 
 async function handleRegister() {
   if (regPassword.value !== regConfirmPassword.value) {
-    showMessage('两次输入的密码不一致', 'error')
+    message.add({ color: 'error', text: '两次输入的密码不一致' })
     return
   }
 
   if (regSchoolId.value.length !== 12) {
-    showMessage('请输入 12 位学号', 'error')
+    message.add({ color: 'error', text: '请输入 12 位学号' })
     return
   }
 
@@ -119,7 +115,7 @@ async function handleRegister() {
 
   if (error) return
 
-  showMessage('注册成功，请登录')
+  message.add({ color: 'success', text: '注册成功，请登录' })
   isRegisterMode.value = false
   username.value = regUsername.value
   regUsername.value = ''
@@ -128,11 +124,5 @@ async function handleRegister() {
   regConfirmPassword.value = ''
 
   isLoading.value = false
-}
-
-function showMessage(text: string, color = 'success') {
-  snackbarText.value = text
-  snackbarColor.value = color
-  showSnackbar.value = true
 }
 </script>

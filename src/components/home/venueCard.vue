@@ -403,10 +403,7 @@ async function saveVenueEdit() {
     },
     path: { venue_id: props.venue.venue_id.toString() }
   })
-  if (error) {
-    console.error('更新场地失败:', error)
-    return
-  }
+  if (error) return
   emit('refresh')
 }
 
@@ -445,10 +442,8 @@ async function submitBooking() {
     path: { venue_id: props.venue.venue_id.toString() }
   })
 
-  if (error) {
-    console.error('预约失败:', error)
-    return
-  }
+  if (error) return
+
   emit('refresh')
   closeDialog({ value: false } as { value: boolean })
 }

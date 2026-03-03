@@ -81,33 +81,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-dialog v-model="deleteDialog" max-width="400">
-      <v-card>
-        <v-card-title class="text-error">确认删除</v-card-title>
-        <v-card-text>
-          确定要删除用户 <strong>{{ selectedUser?.username }}</strong> 吗？此操作不可撤销。
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" @click="deleteDialog = false">取消</v-btn>
-          <v-btn color="error" :loading="deleting" @click="deleteUser"> 删除 </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-      {{ snackbar.text }}
-    </v-snackbar>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { getApiAccountQuery } from '@/api/@pinia/colada.gen'
 import { putApiUserSystemPermission } from '@/api/sdk.gen'
+import { useMessagesStore } from '@/stores/message'
 
 interface PermissionOption {
   text: string
@@ -127,9 +110,10 @@ interface User {
 }
 
 const savingPermission = ref(false)
-const deleting = ref(false)
 const search = ref('')
 const permissionDialog = ref(false)
+
+const message = useMessagesStore()
 
 const filteredUsers = computed(() => {
   const data = usersData.value?.data ?? []
@@ -142,11 +126,8 @@ const filteredUsers = computed(() => {
       getIdentityText(u.perm_map).toLowerCase().includes(query)
   )
 })
-const deleteDialog = ref(false)
 const selectedUser = ref<null | User>(null)
 const selectedPermission = ref<number>(0)
-
-const snackbar = reactive({ color: 'success', show: false, text: '' })
 
 const headers = [
   { key: 'name', sortable: true, title: '用户名' },
@@ -180,32 +161,14 @@ const savePermission = async () => {
     body: { system_permission: selectedPermission.value, uids: [selectedUser.value.uid] }
   })
 
-  if (res.error) showSnackbar('网络错误，请稍后重试', 'error')
+  if (res.error) message.add({ color: 'error', text: '网络错误，请稍后重试' })
   else if (res.data?.code === 200) {
-    showSnackbar('权限修改成功', 'success')
+    message.add({ color: 'success', text: '权限修改成功' })
     permissionDialog.value = false
     void fetchUsers()
-  } else showSnackbar(res.data?.msg ?? '权限修改失败', 'error')
+  } else message.add({ color: 'error', text: res.data?.msg ?? '权限修改失败' })
 
   savingPermission.value = false
-}
-
-const deleteUser = () => {
-  if (!selectedUser.value) return
-
-  deleting.value = true
-  try {
-    showSnackbar('删除功能开发中', 'warning')
-    deleteDialog.value = false
-  } finally {
-    deleting.value = false
-  }
-}
-
-const showSnackbar = (text: string, color: string) => {
-  snackbar.text = text
-  snackbar.color = color
-  snackbar.show = true
 }
 
 onMounted(() => {

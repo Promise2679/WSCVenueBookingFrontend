@@ -256,17 +256,13 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
-
-  <!-- 审批结果提示 -->
-  <v-snackbar v-model="showSnackbar" :color="snackbarColor" timeout="3000">
-    {{ snackbarText }}
-  </v-snackbar>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
 import { getApiVenueByVenueIdApplication, putApiApplicationByApplicationId } from '@/api'
+import { useMessagesStore } from '@/stores/message'
 
 interface Room {
   approvedCount: number
@@ -313,9 +309,8 @@ const venueApplications = ref<VenueApplication[]>([])
 const currentPage = ref(0)
 const approvalComment = ref('')
 const approving = ref(false)
-const showSnackbar = ref(false)
-const snackbarText = ref('')
-const snackbarColor = ref('success')
+
+const message = useMessagesStore()
 
 const currentApplication = ref<null | VenueApplication>(null)
 
@@ -362,16 +357,12 @@ async function handleApproveApplication() {
   approving.value = false
 
   if (error) {
-    snackbarText.value = '审批失败，请重试'
-    snackbarColor.value = 'error'
-    showSnackbar.value = true
+    message.add({ color: 'error', text: '审批失败，请重试' })
     return
   }
 
   currentApplication.value.application_status = 'approved'
-  snackbarText.value = '已同意该预约'
-  snackbarColor.value = 'success'
-  showSnackbar.value = true
+  message.add({ color: 'success', text: '已同意该预约' })
 }
 
 async function handleReject() {
@@ -386,16 +377,12 @@ async function handleReject() {
   approving.value = false
 
   if (error) {
-    snackbarText.value = '审批失败，请重试'
-    snackbarColor.value = 'error'
-    showSnackbar.value = true
+    message.add({ color: 'error', text: '审批失败，请重试' })
     return
   }
 
   currentApplication.value.application_status = 'rejected'
-  snackbarText.value = '已拒绝该预约'
-  snackbarColor.value = 'error'
-  showSnackbar.value = true
+  message.add({ color: 'error', text: '已拒绝该预约' })
 }
 
 async function openApprovalDialog() {

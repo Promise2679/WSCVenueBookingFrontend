@@ -297,6 +297,7 @@ import { computed, ref } from 'vue'
 
 import { deleteApiVenueByVenueId, putApiVenue } from '@/api'
 import { getApiRoleByVagidVenueQuery, getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
+import { useMessagesStore } from '@/stores/message'
 
 import VenueCard from './venueCard.vue'
 
@@ -321,11 +322,6 @@ const showDatePicker = ref(false)
 const customStartDate = ref('2026-02-25')
 const customEndDate = ref('2026-03-04')
 
-// 提示相关
-const showSnackbar = ref(false)
-const snackbarText = ref('')
-const snackbarColor = ref('success')
-
 // 创建场地相关
 const showCreateDialog = ref(false)
 const creating = ref(false)
@@ -347,6 +343,8 @@ const createForm = ref({
 const showDeleteDialog = ref(false)
 const deleting = ref(false)
 const venueToDelete = ref<null | Room>(null)
+
+const message = useMessagesStore()
 
 // 获取可修改权限的场地列表
 const vagid = ref('1')
@@ -422,9 +420,7 @@ function formatDate(date: string): string {
 // 创建场地
 async function handleCreateVenue() {
   if (!createForm.value.name || !createForm.value.building_id || !createForm.value.capacity) {
-    snackbarText.value = '请填写必填字段'
-    snackbarColor.value = 'error'
-    showSnackbar.value = true
+    message.add({ color: 'error', text: '请填写必填字段' })
     return
   }
 
@@ -444,15 +440,11 @@ async function handleCreateVenue() {
   creating.value = false
 
   if (error) {
-    snackbarText.value = '创建失败，请重试'
-    snackbarColor.value = 'error'
-    showSnackbar.value = true
+    message.add({ color: 'error', text: '创建失败，请重试' })
     return
   }
 
-  snackbarText.value = '创建成功'
-  snackbarColor.value = 'success'
-  showSnackbar.value = true
+  message.add({ color: 'success', text: '创建成功' })
   showCreateDialog.value = false
   // 重置表单
   createForm.value = {
@@ -475,15 +467,11 @@ async function handleDeleteVenue() {
   deleting.value = false
 
   if (error) {
-    snackbarText.value = '删除失败，请重试'
-    snackbarColor.value = 'error'
-    showSnackbar.value = true
+    message.add({ color: 'error', text: '删除失败，请重试' })
     return
   }
 
-  snackbarText.value = '删除成功'
-  snackbarColor.value = 'success'
-  showSnackbar.value = true
+  message.add({ color: 'success', text: '删除成功' })
   showDeleteDialog.value = false
   venueToDelete.value = null
 }

@@ -189,7 +189,7 @@
             <v-card-text v-else class="pa-4">
               <v-form ref="bookingForm" v-model="formValid">
                 <v-row dense>
-                  <v-col cols="12">
+                  <v-col cols="12" sm="6">
                     <v-text-field
                       v-model="bookingFormData.activity_name"
                       label="活动名称"
@@ -203,6 +203,16 @@
                     <v-text-field
                       v-model="bookingFormData.activity_organizer"
                       label="主办单位"
+                      variant="outlined"
+                      density="comfortable"
+                      :rules="[Boolean]"
+                    />
+                  </v-col>
+
+                  <v-col cols="12" sm="6">
+                    <v-text-field
+                      v-model="bookingFormData.activity_contacts"
+                      label="负责人"
                       variant="outlined"
                       density="comfortable"
                       :rules="[Boolean]"
@@ -309,6 +319,7 @@ import { venueTypes } from '@/constants/venueDetails'
 import { useUserStore } from '@/stores/user'
 
 interface BookingFormData {
+  activity_contacts: string
   activity_name: string
   activity_organizer: string
   activityPlan: File | null
@@ -350,6 +361,7 @@ function closeDialog(isActive: { value: boolean }) {
 
 function getInitialFormData(): BookingFormData {
   return {
+    activity_contacts: '',
     activity_name: '',
     activity_organizer: '',
     activityPlan: null,
@@ -431,6 +443,7 @@ async function submitBooking() {
 
   const { error } = await postApiVenueByVenueIdApplication({
     body: {
+      acticity_contacts: bookingFormData.activity_contacts,
       activity_name: bookingFormData.activity_name,
       activity_organizer: bookingFormData.activity_organizer,
       application_type: 'normal',

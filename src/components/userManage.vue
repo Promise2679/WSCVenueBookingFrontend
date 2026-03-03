@@ -161,15 +161,8 @@ const permissionOptions: PermissionOption[] = [
   { text: '教师', value: 2 }
 ]
 
-const getIdentityColor = (identity: number): string => {
-  const colors: Record<number, string> = { 0: 'grey', 1: 'blue', 2: 'green' }
-  return colors[identity] ?? 'grey'
-}
-
-const getIdentityText = (identity: number): string => {
-  const texts: Record<number, string> = { 0: '普通用户', 1: '学生', 2: '教师' }
-  return texts[identity] ?? '未知'
-}
+const getIdentityColor = (identity: number): string => (identity === 1 ? 'blue' : 'green')
+const getIdentityText = (identity: number): string => (identity === 1 ? '用户' : '管理员')
 
 const { data: usersData, isLoading: loading, refetch: fetchUsers } = useQuery(getApiAccountQuery())
 

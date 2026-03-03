@@ -20,51 +20,9 @@
       </v-col>
       <v-col cols="12" md="6" class="d-flex align-center ga-2">
         <v-btn-toggle v-model="timeRange" mandatory variant="outlined" divided density="comfortable">
-          <v-btn value="7days" size="small">未来7天</v-btn>
-          <v-btn value="custom" size="small">自定义</v-btn>
+          <v-btn value="all" size="small">总览</v-btn>
+          <v-btn value="7days" size="small">过去7天</v-btn>
         </v-btn-toggle>
-        <v-menu
-          v-if="timeRange === 'custom'"
-          v-model="showDatePicker"
-          :close-on-content-click="false"
-          location="bottom end"
-        >
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props" variant="outlined" size="small">
-              <v-icon start icon="mdi-calendar" />
-              {{ formatDate(customStartDate) }} - {{ formatDate(customEndDate) }}
-            </v-btn>
-          </template>
-          <v-card min-width="300">
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="customStartDate"
-                    label="开始日期"
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                  />
-                </v-col>
-                <v-col cols="6">
-                  <v-text-field
-                    v-model="customEndDate"
-                    label="结束日期"
-                    type="date"
-                    variant="outlined"
-                    density="compact"
-                  />
-                </v-col>
-              </v-row>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn variant="text" size="small" @click="showDatePicker = false">取消</v-btn>
-              <v-btn color="primary" size="small" @click="showDatePicker = false">确定</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
       </v-col>
     </v-row>
 
@@ -78,16 +36,42 @@
         <v-row>
           <!-- 审批概览卡片 -->
           <v-col cols="12" sm="6" lg="3">
+            <v-card variant="tonal" color="primary" class="h-100">
+              <v-card-text class="text-center py-4">
+                <v-icon size="32" icon="mdi-calendar-multiple" class="mb-2" />
+                <div class="text-h4 font-weight-bold">
+                  {{ timeRange === 'all' ? overviewData.totalBookings : overviewData.past7DaysCount }}
+                </div>
+                <div class="text-body-2 text-medium-emphasis">总预约数</div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" sm="6" lg="3">
             <v-card variant="tonal" color="success" class="h-100">
               <v-card-text class="text-center py-4">
                 <v-icon size="32" icon="mdi-check-circle" class="mb-2" />
-                <div class="text-h4 font-weight-bold">{{ overviewData.approvedCount }}</div>
+                <div class="text-h4 font-weight-bold">
+                  {{ timeRange === 'all' ? overviewData.approvedCount : overviewData.past7DaysApproved }}
+                </div>
                 <div class="text-body-2 text-medium-emphasis">已审批</div>
               </v-card-text>
             </v-card>
           </v-col>
 
           <v-col cols="12" sm="6" lg="3">
+            <v-card variant="tonal" color="error" class="h-100">
+              <v-card-text class="text-center py-4">
+                <v-icon size="32" icon="mdi-close" class="mb-2" />
+                <div class="text-h4 font-weight-bold">
+                  {{ timeRange === 'all' ? overviewData.rejectedCount : overviewData.past7DaysRejected }}
+                </div>
+                <div class="text-body-2 text-medium-emphasis">已拒绝</div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col v-if="timeRange === 'all'" cols="12" sm="6" lg="3">
             <v-card variant="tonal" color="warning" class="h-100">
               <v-card-text class="text-center py-4">
                 <v-icon size="32" icon="mdi-clock-outline" class="mb-2" />
@@ -95,97 +79,6 @@
                 <div class="text-body-2 text-medium-emphasis">待审批</div>
               </v-card-text>
             </v-card>
-          </v-col>
-
-          <v-col cols="12" sm="6" lg="3">
-            <v-card variant="tonal" color="info" class="h-100">
-              <v-card-text class="text-center py-4">
-                <v-icon size="32" icon="mdi-speedometer" class="mb-2" />
-                <div class="text-h4 font-weight-bold">
-                  {{ overviewData.avgReviewSpeed }}<span class="text-h6">h</span>
-                </div>
-                <div class="text-body-2 text-medium-emphasis">平均审核速度</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" sm="6" lg="3">
-            <v-card variant="tonal" color="primary" class="h-100">
-              <v-card-text class="text-center py-4">
-                <v-icon size="32" icon="mdi-calendar-multiple" class="mb-2" />
-                <div class="text-h4 font-weight-bold">{{ overviewData.totalBookings }}</div>
-                <div class="text-body-2 text-medium-emphasis">总预约数</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <v-divider class="my-4" />
-
-        <v-row>
-          <!-- 过去7天审批 -->
-          <v-col cols="12" md="4">
-            <div class="text-subtitle-1 font-weight-medium mb-3">过去7天审批</div>
-            <div class="d-flex flex-wrap ga-4">
-              <div class="d-flex align-center ga-3">
-                <v-avatar color="success" size="36">
-                  <v-icon icon="mdi-check" />
-                </v-avatar>
-                <div>
-                  <div class="text-h5 font-weight-bold">{{ overviewData.past7DaysApproved }}</div>
-                  <div class="text-caption text-medium-emphasis">已通过</div>
-                </div>
-              </div>
-              <div class="d-flex align-center ga-3">
-                <v-avatar color="error" size="36">
-                  <v-icon icon="mdi-close" />
-                </v-avatar>
-                <div>
-                  <div class="text-h5 font-weight-bold">{{ overviewData.past7DaysRejected }}</div>
-                  <div class="text-caption text-medium-emphasis">已拒绝</div>
-                </div>
-              </div>
-            </div>
-          </v-col>
-
-          <!-- 时间段统计 -->
-          <v-col cols="12" md="8">
-            <div class="text-subtitle-1 font-weight-medium mb-3">{{ timeRangeLabel }}预约统计</div>
-            <v-row>
-              <v-col cols="4">
-                <div class="d-flex align-center ga-3">
-                  <v-avatar color="primary" size="40" variant="tonal">
-                    <v-icon icon="mdi-calendar-check" />
-                  </v-avatar>
-                  <div>
-                    <div class="text-h5 font-weight-bold">{{ periodStats.bookingCount }}</div>
-                    <div class="text-caption text-medium-emphasis">预约数</div>
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="4">
-                <div class="d-flex align-center ga-3">
-                  <v-avatar color="secondary" size="40" variant="tonal">
-                    <v-icon icon="mdi-home-variant" />
-                  </v-avatar>
-                  <div>
-                    <div class="text-h5 font-weight-bold">{{ periodStats.venueCount }}</div>
-                    <div class="text-caption text-medium-emphasis">场地数</div>
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="4">
-                <div class="d-flex align-center ga-3">
-                  <v-avatar color="warning" size="40" variant="tonal">
-                    <v-icon icon="mdi-chart-donut" />
-                  </v-avatar>
-                  <div>
-                    <div class="text-h5 font-weight-bold">{{ periodStats.occupancyRate }}%</div>
-                    <div class="text-caption text-medium-emphasis">占用率</div>
-                  </div>
-                </div>
-              </v-col>
-            </v-row>
           </v-col>
         </v-row>
       </v-card-text>
@@ -296,7 +189,7 @@ import { useQuery } from '@pinia/colada'
 import { computed, ref } from 'vue'
 
 import { deleteApiVenueByVenueId, putApiVenue } from '@/api'
-import { getApiRoleByVagidVenueQuery, getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
+import { getApiRoleByVagidVenueQuery, getApiVenueLocationsQuery, getApiVenueStatsQuery } from '@/api/@pinia/colada.gen'
 import { useMessagesStore } from '@/stores/message'
 
 import VenueCard from './venueCard.vue'
@@ -317,10 +210,7 @@ interface WeekStat {
 }
 
 const search = ref('')
-const timeRange = ref('7days')
-const showDatePicker = ref(false)
-const customStartDate = ref('2026-02-25')
-const customEndDate = ref('2026-03-04')
+const timeRange = ref('all')
 
 // 创建场地相关
 const showCreateDialog = ref(false)
@@ -345,6 +235,33 @@ const deleting = ref(false)
 const venueToDelete = ref<null | Room>(null)
 
 const message = useMessagesStore()
+
+// 获取统计数据
+const { data: statsData } = useQuery(getApiVenueStatsQuery({}))
+
+const overviewData = computed(() => {
+  if (!statsData.value?.data)
+    return {
+      approvedCount: 0,
+      past7DaysApproved: 0,
+      past7DaysCount: 0,
+      past7DaysRejected: 0,
+      pendingCount: 0,
+      rejectedCount: 0,
+      totalBookings: 0
+    }
+
+  const { all, last_seven_days } = statsData.value.data
+  return {
+    approvedCount: all.approved,
+    past7DaysApproved: last_seven_days.approved,
+    past7DaysCount: last_seven_days.applications,
+    past7DaysRejected: last_seven_days.rejected,
+    pendingCount: all.pending,
+    rejectedCount: all.rejected,
+    totalBookings: all.applications
+  }
+})
 
 // 获取可修改权限的场地列表
 const vagid = ref('1')
@@ -378,28 +295,6 @@ const rooms = computed<Room[]>(() => {
   }))
 })
 
-const timeRangeLabel = computed(() => {
-  switch (timeRange.value) {
-    case '30days':
-      return '未来30天'
-    case '7days':
-      return '未来7天'
-    default:
-      return '自定义时间段'
-  }
-})
-
-const overviewData = ref({
-  approvedCount: 156,
-  avgReviewSpeed: 2.5,
-  past7DaysApproved: 28,
-  past7DaysRejected: 5,
-  pendingCount: 12,
-  totalBookings: 168
-})
-
-const periodStats = ref({ bookingCount: 45, occupancyRate: 67, venueCount: 8 })
-
 const filteredRooms = computed(() => {
   if (!search.value) return rooms.value
   return rooms.value.filter(room => room.name.toLowerCase().includes(search.value.toLowerCase()))
@@ -409,12 +304,6 @@ const filteredRooms = computed(() => {
 function confirmDeleteVenue(room: Room) {
   venueToDelete.value = room
   showDeleteDialog.value = true
-}
-
-function formatDate(date: string): string {
-  if (!date) return ''
-  const d = new Date(date)
-  return `${d.getMonth() + 1}/${d.getDate()}`
 }
 
 // 创建场地

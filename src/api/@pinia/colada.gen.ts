@@ -4,8 +4,8 @@ import { type _JSONValue, defineQueryOptions, type UseMutationOptions } from '@p
 
 import { serializeQueryKeyValue } from '../client';
 import { client } from '../client.gen';
-import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiNotificationUnread, getApiRoleByVagidVenue, getApiSystemPermission, getApiUserApplication, getApiUserNotification, getApiUserProfile, getApiUserProfileByUid, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiRole, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiRoleByVagid, putApiUserProfile, putApiUserSystemPermission, putApiUserVag, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
-import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiNotificationUnreadData, GetApiRoleByVagidVenueData, GetApiSystemPermissionData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiUserProfileByUidData, GetApiUserProfileData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiRoleData, PostApiRoleResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiRoleByVagidData, PutApiRoleByVagidResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponse, PutApiUserVagData, PutApiUserVagResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
+import { deleteApiApplicationByApplicationId, deleteApiNotificationByNotificationId, deleteApiVenueByVenueId, getApiAccount, getApiFileByFiletoken, getApiLoginSessionSalt, getApiNotification, getApiNotificationUnread, getApiRoleByVagidVenue, getApiSystemPermission, getApiUserApplication, getApiUserNotification, getApiUserProfile, getApiUserProfileByUid, getApiVenue, getApiVenueByVenueIdApplication, getApiVenueLocations, getApiVenueStats, type Options, postApiFile, postApiLogin, postApiNotification, postApiRegister, postApiRole, postApiUserChangePassword, postApiVenueByVenueIdApplication, putApiApplicationByApplicationId, putApiNotificationByNotificationId, putApiRoleByVagid, putApiUserProfile, putApiUserSystemPermission, putApiUserVag, putApiVenue, putApiVenueByVenueId } from '../sdk.gen';
+import type { DeleteApiApplicationByApplicationIdData, DeleteApiApplicationByApplicationIdResponse, DeleteApiNotificationByNotificationIdData, DeleteApiNotificationByNotificationIdResponse, DeleteApiVenueByVenueIdData, DeleteApiVenueByVenueIdResponse, GetApiAccountData, GetApiFileByFiletokenData, GetApiLoginSessionSaltData, GetApiNotificationData, GetApiNotificationUnreadData, GetApiRoleByVagidVenueData, GetApiSystemPermissionData, GetApiUserApplicationData, GetApiUserNotificationData, GetApiUserProfileByUidData, GetApiUserProfileData, GetApiVenueByVenueIdApplicationData, GetApiVenueData, GetApiVenueLocationsData, GetApiVenueStatsData, PostApiFileData, PostApiFileResponse, PostApiLoginData, PostApiLoginResponse, PostApiNotificationData, PostApiNotificationResponse, PostApiRegisterData, PostApiRegisterResponse, PostApiRoleData, PostApiRoleResponse, PostApiUserChangePasswordData, PostApiUserChangePasswordResponse, PostApiVenueByVenueIdApplicationData, PostApiVenueByVenueIdApplicationResponse, PutApiApplicationByApplicationIdData, PutApiApplicationByApplicationIdResponse, PutApiNotificationByNotificationIdData, PutApiNotificationByNotificationIdResponse, PutApiRoleByVagidData, PutApiRoleByVagidResponse, PutApiUserProfileData, PutApiUserProfileResponse, PutApiUserSystemPermissionData, PutApiUserSystemPermissionResponse, PutApiUserVagData, PutApiUserVagResponse, PutApiVenueByVenueIdData, PutApiVenueByVenueIdResponse, PutApiVenueData, PutApiVenueResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'path'> & {
@@ -244,6 +244,23 @@ export const getApiVenueLocationsQuery = defineQueryOptions((options?: Options<G
     key: getApiVenueLocationsQueryKey(options),
     query: async (context) => {
         const { data } = await getApiVenueLocations({
+            ...options,
+            ...context,
+            throwOnError: true
+        });
+        return data;
+    }
+}));
+
+export const getApiVenueStatsQueryKey = (options?: Options<GetApiVenueStatsData>) => createQueryKey('getApiVenueStats', options);
+
+/**
+ * 统计数据
+ */
+export const getApiVenueStatsQuery = defineQueryOptions((options?: Options<GetApiVenueStatsData>) => ({
+    key: getApiVenueStatsQueryKey(options),
+    query: async (context) => {
+        const { data } = await getApiVenueStats({
             ...options,
             ...context,
             throwOnError: true

@@ -405,6 +405,35 @@ export type GetApiVenueLocationsResponses = {
 
 export type GetApiVenueLocationsResponse = GetApiVenueLocationsResponses[keyof GetApiVenueLocationsResponses];
 
+export type GetApiVenueStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/venue/stats';
+};
+
+export type GetApiVenueStatsResponses = {
+    200: {
+        code: number;
+        msg: string;
+        data: {
+            all: {
+                applications: number;
+                approved: number;
+                rejected: number;
+                pending: number;
+            };
+            last_seven_days: {
+                applications: number;
+                approved: number;
+                rejected: number;
+            };
+        };
+    };
+};
+
+export type GetApiVenueStatsResponse = GetApiVenueStatsResponses[keyof GetApiVenueStatsResponses];
+
 export type GetApiVenueByVenueIdApplicationData = {
     body: {
         [key: string]: unknown;

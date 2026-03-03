@@ -44,7 +44,6 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 import { settings } from '@/constants/settings'
@@ -54,11 +53,7 @@ import { useUserStore } from '@/stores/user'
 const showLogoutDialog = ref(false)
 
 async function logout() {
-  const { name, token, uid } = storeToRefs(useUserStore())
-  name.value = ''
-  token.value = ''
-  uid.value = ''
-
+  useUserStore().$reset()
   await router.push('/login')
 }
 </script>

@@ -84,8 +84,9 @@ async function handleLogin() {
     isLoading.value = false
     return
   }
-  const { display_name: name, uid, webtoken: token } = data.data
-  useUserStore().$patch({ name, token, uid })
+
+  const { display_name: name, system_permission_map: map, uid, webtoken: token } = data.data
+  useUserStore().$patch({ map, name, token, uid })
 
   await router.push('/')
   isLoading.value = false

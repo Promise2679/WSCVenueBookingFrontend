@@ -14,7 +14,7 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-dialog width="600">
+      <v-dialog v-if="isAdmin" width="600">
         <template v-slot:activator="{ props: activatorProps }">
           <v-btn v-bind="activatorProps" variant="text" color="primary" @click="openEditDialog">编辑信息</v-btn>
         </template>
@@ -301,10 +301,12 @@
 
 <script setup lang="ts">
 import CryptoJS from 'crypto-js'
+import { storeToRefs } from 'pinia'
 import { reactive, ref } from 'vue'
 
 import { type GetApiVenueResponse, postApiFile, postApiVenueByVenueIdApplication, putApiVenueByVenueId } from '@/api'
 import { venueTypes } from '@/constants/venueDetails'
+import { useUserStore } from '@/stores/user'
 
 interface BookingFormData {
   activity_name: string
@@ -331,6 +333,8 @@ const editFormData = reactive({
   name: '',
   type: 0
 })
+
+const { isAdmin } = storeToRefs(useUserStore())
 
 const timeOptions = Array.from({ length: 20 }, (_, i) => {
   const hour = Math.floor(i / 2) + 8

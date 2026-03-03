@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
 import { client } from '@/api/client.gen'
 
@@ -9,12 +9,19 @@ export const useUserStore = defineStore(
     const name = ref('')
     const uid = ref('')
     const token = ref('')
+    const map = ref('')
 
-    watch(token, () => {
-      client.setConfig({ auth: token.value })
-    })
+    const isAdmin = computed(() => map.value !== '1')
+    watchEffect(() => client.setConfig({ auth: token.value }))
 
-    return { name, token, uid }
+    function $reset() {
+      name.value = ''
+      uid.value = ''
+      token.value = ''
+      map.value = ''
+    }
+
+    return { $reset, isAdmin, map, name, token, uid }
   },
   { persist: true }
 )

@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-4">
-    <div class="d-flex justify-end mb-4 ga-2">
+    <div v-if="isAdmin" class="d-flex justify-end mb-4 ga-2">
       <v-btn prepend-icon="mdi-cog" to="/admin">管理场地</v-btn>
       <v-btn prepend-icon="mdi-account-group" to="/user-manage">用户管理</v-btn>
       <v-btn prepend-icon="mdi-bulletin-board" to="/notice-manage">公告管理</v-btn>
@@ -56,10 +56,12 @@
 
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
+import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 
 import { getApiVenue, type GetApiVenueResponse } from '@/api'
 import { getApiVenueLocationsQuery } from '@/api/@pinia/colada.gen'
+import { useUserStore } from '@/stores/user'
 
 import VenueCard from './venueCard.vue'
 
@@ -73,6 +75,8 @@ const buildings = computed(() => locationsData.value?.data.buildings ?? [])
 
 const venueQuery = computed(() => ({ query: { b: selectedBuildings.value.map(String), s: search.value || undefined } }))
 const venues = computed(() => data.value?.data ?? [])
+
+const { isAdmin } = storeToRefs(useUserStore())
 
 let debounceTimer: null | ReturnType<typeof setTimeout> = null
 

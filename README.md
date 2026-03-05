@@ -1,14 +1,13 @@
 # WSCVenueBookingFrontend
+
 WSC 场馆预约系统前端项目 / WSC Venue Booking System Frontend Project.
+
 后端仓库：https://github.com/MucheXD/WSCVenueBookingBackend
 
 # 目录结构 / Project Structure
 
 ```
 .
-├── .github/                # GitHub 配置 / GitHub configurations
-│   └── workflows/          # 自动化部署流水线 / CI/CD Workflows (Actions)
-│
 ├── public/                 # 静态资源 / Static assets
 │
 ├── src/                    # 源代码目录 / Source code
@@ -30,6 +29,7 @@ WSC 场馆预约系统前端项目 / WSC Venue Booking System Frontend Project.
 │   ├── App.vue             # 根组件 / Root component
 │   └── main.ts             # 入口文件 / Project entry point
 │
+├── eslint.config.ts        # Lint 规则配置 / Lint rules configuration
 ├── openapi-ts.config.ts    # 接口生成配置 / OpenAPI code generation configuration
 ├── vite.config.ts          # Vite 配置文件 / Vite configuration (with Proxy)
 ├── package.json            # 项目依赖与脚本 / Project dependencies and scripts
@@ -41,11 +41,14 @@ WSC 场馆预约系统前端项目 / WSC Venue Booking System Frontend Project.
 ## 技术栈 / Tech Stack
 
 - **项目框架:** Vue 3 (Composition API)
+- **语言:** TypeScript
 - **构建工具:** Vite
+- **包管理器:** pnpm
 - **UI库:** Vuetify 3
+- **路由:** Vue Router
 - **状态管理:** Pinia / Pinia Colada
 - **API Client:** @hey-api/openapi-ts (Fetch-based)
-- **语言:** TypeScript
+- **代码检查:** ESLint
 
 ## 开发指南 / Development Guide
 
@@ -68,9 +71,9 @@ WSC 场馆预约系统前端项目 / WSC Venue Booking System Frontend Project.
 3. 接口同步 / API Synchronization
 
 本项目采用契约驱动开发（Contract-First），通过后端提供的 openapi.yaml 自动生成前端 SDK。
+
 The project uses Contract-First development, generating the frontend SDK from openapi.yaml.
 
 ### 协作规范 / Collaboration
+
 提交代码前请确保 lint 检查通过。
-
-

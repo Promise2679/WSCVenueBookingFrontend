@@ -60,9 +60,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <!-- 取消成功通知 -->
-    <v-snackbar v-model="showSuccess" color="success" timeout="3000"> 取消预约成功 </v-snackbar>
   </v-container>
 </template>
 
@@ -72,6 +69,7 @@ import { computed, ref } from 'vue'
 
 import { deleteApiApplicationByApplicationId } from '@/api'
 import { getApiUserApplicationQuery } from '@/api/@pinia/colada.gen'
+import { useMessagesStore } from '@/stores/message'
 
 interface Reservation {
   activityName: string
@@ -83,8 +81,9 @@ interface Reservation {
 
 const filterTab = ref('all')
 const cancelDialog = ref(false)
-const showSuccess = ref(false)
 const selectedReservation = ref<null | Reservation>(null)
+
+const message = useMessagesStore()
 
 const { data: queryData, refetch } = useQuery(getApiUserApplicationQuery({ body: {} }))
 
@@ -128,7 +127,7 @@ async function confirmCancel() {
 
   await refetch()
   cancelDialog.value = false
-  showSuccess.value = true
+  message.add({ color: 'success', text: '取消预约成功' })
   selectedReservation.value = null
 }
 

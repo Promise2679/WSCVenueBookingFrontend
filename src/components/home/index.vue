@@ -78,7 +78,7 @@ const venues = computed(() => data.value?.data ?? [])
 
 const { isAdmin } = storeToRefs(useUserStore())
 
-let debounceTimer: null | ReturnType<typeof setTimeout> = null
+let debounceTimer: null | number = null
 
 watch([selectedBuildings, search], () => {
   if (debounceTimer) clearTimeout(debounceTimer)

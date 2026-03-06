@@ -113,7 +113,10 @@ async function handleRegister() {
     }
   })
 
-  if (error) return
+  if (error) {
+    isLoading.value = false
+    return
+  }
 
   message.add({ color: 'success', text: '注册成功，请登录' })
   isRegisterMode.value = false

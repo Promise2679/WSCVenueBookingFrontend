@@ -102,7 +102,7 @@ async function handleRegister() {
   isLoading.value = true
 
   const passwordSalt = generateSalt()
-  const passwordHash = sha256(regPassword.value + passwordSalt)
+  const passwordHash = sha256(passwordSalt + regPassword.value)
 
   const { error } = await postApiRegister({
     body: {

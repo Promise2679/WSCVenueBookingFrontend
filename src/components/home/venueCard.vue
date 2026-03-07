@@ -484,13 +484,16 @@ async function submitBooking() {
   overflow: hidden;
   --venue-primary: #0081e4;
   --venue-surface: #ffffff;
-  --venue-surface-light: #f8fbff;
+  --venue-surface-light: #fafcfd;
   --venue-outline: rgb(var(--v-theme-primary) / 0.14);
   --venue-text-primary: #0f2a45;
   --venue-text-secondary: #4d6682;
   border: 1px solid var(--venue-outline);
-  background: linear-gradient(160deg, var(--venue-surface) 0%, var(--venue-surface-light) 100%);
-  box-shadow: 0 24px 48px rgb(var(--v-theme-primary) / 0.12);
+  background: #fafcfd;
+  box-shadow:
+    0 8px 16px rgb(0, 0, 0 / 0.1),
+    0 4px 8px rgb(0, 0, 0 / 0.06),
+    inset 0 1px 0 rgb(255, 255, 255 / 0.8);
   font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
   transition:
     transform 0.24s ease,
@@ -499,7 +502,7 @@ async function submitBooking() {
 }
 
 .venue-card.v-card {
-  background: linear-gradient(160deg, var(--venue-surface) 0%, var(--venue-surface-light) 100%);
+  background: #fafcfd;
 }
 
 .venue-card :deep(.v-card__underlay) {
@@ -509,7 +512,10 @@ async function submitBooking() {
 .venue-card:hover {
   transform: translateY(-3px);
   border-color: rgb(var(--v-theme-primary) / 0.28);
-  box-shadow: 0 32px 56px rgb(var(--v-theme-primary) / 0.16);
+  box-shadow:
+    0 12px 24px rgb(0, 0, 0 / 0.15),
+    0 8px 16px rgb(0, 0, 0 / 0.1),
+    inset 0 1px 0 rgb(255, 255, 255 / 0.8);
 }
 
 .venue-card__halo {

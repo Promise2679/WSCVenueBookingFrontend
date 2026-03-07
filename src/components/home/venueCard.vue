@@ -1,25 +1,34 @@
 <template>
-  <v-card variant="outlined" class="h-100">
-    <v-card-item>
-      <v-card-title>{{ venue.name }}</v-card-title>
-      <v-card-subtitle>
-        <v-icon size="small" class="mr-1" icon="mdi-map-marker" />
+  <v-card class="venue-card h-100" rounded="xl" elevation="0">
+    <div class="venue-card__halo" />
+
+    <v-card-item class="venue-card__header">
+      <v-card-title class="venue-card__title">{{ venue.name }}</v-card-title>
+      <v-card-subtitle class="venue-card__subtitle">
+        <v-icon size="small" class="venue-card__subtitle-icon" icon="mdi-map-marker" />
         场地 ID: {{ venue.building_id }}
       </v-card-subtitle>
     </v-card-item>
 
-    <v-card-text>
-      <v-chip size="small" variant="tonal">{{ getVenueType(venue.type_id) }}</v-chip>
+    <v-card-text class="venue-card__meta">
+      <v-chip size="small" variant="tonal" class="venue-card__type-chip">{{ getVenueType(venue.type_id) }}</v-chip>
     </v-card-text>
 
-    <v-card-actions>
+    <v-card-actions class="venue-card__actions">
       <v-spacer />
       <v-dialog v-if="isAdmin" width="600">
         <template v-slot:activator="{ props: activatorProps }">
-          <v-btn v-bind="activatorProps" variant="text" color="primary" @click="openEditDialog">编辑信息</v-btn>
+          <v-btn
+            v-bind="activatorProps"
+            variant="text"
+            color="primary"
+            class="venue-card__action-btn"
+            @click="openEditDialog"
+            >编辑信息</v-btn
+          >
         </template>
         <template v-slot:default="{ isActive }">
-          <v-card>
+          <v-card class="venue-dialog" rounded="xl">
             <v-card-title class="d-flex align-center pa-4">
               <span class="text-h6">编辑场地信息</span>
               <v-spacer />
@@ -101,12 +110,19 @@
           </v-card>
         </template>
       </v-dialog>
-      <v-dialog width="700">
+      <v-dialog width="620">
         <template v-slot:activator="{ props: activatorProps }">
-          <v-btn v-bind="activatorProps" variant="text" color="primary" @click="openVenueDetail">查看详情</v-btn>
+          <v-btn
+            v-bind="activatorProps"
+            variant="text"
+            color="primary"
+            class="venue-card__action-btn"
+            @click="openVenueDetail"
+            >查看详情</v-btn
+          >
         </template>
         <template v-slot:default="{ isActive }">
-          <v-card>
+          <v-card class="venue-dialog" rounded="xl">
             <v-card-title class="d-flex align-center pa-4">
               <v-btn
                 v-if="bookingMode"
@@ -125,7 +141,7 @@
 
             <!-- 场地详情页 -->
             <v-card-text v-if="!bookingMode" class="pa-4">
-              <v-img :src="`/api/file/${venue.cover_image_token}`" height="200" cover class="rounded mb-4" />
+              <v-img :src="`/api/file/${venue.cover_image_token}`" height="220" cover class="rounded mb-4" />
               <div class="d-flex align-center mb-2">
                 <div class="text-h5">{{ venue.name }}</div>
                 <v-spacer />
@@ -373,7 +389,7 @@ function getInitialFormData(): BookingFormData {
 
 function getVenueType(id: number) {
   const idx = venueTypes.findIndex(item => item.value === id)
-  return venueTypes[idx]?.title
+  return venueTypes[idx]?.title ?? '未分类场地'
 }
 
 function openEditDialog() {
@@ -461,3 +477,179 @@ async function submitBooking() {
   closeDialog({ value: false } as { value: boolean })
 }
 </script>
+
+<style scoped>
+.venue-card {
+  position: relative;
+  overflow: hidden;
+  --venue-primary: #0081e4;
+  --venue-surface: #ffffff;
+  --venue-surface-light: #f8fbff;
+  --venue-outline: rgb(var(--v-theme-primary) / 0.14);
+  --venue-text-primary: #0f2a45;
+  --venue-text-secondary: #4d6682;
+  border: 1px solid var(--venue-outline);
+  background: linear-gradient(160deg, var(--venue-surface) 0%, var(--venue-surface-light) 100%);
+  box-shadow: 0 24px 48px rgb(var(--v-theme-primary) / 0.12);
+  font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    border-color 0.24s ease;
+}
+
+.venue-card.v-card {
+  background: linear-gradient(160deg, var(--venue-surface) 0%, var(--venue-surface-light) 100%);
+}
+
+.venue-card :deep(.v-card__underlay) {
+  opacity: 0;
+}
+
+.venue-card:hover {
+  transform: translateY(-3px);
+  border-color: rgb(var(--v-theme-primary) / 0.28);
+  box-shadow: 0 32px 56px rgb(var(--v-theme-primary) / 0.16);
+}
+
+.venue-card__halo {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.venue-card__header,
+.venue-card__meta,
+.venue-card__actions {
+  position: relative;
+  z-index: 1;
+}
+
+.venue-card__header {
+  padding: 20px 20px 12px;
+}
+
+.venue-card__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--venue-text-primary);
+  letter-spacing: 0.02em;
+}
+
+.venue-card__subtitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--venue-text-secondary);
+}
+
+.venue-card__subtitle-icon {
+  color: var(--venue-primary);
+}
+
+.venue-card__meta {
+  padding: 8px 20px 8px;
+}
+
+.venue-card__type-chip {
+  border-radius: 999px;
+  background: rgb(var(--v-theme-primary) / 0.12);
+}
+
+.venue-card__type-chip :deep(.v-chip__content) {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #2f5e8a;
+}
+
+.venue-card__actions {
+  padding: 12px 20px 20px;
+  gap: 8px;
+}
+
+.venue-card__action-btn {
+  min-width: auto;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.venue-card__action-btn :deep(.v-btn__content) {
+  white-space: nowrap;
+}
+
+.venue-dialog {
+  border: 1px solid var(--venue-outline);
+  box-shadow: 0 24px 48px rgb(var(--v-theme-primary) / 0.12);
+  font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
+  overflow: hidden;
+}
+
+.venue-dialog :deep(.v-field),
+.venue-dialog :deep(.v-btn),
+.venue-dialog :deep(.v-card) {
+  border-radius: 12px;
+}
+
+.venue-dialog :deep(.v-card-text) {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--v-theme-primary) / 0.3) transparent;
+}
+
+.venue-dialog :deep(.v-card-text::-webkit-scrollbar) {
+  width: 8px;
+}
+
+.venue-dialog :deep(.v-card-text::-webkit-scrollbar-track) {
+  background: transparent;
+}
+
+.venue-dialog :deep(.v-card-text::-webkit-scrollbar-thumb) {
+  background: rgb(var(--v-theme-primary) / 0.3);
+  border-radius: 4px;
+}
+
+.venue-dialog :deep(.v-card-text::-webkit-scrollbar-thumb:hover) {
+  background: rgb(var(--v-theme-primary) / 0.5);
+}
+
+@media (max-width: 1280px) {
+  .venue-card__title {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .venue-card__header {
+    padding: 16px 16px 10px;
+  }
+
+  .venue-card__meta {
+    padding: 6px 16px 6px;
+  }
+
+  .venue-card__actions {
+    padding: 10px 16px 16px;
+    gap: 6px;
+  }
+
+  .venue-card__title {
+    font-size: 20px;
+  }
+
+  .venue-card__subtitle {
+    font-size: 13px;
+  }
+
+  .venue-card__action-btn {
+    padding-inline: 12px;
+    font-size: 13px;
+  }
+}
+</style>

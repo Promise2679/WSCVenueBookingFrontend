@@ -189,7 +189,7 @@ import { useQuery } from '@pinia/colada'
 import { computed, ref } from 'vue'
 
 import { deleteApiVenueByVenueId, putApiVenue } from '@/api'
-import { getApiRoleByVagidVenueQuery, getApiVenueLocationsQuery, getApiVenueStatsQuery } from '@/api/@pinia/colada.gen'
+import { getApiVenueLocationsQuery, getApiVenueQuery, getApiVenueStatsQuery } from '@/api/@pinia/colada.gen'
 import { useMessagesStore } from '@/stores/message'
 
 import VenueCard from './venueCard.vue'
@@ -264,8 +264,7 @@ const overviewData = computed(() => {
 })
 
 // 获取可修改权限的场地列表
-const vagid = ref('1')
-const { data: venuesData } = useQuery(getApiRoleByVagidVenueQuery({ path: { vagid: vagid.value } }))
+const { data: venuesData } = useQuery(getApiVenueQuery({ body: {}, query: { p: 'A' } }))
 
 const rooms = computed<Room[]>(() => {
   if (!venuesData.value?.data) return []

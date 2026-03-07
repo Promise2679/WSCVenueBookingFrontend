@@ -64,15 +64,17 @@
           <p class="mb-4">
             用户: <strong>{{ selectedUser?.username }}</strong>
           </p>
-          <v-select
-            v-model="selectedPermission"
-            :items="permissionOptions"
-            item-title="text"
-            item-value="value"
-            label="选择权限等级"
-            variant="outlined"
-            density="compact"
-          />
+          <div class="d-flex flex-column ga-1">
+            <v-checkbox
+              v-for="perm in permissionOptions"
+              :key="perm.value"
+              v-model="selectedPermissions"
+              :value="perm.value"
+              :label="perm.label"
+              density="compact"
+              hide-details
+            />
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -90,12 +92,8 @@ import { computed, ref } from 'vue'
 
 import { getApiAccountQuery } from '@/api/@pinia/colada.gen'
 import { putApiUserSystemPermission } from '@/api/sdk.gen'
+import { permissionOptions } from '@/constants/permission'
 import { useMessagesStore } from '@/stores/message'
-
-interface PermissionOption {
-  text: string
-  value: number
-}
 
 interface User {
   perm_map: number
@@ -127,19 +125,13 @@ const filteredUsers = computed(() => {
   )
 })
 const selectedUser = ref<null | User>(null)
-const selectedPermission = ref<number>(0)
+const selectedPermissions = ref<number[]>([])
 
 const headers = [
   { key: 'name', sortable: true, title: '用户名' },
   { key: 'identity', sortable: true, title: '身份', width: '100' },
   { key: 'avg_id', sortable: true, title: '用户ID', width: '120' },
   { align: 'center' as const, key: 'actions', sortable: false, title: '操作', width: '120' }
-]
-
-const permissionOptions: PermissionOption[] = [
-  { text: '普通用户', value: 0 },
-  { text: '学生', value: 1 },
-  { text: '教师', value: 2 }
 ]
 
 const getIdentityColor = (identity: number): string => (identity === 1 ? 'blue' : 'green')
@@ -149,7 +141,9 @@ const { data: usersData, isLoading: loading, refetch: fetchUsers } = useQuery(ge
 
 const openPermissionDialog = (user: User) => {
   selectedUser.value = user
-  selectedPermission.value = user.perm_map
+  selectedPermissions.value = permissionOptions
+    .filter(perm => (user.perm_map & (1 << perm.value)) !== 0)
+    .map(perm => perm.value)
   permissionDialog.value = true
 }
 
@@ -157,16 +151,19 @@ const savePermission = async () => {
   if (!selectedUser.value) return
 
   savingPermission.value = true
-  const res = await putApiUserSystemPermission({
-    body: { system_permission: selectedPermission.value, uids: [selectedUser.value.uid] }
+  const systemPermission = selectedPermissions.value.reduce((acc, bit) => acc | (1 << bit), 0)
+  const { error } = await putApiUserSystemPermission({
+    body: { system_permission: systemPermission, uids: [selectedUser.value.uid] }
   })
 
-  if (res.error) message.add({ color: 'error', text: '网络错误，请稍后重试' })
-  else if (res.data?.code === 200) {
-    message.add({ color: 'success', text: '权限修改成功' })
-    permissionDialog.value = false
-    void fetchUsers()
-  } else message.add({ color: 'error', text: res.data?.msg ?? '权限修改失败' })
+  if (error) {
+    savingPermission.value = false
+    return
+  }
+
+  message.add({ color: 'success', text: '权限修改成功' })
+  permissionDialog.value = false
+  await fetchUsers()
 
   savingPermission.value = false
 }

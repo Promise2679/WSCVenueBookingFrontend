@@ -8,10 +8,10 @@ export const brandPalette = {
 } as const
 
 export const neutralPalette = {
-  background: '#f2f7ff',
+  background: '#fafbff',
   onBackground: '#12233a',
   onSurface: '#1b2f48',
-  outline: '#c8d8ea',
+  outline: '#cfdeef',
   surface: '#ffffff',
   surfaceAlt: '#f7fbff',
   surfaceVariant: '#e4edf8'

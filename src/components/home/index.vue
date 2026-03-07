@@ -120,7 +120,7 @@ onMounted(async () => {
   --home-text-primary: #0f2a45;
   --home-text-secondary: #4d6682;
   min-height: 100vh;
-  background: #f3faff;
+  //background: #fafbff;
   padding: 1.5rem !important;
   font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
 }

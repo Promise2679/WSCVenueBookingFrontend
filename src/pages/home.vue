@@ -26,7 +26,7 @@
       </v-tabs>
     </v-app-bar>
 
-    <v-main class="bg-blue-lighten-5">
+    <v-main class="bg-background">
       <RouterView />
     </v-main>
 

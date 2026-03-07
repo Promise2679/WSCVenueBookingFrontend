@@ -489,7 +489,7 @@ async function submitBooking() {
   --venue-text-primary: #0f2a45;
   --venue-text-secondary: #4d6682;
   border: 1px solid var(--venue-outline);
-  background: #fafcfd;
+  background: #feffff;
   box-shadow:
     0 8px 16px rgb(0, 0, 0 / 0.1),
     0 4px 8px rgb(0, 0, 0 / 0.06),
@@ -502,7 +502,7 @@ async function submitBooking() {
 }
 
 .venue-card.v-card {
-  background: #fafcfd;
+  background: #ffffff;
 }
 
 .venue-card :deep(.v-card__underlay) {

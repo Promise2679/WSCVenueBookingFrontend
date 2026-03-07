@@ -7,11 +7,12 @@ import { createVuetify } from 'vuetify'
 
 import App from './App.vue'
 import router from './router'
+import { themeOptions } from './theme/vuetifyTheme'
 
 const app = createApp(App)
 
 app.use(createPinia().use(piniaPluginPersistedstate))
-app.use(createVuetify({ icons: { defaultSet: 'mdi' } }))
+app.use(createVuetify({ icons: { defaultSet: 'mdi' }, theme: themeOptions }))
 app.use(router)
 
 app.mount('#app')

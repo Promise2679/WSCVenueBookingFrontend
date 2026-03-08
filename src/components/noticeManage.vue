@@ -157,7 +157,7 @@
 
 <script setup lang="ts">
 import { useMutation, useQuery } from '@pinia/colada'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import {
   deleteApiNotificationByNotificationIdMutation,
@@ -314,10 +314,6 @@ const deleteNotice = () => {
 
   deleting.value = false
 }
-
-onMounted(() => {
-  void fetchNotices()
-})
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="venue-card h-100" rounded="xl" elevation="0">
+  <v-card variant="flat" class="venue-card h-100" rounded="xl" elevation="0">
     <div class="venue-card__halo" />
 
     <v-card-item class="venue-card__header">
@@ -14,7 +14,7 @@
       <v-chip size="small" variant="tonal" class="venue-card__type-chip">{{ getVenueType(venue.type_id) }}</v-chip>
     </v-card-text>
 
-    <v-card-actions class="venue-card__actions">
+    <v-card-actions class="venue-card__actions" density="compact">
       <v-spacer />
       <v-dialog v-if="isAdmin" width="600">
         <template v-slot:activator="{ props: activatorProps }">
@@ -29,7 +29,7 @@
         </template>
         <template v-slot:default="{ isActive }">
           <v-card class="venue-dialog" rounded="xl">
-            <v-card-title class="d-flex align-center pa-4">
+            <v-card-title class="d-flex align-center px-4 py-2">
               <span class="text-h6">编辑场地信息</span>
               <v-spacer />
               <v-btn icon="mdi-close" variant="text" size="small" @click="isActive.value = false" />
@@ -95,7 +95,7 @@
               </v-form>
             </v-card-text>
             <v-divider />
-            <v-card-actions class="pa-4">
+            <v-card-actions class="px-4 py-3">
               <v-spacer />
               <v-btn variant="text" @click="isActive.value = false">取消</v-btn>
               <v-btn
@@ -123,7 +123,7 @@
         </template>
         <template v-slot:default="{ isActive }">
           <v-card class="venue-dialog" rounded="xl">
-            <v-card-title class="d-flex align-center pa-4">
+            <v-card-title class="d-flex align-center px-4 py-2">
               <v-btn
                 v-if="bookingMode"
                 icon="mdi-arrow-left"
@@ -312,7 +312,7 @@
 
             <v-divider />
 
-            <v-card-actions class="pa-4">
+            <v-card-actions class="pa-3">
               <v-spacer />
               <v-btn v-if="bookingMode" color="primary" variant="flat" :disabled="!formValid" @click="submitBooking">
                 提交预约
@@ -491,9 +491,9 @@ async function submitBooking() {
   border: 1px solid var(--venue-outline);
   background: #feffff;
   box-shadow:
-    0 8px 16px rgb(0, 0, 0 / 0.1),
-    0 4px 8px rgb(0, 0, 0 / 0.06),
-    inset 0 1px 0 rgb(255, 255, 255 / 0.8);
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
   font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
   transition:
     transform 0.24s ease,
@@ -559,7 +559,7 @@ async function submitBooking() {
 }
 
 .venue-card__meta {
-  padding: 8px 20px 8px;
+  padding: 0px 20px 0px;
 }
 
 .venue-card__type-chip {

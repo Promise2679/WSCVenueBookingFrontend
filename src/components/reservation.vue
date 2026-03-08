@@ -28,7 +28,7 @@
               </v-chip>
             </v-card-title>
             <v-card-subtitle class="reservation-card__subtitle">
-              <v-icon size="small" class="reservation-card__subtitle-icon">mdi-map-marker</v-icon>
+              <v-icon size="small" class="reservation-card__subtitle-icon">mdi-tag</v-icon>
               {{ reservation.classroom }}
             </v-card-subtitle>
           </v-card-item>
@@ -105,8 +105,8 @@ const reservations = computed<Reservation[]>(() => {
   const list = queryData.value.data
   return list.map(item => ({
     activityName: item.activity_name,
-    classroom: item.comments[0]?.text.split('\n')[0] ?? '',
-    description: item.description,
+    classroom: item.description,
+    description: item.comments[0]?.text.split('\n')[0] ?? '无审批意见',
     id: item.id,
     status: mapStatus(item.application_status)
   }))
@@ -236,7 +236,7 @@ function openCancelDialog(reservation: Reservation) {
 .reservation-card__subtitle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin-top: 8px;
   color: var(--reservation-text-secondary);
   font-size: 14px;

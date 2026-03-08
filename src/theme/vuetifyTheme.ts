@@ -10,6 +10,7 @@ export const wscLightTheme: ThemeDefinition = {
     'on-background': neutralPalette.onBackground,
     'on-primary': brandPalette.onPrimary,
     'on-surface': neutralPalette.onSurface,
+    'on-surface-variant': neutralPalette.onSurface,
     outline: neutralPalette.outline,
     primary: brandPalette.primary,
     'primary-darken-1': brandPalette.primaryDark,

@@ -205,9 +205,8 @@
                   <v-list-item
                     v-for="(file, idx) in currentApplication.attachments"
                     :key="idx"
-                    :href="getFileUrl(file.file_token)"
-                    target="_blank"
                     class="px-0 min-h-0"
+                    @click="downloadFile(file.file_token, file.file_name)"
                   >
                     <template v-slot:prepend>
                       <v-icon :icon="getFileIcon(file.file_type)" size="small" />
@@ -233,7 +232,7 @@
                       :key="fIdx"
                       size="x-small"
                       class="mr-1"
-                      @click="openFile(file.file_token)"
+                      @click="downloadFile(file.file_token, file.file_name)"
                     >
                       <v-icon start size="x-small">mdi-paperclip</v-icon>
                       {{ file.file_name }}
@@ -330,6 +329,26 @@ const message = useMessagesStore()
 
 const currentApplication = ref<null | VenueApplication>(null)
 
+async function downloadFile(fileToken: string, fileName: string): Promise<void> {
+  try {
+    const response = await fetch(getFileUrl(fileToken))
+
+    if (!response.ok) throw new Error('download failed')
+
+    const blob = await response.blob()
+    const downloadUrl = globalThis.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = normalizeDownloadFileName(fileName)
+    document.body.append(link)
+    link.click()
+    link.remove()
+    globalThis.URL.revokeObjectURL(downloadUrl)
+  } catch {
+    message.add({ color: 'error', text: '附件下载失败，请重试' })
+  }
+}
+
 function formatDayLabel(index: number): string {
   const date = new Date()
   date.setDate(date.getDate() + index)
@@ -379,6 +398,7 @@ async function handleApproveApplication() {
   if (error) {
     approving.value = false
     message.add({ color: 'error', text: '审批失败，请重试' })
+
     return
   }
 
@@ -399,6 +419,7 @@ async function handleReject() {
   if (error) {
     approving.value = false
     message.add({ color: 'error', text: '审批失败，请重试' })
+
     return
   }
 
@@ -407,16 +428,22 @@ async function handleReject() {
   await refreshApplications()
 }
 
+function normalizeDownloadFileName(fileName: string): string {
+  const trimmedName = fileName.trim()
+
+  if (!trimmedName) return 'download-file'
+
+  // Keep Windows file naming rules in mind to avoid failed downloads.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return trimmedName.replaceAll(/["*/:<>?\\|]/g, '_')
+}
+
 async function openApprovalDialog() {
   venueApplications.value = []
   currentPage.value = 0
   approvalComment.value = ''
   showApprovalDialog.value = true
   await refreshApplications()
-}
-
-function openFile(fileToken: string): void {
-  window.open(getFileUrl(fileToken), '_blank')
 }
 
 async function refreshApplications() {
@@ -428,6 +455,7 @@ async function refreshApplications() {
   if (error || !data?.data || data.data.length === 0) {
     venueApplications.value = []
     currentApplication.value = null
+
     return
   }
 

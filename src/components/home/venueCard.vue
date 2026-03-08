@@ -194,8 +194,8 @@
                 </thead>
                 <tbody>
                   <tr v-for="(time, index) in venue.timetable" :key="index">
-                    <td>{{ time.start }}</td>
-                    <td>{{ time.end }}</td>
+                    <td>{{ new Date(time.start).toLocaleString('zh-CN') }}</td>
+                    <td>{{ new Date(time.end).toLocaleString('zh-CN') }}</td>
                   </tr>
                 </tbody>
               </v-table>

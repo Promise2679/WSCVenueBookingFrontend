@@ -1,9 +1,13 @@
 <template>
   <v-container class="home-container pa-4">
-    <div v-if="isAdmin" class="home-admin-controls d-flex justify-end mb-6 ga-3">
-      <v-btn prepend-icon="mdi-cog" to="/admin" class="home-admin-btn"> 管理场地 </v-btn>
-      <v-btn prepend-icon="mdi-account-group" to="/user-manage" class="home-admin-btn"> 用户管理 </v-btn>
-      <v-btn prepend-icon="mdi-bulletin-board" to="/notice-manage" class="home-admin-btn"> 公告管理 </v-btn>
+    <div v-if="showAdminControls" class="home-admin-controls d-flex justify-end mb-6 ga-3">
+      <v-btn v-if="canManageVenue" prepend-icon="mdi-cog" to="/admin" class="home-admin-btn"> 管理场地 </v-btn>
+      <v-btn v-if="canManageUser" prepend-icon="mdi-account-group" to="/user-manage" class="home-admin-btn">
+        用户管理
+      </v-btn>
+      <v-btn v-if="canManageNotice" prepend-icon="mdi-bulletin-board" to="/notice-manage" class="home-admin-btn">
+        公告管理
+      </v-btn>
     </div>
 
     <v-row class="mb-6">
@@ -84,7 +88,13 @@ const buildings = computed(() => locationsData.value?.data.buildings ?? [])
 const venueQuery = computed(() => ({ query: { b: selectedBuildings.value.map(String), s: search.value || undefined } }))
 const venues = computed(() => data.value?.data ?? [])
 
-const { isAdmin } = storeToRefs(useUserStore())
+const { map } = storeToRefs(useUserStore())
+
+const permissionMapValue = computed(() => Number(map.value) || 0)
+const canManageVenue = computed(() => permissionMapValue.value >= 2 ** 1)
+const canManageUser = computed(() => permissionMapValue.value >= 2 ** 7)
+const canManageNotice = computed(() => permissionMapValue.value >= 2 ** 8)
+const showAdminControls = computed(() => canManageVenue.value || canManageUser.value || canManageNotice.value)
 
 let debounceTimer: null | number = null
 

@@ -134,6 +134,8 @@ const showRegPassword = ref(false)
 const message = useMessagesStore()
 
 async function handleLogin() {
+  if (!username.value || !password.value) return
+
   isLoading.value = true
 
   const { data: saltRawData } = await getApiLoginSessionSalt({ query: { login_name: username.value } })

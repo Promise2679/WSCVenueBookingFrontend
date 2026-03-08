@@ -264,7 +264,7 @@ const overviewData = computed(() => {
 })
 
 // 获取可修改权限的场地列表
-const { data: venuesData } = useQuery(getApiVenueQuery({ body: {}, query: { p: 'A' } }))
+const { data: venuesData } = useQuery(getApiVenueQuery({ body: {}, query: { a: true, p: 'A' } }))
 
 const rooms = computed<Room[]>(() => {
   if (!venuesData.value?.data) return []
@@ -272,16 +272,18 @@ const rooms = computed<Room[]>(() => {
     venuesData.value.data as Array<{
       building_id: number
       name: string
+      pending_applications: number
       permission: string[]
+      processed_applications: number
       type_id: number
       venue_id: number
     }>
   ).map(venue => ({
-    approvedCount: Math.floor(Math.random() * 20) + 5,
+    approvedCount: venue.processed_applications,
     id: venue.venue_id,
     maintenance: false,
     name: venue.name,
-    pendingCount: Math.floor(1),
+    pendingCount: venue.pending_applications,
     weekStats: [
       { bookings: Math.floor(Math.random() * 10) + 2, label: '周一', value: 1 },
       { bookings: Math.floor(Math.random() * 10) + 2, label: '周二', value: 2 },

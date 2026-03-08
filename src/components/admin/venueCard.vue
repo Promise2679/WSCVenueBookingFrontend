@@ -1,17 +1,17 @@
 <template>
-  <v-list-item class="px-0">
+  <v-list-item class="admin-room-item px-4">
     <template v-slot:prepend>
       <v-avatar :color="room.maintenance ? 'grey' : 'primary'" class="mr-3">
         <v-icon :icon="room.maintenance ? 'mdi-wrench' : 'mdi-home'" />
       </v-avatar>
     </template>
 
-    <v-list-item-title class="d-flex align-center ga-2">
+    <v-list-item-title class="admin-room-title d-flex align-center ga-2">
       <span class="font-weight-medium">{{ room.name }}</span>
       <v-chip v-if="room.maintenance" color="warning" size="small" variant="flat">维护中</v-chip>
     </v-list-item-title>
 
-    <v-list-item-subtitle>
+    <v-list-item-subtitle class="admin-room-subtitle">
       <span class="mr-4">
         <v-icon size="small" icon="mdi-clock-outline" class="mr-1" />
         待审批: {{ room.pendingCount }}
@@ -23,19 +23,15 @@
     </v-list-item-subtitle>
 
     <template v-slot:append>
-      <div class="d-flex align-center ga-2">
+      <div class="admin-room-actions d-flex align-center ga-2">
         <div class="d-flex ga-1">
           <template v-for="(day, dayIndex) in room.weekStats" :key="dayIndex">
             <v-tooltip :text="`${formatDayLabel(dayIndex)}: ${day.label}`">
               <template v-slot:activator="{ props }">
                 <div
+                  class="admin-heat-cell"
                   v-bind="props"
-                  :style="{
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '2px',
-                    backgroundColor: getOccupancyColor(day.value)
-                  }"
+                  :style="{ backgroundColor: getOccupancyColor(day.value) }"
                 />
               </template>
             </v-tooltip>
@@ -46,16 +42,30 @@
           variant="tonal"
           color="primary"
           size="small"
+          class="admin-room-btn admin-room-btn--approve"
           prepend-icon="mdi-check"
           :disabled="room.pendingCount === 0"
           @click="openApprovalDialog"
         >
           审批预约
         </v-btn>
-        <v-btn variant="outlined" size="small" prepend-icon="mdi-chart-line" @click="showStatsDialog = true">
+        <v-btn
+          variant="outlined"
+          size="small"
+          class="admin-room-btn admin-room-btn--stats"
+          prepend-icon="mdi-chart-line"
+          @click="showStatsDialog = true"
+        >
           统计数据
         </v-btn>
-        <v-btn variant="text" color="error" size="small" prepend-icon="mdi-delete" @click="$emit('delete', room)">
+        <v-btn
+          variant="text"
+          color="error"
+          size="small"
+          class="admin-room-btn admin-room-btn--delete"
+          prepend-icon="mdi-delete"
+          @click="$emit('delete', room)"
+        >
           删除
         </v-btn>
       </div>
@@ -64,15 +74,15 @@
 
   <!-- 统计数据弹窗 -->
   <v-dialog v-model="showStatsDialog" max-width="600">
-    <v-card>
-      <v-card-title class="d-flex align-center">
+    <v-card class="admin-room-dialog">
+      <v-card-title class="admin-room-dialog-title d-flex align-center">
         <v-icon start icon="mdi-chart-line" />
         {{ room.name }} - 统计数据
       </v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="6">
-            <v-card variant="tonal" color="success">
+            <v-card variant="tonal" color="success" class="admin-room-metric-card">
               <v-card-text class="text-center">
                 <div class="text-h5 font-weight-bold">{{ room.approvedCount }}</div>
                 <div class="text-caption">已通过预约</div>
@@ -80,7 +90,7 @@
             </v-card>
           </v-col>
           <v-col cols="6">
-            <v-card variant="tonal" color="warning">
+            <v-card variant="tonal" color="warning" class="admin-room-metric-card">
               <v-card-text class="text-center">
                 <div class="text-h5 font-weight-bold">{{ room.pendingCount }}</div>
                 <div class="text-caption">待审批预约</div>
@@ -113,21 +123,21 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="text" @click="showStatsDialog = false">关闭</v-btn>
+        <v-btn variant="text" class="admin-room-btn" @click="showStatsDialog = false">关闭</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
   <!-- 审批预约弹窗 -->
   <v-dialog v-model="showApprovalDialog" max-width="900" scrollable>
-    <v-card v-if="currentApplication">
-      <v-card-title class="d-flex align-center">
+    <v-card v-if="currentApplication" class="admin-room-dialog">
+      <v-card-title class="admin-room-dialog-title d-flex align-center">
         <v-icon start icon="mdi-clipboard-check" />
         {{ room.name }} - 预约审批
       </v-card-title>
       <v-card-text class="pa-0">
         <!-- 翻页控制 -->
-        <div v-if="venueApplications.length > 0" class="d-flex align-center justify-center pa-3 bg-grey-lighten-4">
+        <div v-if="venueApplications.length > 0" class="admin-room-pagination d-flex align-center justify-center pa-3">
           <v-btn icon variant="text" :disabled="currentPage === 0" @click="currentPage--">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -181,7 +191,7 @@
               </v-chip>
 
               <div class="text-subtitle-2 mb-2 mt-4">活动说明</div>
-              <v-card variant="outlined" class="pa-2">
+              <v-card variant="outlined" class="admin-room-note-card pa-2">
                 <div class="text-body-2">{{ currentApplication.description || '无' }}</div>
               </v-card>
             </v-col>
@@ -214,7 +224,7 @@
                   v-for="(comment, idx) in currentApplication.comments"
                   :key="idx"
                   variant="outlined"
-                  class="mb-2 pa-2"
+                  class="admin-room-note-card mb-2 pa-2"
                 >
                   <div class="text-body-2">{{ comment.text }}</div>
                   <div v-if="comment.attachments?.length" class="mt-2">
@@ -237,7 +247,7 @@
                 variant="outlined"
                 density="compact"
                 hide-details
-                class="mr-4"
+                class="admin-room-input mr-4"
               />
             </v-col>
           </v-row>
@@ -245,11 +255,17 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="error" variant="outlined" :loading="approving" @click="handleReject">
+        <v-btn color="error" variant="outlined" class="admin-room-btn" :loading="approving" @click="handleReject">
           <v-icon start>mdi-close</v-icon>
           拒绝
         </v-btn>
-        <v-btn color="success" variant="flat" :loading="approving" @click="handleApproveApplication">
+        <v-btn
+          color="success"
+          variant="flat"
+          class="admin-room-btn admin-room-btn--approve"
+          :loading="approving"
+          @click="handleApproveApplication"
+        >
           <v-icon start>mdi-check</v-icon>
           同意
         </v-btn>
@@ -340,9 +356,15 @@ function getFileUrl(fileToken: string): string {
 }
 
 function getOccupancyColor(value: number): string {
-  if (value >= 70) return '#ef4444'
-  if (value >= 40) return '#eab308'
-  return '#22c55e'
+  if (value > 50) return '#ef4444'
+
+  // 0-50 线性变化：绿色 #22c55e 到 红色 #ef4444
+  const ratio = value / 50
+  const r = Math.round(34 + (239 - 34) * ratio)
+  const g = Math.round(197 + (68 - 197) * ratio)
+  const b = Math.round(94 + (68 - 94) * ratio)
+
+  return `rgb(${r}, ${g}, ${b})`
 }
 
 async function handleApproveApplication() {
@@ -427,3 +449,111 @@ watch([currentPage, showApprovalDialog], () => {
     currentApplication.value = venueApplications.value[currentPage.value] ?? null
 })
 </script>
+
+<style scoped>
+.admin-room-item {
+  border-radius: 12px;
+  background: rgba(var(--v-theme-primary), 0.02);
+  transition:
+    background-color 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.admin-room-item:hover {
+  background: rgba(var(--v-theme-primary), 0.08);
+  box-shadow: 0 8px 20px rgba(var(--v-theme-primary), 0.1);
+}
+
+.admin-room-title {
+  color: #12314f;
+}
+
+.admin-room-subtitle {
+  color: #4d6682;
+}
+
+.admin-room-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.admin-heat-cell {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.admin-room-btn {
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.admin-room-btn:hover {
+  transform: translateY(-1px);
+}
+
+.admin-room-btn--approve {
+  box-shadow: 0 8px 16px rgba(var(--v-theme-primary), 0.18);
+}
+
+.admin-room-btn--stats {
+  border-color: rgba(var(--v-theme-primary), 0.3);
+}
+
+.admin-room-dialog {
+  border: 1px solid rgb(var(--v-theme-primary) / 0.16);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px rgb(var(--v-theme-primary) / 0.12);
+  font-family: 'Bahnschrift', 'Noto Sans SC', 'Microsoft YaHei UI', sans-serif;
+}
+
+.admin-room-dialog-title {
+  font-weight: 700;
+  color: #0f2a45;
+}
+
+.admin-room-metric-card {
+  border-radius: 14px;
+}
+
+.admin-room-pagination {
+  background: linear-gradient(180deg, #f3f8ff 0%, #eef5ff 100%);
+}
+
+.admin-room-note-card {
+  border-radius: 12px;
+  border-color: rgb(var(--v-theme-primary) / 0.16) !important;
+  background: #fcfeff;
+}
+
+.admin-room-input :deep(.v-field) {
+  border-radius: 10px;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.16);
+  background: #ffffff;
+}
+
+.admin-room-input :deep(.v-field.v-field--focused) {
+  border-color: rgb(var(--v-theme-primary) / 0.45);
+  box-shadow: 0 8px 20px rgb(var(--v-theme-primary) / 0.12);
+}
+
+@media (max-width: 960px) {
+  .admin-room-actions {
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-room-btn {
+    font-size: 12px;
+    padding-inline: 10px;
+  }
+}
+</style>

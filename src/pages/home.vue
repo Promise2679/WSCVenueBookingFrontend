@@ -8,7 +8,7 @@
           <v-icon icon="mdi-home" size="large" />
         </v-tab>
         <v-tab to="/notice" hide-slider>
-          <v-icon icon="mdi-email" size="large" />
+          <v-icon :icon="hasMail ? 'mdi-email-alert' : 'mdi-email'" size="large" />
         </v-tab>
         <v-tab hide-slider>
           <v-icon icon="mdi-cog" size="large" />
@@ -44,16 +44,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
+import { getApiNotificationUnread } from '@/api'
 import { settings } from '@/constants/settings'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
 
 const showLogoutDialog = ref(false)
 
+const hasMail = ref(0)
+
 async function logout() {
   useUserStore().$reset()
   await router.push('/login')
 }
+
+onMounted(async () => {
+  const { data } = await getApiNotificationUnread()
+
+  if (!data?.data) return
+  hasMail.value = data.data.unread_num
+})
 </script>

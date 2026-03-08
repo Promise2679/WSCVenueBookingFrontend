@@ -3,6 +3,7 @@
     <v-row class="mb-4" align="center">
       <v-col cols="12" class="d-flex align-center flex-wrap ga-2">
         <v-card-title class="text-h5 pa-0 mr-2">公告管理</v-card-title>
+        <v-spacer />
         <v-btn prepend-icon="mdi-calendar-clock" to="/"> 预约场地 </v-btn>
         <v-btn prepend-icon="mdi-domain" to="/admin"> 管理场地 </v-btn>
         <v-btn prepend-icon="mdi-account-group" to="/user-manage"> 用户管理 </v-btn>

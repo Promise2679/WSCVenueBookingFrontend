@@ -11,25 +11,6 @@
             </p>
           </div>
 
-          <div class="mode-switch" role="tablist" aria-label="身份操作切换">
-            <v-btn
-              class="mode-switch__button"
-              :variant="isRegisterMode ? 'text' : 'flat'"
-              :color="isRegisterMode ? undefined : 'primary'"
-              @click="isRegisterMode = false"
-            >
-              登录
-            </v-btn>
-            <v-btn
-              class="mode-switch__button"
-              :variant="isRegisterMode ? 'flat' : 'text'"
-              :color="isRegisterMode ? 'primary' : undefined"
-              @click="isRegisterMode = true"
-            >
-              注册
-            </v-btn>
-          </div>
-
           <v-form v-if="!isRegisterMode" class="auth-form" @submit.prevent="handleLogin">
             <v-text-field
               v-model="username"
@@ -276,22 +257,6 @@ async function handleRegister() {
   color: #4d6682;
   font-size: 14px;
   line-height: 1.5;
-}
-
-.mode-switch {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 6px;
-  padding: 4px;
-  border-radius: 14px;
-  background-color: #e8f3ff;
-}
-
-.mode-switch__button {
-  min-height: 40px;
-  border-radius: 10px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
 }
 
 .auth-form {

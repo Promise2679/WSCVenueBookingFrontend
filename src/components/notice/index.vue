@@ -23,11 +23,11 @@
 import { useQuery } from '@pinia/colada'
 import { computed } from 'vue'
 
-import { getApiUserNotificationQuery } from '@/api/@pinia/colada.gen'
+import { getApiNotificationQuery } from '@/api/@pinia/colada.gen'
 
 import NoticeCard from './noticeCard.vue'
 
-const { data } = useQuery(getApiUserNotificationQuery())
+const { data } = useQuery(getApiNotificationQuery())
 
 const notices = computed(() => data.value?.data ?? [])
 </script>

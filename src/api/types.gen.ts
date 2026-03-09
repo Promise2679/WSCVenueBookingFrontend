@@ -265,6 +265,7 @@ export type GetApiVenueData = {
          * 单页最大（pagesize），无此项默认 12
          */
         n?: string;
+        a?: boolean;
     };
     url: '/api/venue';
 };

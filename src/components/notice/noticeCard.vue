@@ -6,7 +6,7 @@
       <v-card-title class="notice-card__title">{{ notice.title }}</v-card-title>
       <v-card-subtitle class="notice-card__subtitle">
         <v-icon icon="mdi-calendar-clock-outline" size="small" class="notice-card__subtitle-icon" />
-        {{ notice.release_time }}
+        {{ new Date(notice.release_time).toLocaleString() }}
       </v-card-subtitle>
     </v-card-item>
 

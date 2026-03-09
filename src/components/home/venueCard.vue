@@ -16,7 +16,7 @@
 
     <v-card-actions class="venue-card__actions" density="compact">
       <v-spacer />
-      <v-dialog v-if="isAdmin" width="600">
+      <v-dialog v-if="canManageVenue" width="600">
         <template v-slot:activator="{ props: activatorProps }">
           <v-btn
             v-bind="activatorProps"
@@ -361,7 +361,7 @@ const editFormData = reactive({
   type: 0
 })
 
-const { isAdmin } = storeToRefs(useUserStore())
+const { canManageVenue } = storeToRefs(useUserStore())
 
 const timeOptions = Array.from({ length: 20 }, (_, i) => {
   const hour = Math.floor(i / 2) + 8

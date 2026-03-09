@@ -9,9 +9,15 @@ export const useUserStore = defineStore(
     const name = ref('')
     const uid = ref('')
     const token = ref('')
-    const map = ref('')
 
-    const isAdmin = computed(() => map.value !== '1')
+    const map = ref('')
+    const permissionMapValue = computed(() => Number(map.value) || 0)
+
+    const canManageVenue = computed(() => permissionMapValue.value >= 2 ** 1)
+    const canManageUser = computed(() => permissionMapValue.value >= 2 ** 7)
+    const canManageNotice = computed(() => permissionMapValue.value >= 2 ** 8)
+    const showAdminControls = computed(() => canManageVenue.value || canManageUser.value || canManageNotice.value)
+
     watchEffect(() => client.setConfig({ auth: token.value }))
 
     function $reset() {
@@ -21,7 +27,7 @@ export const useUserStore = defineStore(
       map.value = ''
     }
 
-    return { $reset, isAdmin, map, name, token, uid }
+    return { $reset, canManageNotice, canManageUser, canManageVenue, name, showAdminControls, token, uid }
   },
   { persist: true }
 )

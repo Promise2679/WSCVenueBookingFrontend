@@ -88,13 +88,7 @@ const buildings = computed(() => locationsData.value?.data.buildings ?? [])
 const venueQuery = computed(() => ({ query: { b: selectedBuildings.value.map(String), s: search.value || undefined } }))
 const venues = computed(() => data.value?.data ?? [])
 
-const { map } = storeToRefs(useUserStore())
-
-const permissionMapValue = computed(() => Number(map.value) || 0)
-const canManageVenue = computed(() => permissionMapValue.value >= 2 ** 1)
-const canManageUser = computed(() => permissionMapValue.value >= 2 ** 7)
-const canManageNotice = computed(() => permissionMapValue.value >= 2 ** 8)
-const showAdminControls = computed(() => canManageVenue.value || canManageUser.value || canManageNotice.value)
+const { canManageNotice, canManageUser, canManageVenue, showAdminControls } = storeToRefs(useUserStore())
 
 let debounceTimer: null | number = null
 

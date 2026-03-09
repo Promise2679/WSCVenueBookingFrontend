@@ -13,7 +13,19 @@
           class="admin-search-field"
         />
       </v-col>
-      <v-col cols="12" md="8" class="admin-action-group d-flex align-center ga-2">
+      <v-col cols="12" class="admin-action-group d-flex align-center ga-2">
+        <v-btn-toggle
+          v-model="timeRange"
+          mandatory
+          variant="outlined"
+          divided
+          density="comfortable"
+          class="admin-range-toggle"
+        >
+          <v-btn value="all" size="small" class="admin-range-btn">总览</v-btn>
+          <v-btn value="7days" size="small" class="admin-range-btn">过去7天</v-btn>
+        </v-btn-toggle>
+        <v-spacer />
         <v-btn prepend-icon="mdi-calendar-plus" to="/" class="admin-action-btn admin-action-btn--solid" variant="flat"
           >预约场地</v-btn
         >
@@ -38,19 +50,6 @@
           variant="outlined"
           >公告管理</v-btn
         >
-      </v-col>
-      <v-col cols="12" md="6" class="d-flex align-center ga-2">
-        <v-btn-toggle
-          v-model="timeRange"
-          mandatory
-          variant="outlined"
-          divided
-          density="comfortable"
-          class="admin-range-toggle"
-        >
-          <v-btn value="all" size="small" class="admin-range-btn">总览</v-btn>
-          <v-btn value="7days" size="small" class="admin-range-btn">过去7天</v-btn>
-        </v-btn-toggle>
       </v-col>
     </v-row>
 

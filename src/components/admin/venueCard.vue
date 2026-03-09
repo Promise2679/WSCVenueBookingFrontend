@@ -276,7 +276,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import { getApiVenueByVenueIdApplication, putApiApplicationByApplicationId } from '@/api'
+import { getApiFileByFiletoken, getApiVenueByVenueIdApplication, putApiApplicationByApplicationId } from '@/api'
 import { useMessagesStore } from '@/stores/message'
 
 interface Room {
@@ -330,23 +330,17 @@ const message = useMessagesStore()
 const currentApplication = ref<null | VenueApplication>(null)
 
 async function downloadFile(fileToken: string, fileName: string): Promise<void> {
-  try {
-    const response = await fetch(getFileUrl(fileToken))
+  const { data: blob, error } = await getApiFileByFiletoken({ path: { filetoken: fileToken } })
+  if (error) return
 
-    if (!response.ok) throw new Error('download failed')
-
-    const blob = await response.blob()
-    const downloadUrl = globalThis.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = downloadUrl
-    link.download = normalizeDownloadFileName(fileName)
-    document.body.append(link)
-    link.click()
-    link.remove()
-    globalThis.URL.revokeObjectURL(downloadUrl)
-  } catch {
-    message.add({ color: 'error', text: '附件下载失败，请重试' })
-  }
+  const downloadUrl = globalThis.URL.createObjectURL(blob as unknown as Blob)
+  const link = document.createElement('a')
+  link.href = downloadUrl
+  link.download = normalizeDownloadFileName(fileName)
+  document.body.append(link)
+  link.click()
+  link.remove()
+  globalThis.URL.revokeObjectURL(downloadUrl)
 }
 
 function formatDayLabel(index: number): string {
@@ -368,10 +362,6 @@ function getFileIcon(fileType: string): string {
   if (fileType.startsWith('video/')) return 'mdi-video'
   if (fileType === 'application/pdf') return 'mdi-file-pdf-box'
   return 'mdi-file-document'
-}
-
-function getFileUrl(fileToken: string): string {
-  return `/api/file/${fileToken}`
 }
 
 function getOccupancyColor(value: number): string {

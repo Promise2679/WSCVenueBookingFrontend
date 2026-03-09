@@ -27,7 +27,7 @@ export const useUserStore = defineStore(
       map.value = ''
     }
 
-    return { $reset, canManageNotice, canManageUser, canManageVenue, name, showAdminControls, token, uid }
+    return { $reset, canManageNotice, canManageUser, canManageVenue, map, name, showAdminControls, token, uid }
   },
   { persist: true }
 )

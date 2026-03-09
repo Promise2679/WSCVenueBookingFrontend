@@ -29,7 +29,8 @@ import NoticeCard from './noticeCard.vue'
 
 const { data } = useQuery(getApiNotificationQuery())
 
-const notices = computed(() => data.value?.data ?? [])
+// eslint-disable-next-line vue/no-side-effects-in-computed-properties, unicorn/no-array-reverse
+const notices = computed(() => data.value?.data.reverse() ?? [])
 </script>
 
 <style scoped>
